@@ -27,6 +27,24 @@ Se preferir conectar uma conta do zero (sem passar pelo MeuPluggy), use o
 Pluggy Connect widget com um `connectToken` gerado pela sua aplicacao — nesse
 caso o `itemId` retornado ao final da conexao e o que voce deve usar.
 
+### Nao sei meu itemId
+
+A API do Pluggy nao expoe um endpoint para "listar todos os items" (por
+seguranca), entao se voce nao anotou o itemId ao conectar, tem duas opcoes:
+
+1. Ver no [dashboard.pluggy.ai](https://dashboard.pluggy.ai), dentro da sua
+   Application, na aba **Items**.
+2. Gerar um novo item rodando (depois de preencher `PLUGGY_CLIENT_ID` e
+   `PLUGGY_CLIENT_SECRET` no `.env`):
+
+   ```bash
+   npm run connect
+   ```
+
+   Isso abre `http://localhost:4321` com o widget oficial do Pluggy Connect.
+   Conecte sua conta (ou vincule a que ja existe no MeuPluggy) e o `itemId`
+   aparece na pagina e no terminal — copie para `PLUGGY_ITEM_IDS` no `.env`.
+
 ## 2. Configurar o projeto
 
 ```bash

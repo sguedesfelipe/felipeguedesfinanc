@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "report": "tsx src/index.ts",
+    "connect": "tsx src/connect.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
