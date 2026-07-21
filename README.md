@@ -78,8 +78,13 @@ npm run report -- --months=12 --out=meus-relatorios
 
 Os arquivos sao gravados em `reports/<data-de-hoje>/`:
 
-- `relatorio-gastos.html` — dashboard com totais, gastos por mes/categoria e
-  maiores gastos.
+- `relatorio-gastos.html` — dashboard com abas: Resumo, Categorias,
+  Transacoes e Pendencias de Classificacao. As abas Categorias/Transacoes/
+  Pendencias sao editaveis: alterar a Categoria/Subcategoria de qualquer
+  linha recalcula os totais por categoria na hora, direto no navegador (sem
+  precisar de servidor). Essas edicoes valem so nessa pagina aberta — para
+  valerem no proximo `npm run report`, repita a mesma classificacao na
+  planilha `.xlsx`.
 - `relatorio-gastos.xlsx` — planilha com abas de Resumo, Resumo Mensal,
   Categorias, Maiores Gastos, Contas, a lista completa de Transacoes e
   Pendencias de Classificacao.
