@@ -1,12 +1,18 @@
 import { Account, Transaction } from 'pluggy-sdk';
 import { AccountTransactions } from './fetchData.js';
+import { classifyTransaction, Confianca } from './classify.js';
 
 export interface CategorizedTransaction {
   accountId: string;
   accountName: string;
   date: Date;
   description: string;
-  category: string;
+  bankCategory: string;
+  categoria: string;
+  subcategoria: string;
+  confianca: Confianca;
+  pendente: boolean;
+  motivoClassificacao: string;
   amount: number;
   isExpense: boolean;
 }
@@ -48,6 +54,7 @@ export interface Report {
     income: number;
     net: number;
     transactionCount: number;
+    pendentesClassificacao: number;
   };
 }
 
@@ -74,14 +81,20 @@ export function buildReport(data: AccountTransactions[]): Report {
       const date = new Date(tx.date);
       const isExpense = tx.type === 'DEBIT';
       const amount = Math.abs(tx.amount);
-      const category = tx.category ?? UNCATEGORIZED;
+      const bankCategory = tx.category ?? UNCATEGORIZED;
+      const classification = classifyTransaction(tx.description, tx.category ?? null);
 
       transactions.push({
         accountId: account.id,
         accountName: account.name,
         date,
         description: tx.description,
-        category,
+        bankCategory,
+        categoria: classification.categoria,
+        subcategoria: classification.subcategoria,
+        confianca: classification.confianca,
+        pendente: classification.pendente,
+        motivoClassificacao: classification.motivo,
         amount,
         isExpense,
       });
@@ -93,10 +106,14 @@ export function buildReport(data: AccountTransactions[]): Report {
         accountExpenses += amount;
         totalExpenses += amount;
 
-        const catEntry = categoryMap.get(category) ?? { category, total: 0, count: 0 };
+        const catEntry = categoryMap.get(classification.categoria) ?? {
+          category: classification.categoria,
+          total: 0,
+          count: 0,
+        };
         catEntry.total += amount;
         catEntry.count += 1;
-        categoryMap.set(category, catEntry);
+        categoryMap.set(classification.categoria, catEntry);
 
         const merchantEntry = merchantMap.get(tx.description) ?? {
           description: tx.description,
@@ -141,6 +158,7 @@ export function buildReport(data: AccountTransactions[]): Report {
       income: totalIncome,
       net: totalIncome - totalExpenses,
       transactionCount: transactions.length,
+      pendentesClassificacao: transactions.filter((t) => t.pendente).length,
     },
   };
 }

@@ -81,15 +81,47 @@ Os arquivos sao gravados em `reports/<data-de-hoje>/`:
 - `relatorio-gastos.html` — dashboard com totais, gastos por mes/categoria e
   maiores gastos.
 - `relatorio-gastos.xlsx` — planilha com abas de Resumo, Resumo Mensal,
-  Categorias, Maiores Gastos, Contas e a lista completa de Transacoes.
+  Categorias, Maiores Gastos, Contas, a lista completa de Transacoes e
+  Pendencias de Classificacao.
 
 ## Como os gastos sao calculados
 
 - Cada transacao tem um campo `type` (`DEBIT` ou `CREDIT`) retornado pelo
   Pluggy. `DEBIT` e tratado como gasto e `CREDIT` como receita/entrada — essa
   logica ja vale tanto para contas correntes quanto para cartao de credito.
-- A categoria usada e a que o proprio Pluggy atribui a cada transacao
-  (`category`); transacoes sem categoria aparecem como "Sem categoria".
+
+## Classificacao por Categoria/Subcategoria
+
+Cada transacao recebe uma **Categoria** e **Subcategoria** na mesma taxonomia
+usada na planilha pessoal do usuario (aba "Despezzas"), em vez da categoria
+generica em ingles que o Pluggy atribui (essa continua disponivel na coluna
+"Categoria do banco", so como referencia).
+
+A logica em `src/classify.ts` decide a classificacao nesta ordem:
+
+1. **Match exato** com uma descricao ja classificada antes (ex.: mesma loja em
+   meses diferentes, ignorando o numero da parcela) — confianca alta.
+2. **Match por prefixo** do estabelecimento (antes do `*` na descricao) — usado
+   quando o merchant se repete mas com sufixo diferente — confianca media.
+3. **Sem historico parecido**: um palpite e feito a partir da categoria
+   generica do Pluggy (ex. "Groceries" -> alimentacao/supermercado). A
+   transacao ainda recebe uma sugestao (nunca fica em branco), mas e marcada
+   como pendente.
+
+Todo lancamento marcado como pendente aparece na aba **Pendencias de
+Classificacao** da planilha, com a sugestao ja preenchida, o motivo e o numero
+da linha correspondente na aba Transacoes. As colunas Categoria/Subcategoria
+tem uma lista suspensa (com as opcoes da sua taxonomia) para facilitar, mas
+aceitam qualquer texto — voce pode alterar qualquer classificacao, mesmo as
+que nao ficaram pendentes.
+
+**Importante:** os totais do relatorio (Categorias, HTML, etc.) sao calculados
+a partir da aba Transacoes. Se corrigir algo na aba Pendencias, repita a
+mesma correcao na linha indicada da aba Transacoes.
+
+As regras de classificacao (taxonomia + historico de estabelecimentos ja
+classificados) ficam em `data/despesas-classificacao.json`, gerado uma vez a
+partir da planilha pessoal do usuario.
 
 **Limitacao conhecida:** se voce paga a fatura do cartao pela mesma conta
 corrente conectada, essa transferencia aparece duas vezes nos dados brutos —
@@ -105,8 +137,12 @@ src/
   config.ts            variaveis de ambiente e argumentos de linha de comando
   pluggyClient.ts       inicializacao do PluggyClient (SDK oficial)
   fetchData.ts          busca items -> contas -> transacoes
+  classify.ts            classifica cada transacao em categoria/subcategoria
   aggregate.ts           agrega totais por mes, categoria, conta e descricao
   reportSpreadsheet.ts  gera o .xlsx (exceljs)
   reportHtml.ts          gera o dashboard .html
   index.ts               orquestra tudo (CLI)
+  connect.ts             ajuda a achar/criar um itemId (npm run connect)
+data/
+  despesas-classificacao.json  taxonomia + historico usados por classify.ts
 ```

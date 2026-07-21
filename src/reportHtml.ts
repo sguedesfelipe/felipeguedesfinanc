@@ -121,6 +121,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
     --series-1:       #2a78d6;
     --series-1-soft:  #cde2fb;
     --good:           #006300;
+    --warn:           #9a5b00;
   }
   @media (prefers-color-scheme: dark) {
     .viz-root {
@@ -136,6 +137,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
       --series-1:       #3987e5;
       --series-1-soft:  #184f95;
       --good:           #0ca30c;
+      --warn:           #e0a030;
     }
   }
 
@@ -169,6 +171,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
   .kpi-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 6px; }
   .kpi-value { font-size: 24px; font-weight: 600; font-variant-numeric: proportional-nums; }
   .kpi-value.net-positive { color: var(--good); }
+  .kpi-value.net-negative { color: var(--warn); }
 
   .bar-chart {
     display: flex;
@@ -221,7 +224,24 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
         <div class="kpi-label">Transacoes analisadas</div>
         <div class="kpi-value">${report.totals.transactionCount}</div>
       </div>
+      <div class="kpi-tile">
+        <div class="kpi-label">Pendentes de classificacao</div>
+        <div class="kpi-value${report.totals.pendentesClassificacao > 0 ? ' net-negative' : ''}">${report.totals.pendentesClassificacao}</div>
+      </div>
     </section>
+
+    ${
+      report.totals.pendentesClassificacao > 0
+        ? `<section class="card">
+      <h2>Pendencias de classificacao</h2>
+      <p class="subtitle" style="margin-bottom:12px;">
+        ${report.totals.pendentesClassificacao} lancamento(s) sem historico parecido receberam uma sugestao automatica.
+        Revise na aba <strong>Pendencias de Classificacao</strong> da planilha (.xlsx) — a categoria e
+        subcategoria sugeridas ja estao la, so corrigir se precisar.
+      </p>
+    </section>`
+        : ''
+    }
 
     <section class="card">
       <h2>Gastos por mes</h2>

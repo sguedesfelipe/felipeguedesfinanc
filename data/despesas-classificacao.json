@@ -1,0 +1,3703 @@
+{
+  "categories": {
+    "alimentação": [
+      "Alimentação Trabalho",
+      "supermercado"
+    ],
+    "assinaturas": [
+      "Amazon Prime",
+      "Apple",
+      "Azul",
+      "Cruzeiro",
+      "Despezzas",
+      "HBO",
+      "IA - Claude",
+      "IA - Manus",
+      "Ifood",
+      "Linkedin",
+      "Meli",
+      "Microsoft",
+      "Neologica",
+      "Netflix",
+      "Spotify",
+      "Strava",
+      "investidor10",
+      "iptv box",
+      "kiwify"
+    ],
+    "compras e lazer": [
+      "Alimentação Trabalho",
+      "Cruzeiro",
+      "Restaurante ou Delivery",
+      "coisas para casa",
+      "coisas pra casa",
+      "eletrônicos",
+      "esportes e equipamentos",
+      "eventos e atividades",
+      "festas e encontros",
+      "jogos e entreterimento",
+      "livros e materiais",
+      "presentes",
+      "roupas e acessórios"
+    ],
+    "empréstimos": [
+      "empréstimos pessoais"
+    ],
+    "investimentos": [
+      "Consórcio",
+      "proventos de investimentos"
+    ],
+    "moradia": [
+      "Babá",
+      "Compra Imóvel",
+      "Faxina",
+      "Mobiliário",
+      "Mudança",
+      "aluguel",
+      "condomínio",
+      "financiamento de imóvel",
+      "internet e telefone",
+      "luz"
+    ],
+    "outros": [
+      "outros"
+    ],
+    "renda": [
+      "Auxílios Salário",
+      "Benefício Salário",
+      "Restituição",
+      "renda extra",
+      "rendimentos de investimentos",
+      "salários e bônus",
+      "trabalho por conta própria"
+    ],
+    "saúde e bem-estar": [
+      "Cuidados Pessoais (Barbearia)",
+      "Enrico",
+      "Samuel",
+      "academia e fitness",
+      "farmácia e medicamentos"
+    ],
+    "seguros": [
+      "empréstimos pessoais",
+      "seguro de vida"
+    ],
+    "serviços financeiros e bancários": [
+      "cartão de crédito",
+      "taxas de contas bancárias"
+    ],
+    "transporte": [
+      "Combustível",
+      "aplicativos de mobilidade",
+      "estacionamento e pedágio",
+      "manutenção do carro"
+    ],
+    "viagem": [
+      "alimentação em viagem",
+      "hospedagem",
+      "passagens e transporte",
+      "passeios e lazer",
+      "restaurante ou delivery",
+      "supermercado"
+    ]
+  },
+  "rulesFull": {
+    "00153 SH BOULEVARD BH": [
+      "compras e lazer",
+      "roupas e acessórios",
+      1
+    ],
+    "100 MALTE GASTRONOMIA": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "480 - MG BH BOULEVARD": [
+      "compras e lazer",
+      "roupas e acessórios",
+      1
+    ],
+    "54831742RONAMLEOBELO HORIZONTBR": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "99*": [
+      "transporte",
+      "aplicativos de mobilidade",
+      5
+    ],
+    "99*SAO PAULOBR": [
+      "transporte",
+      "aplicativos de mobilidade",
+      4
+    ],
+    "A BARBEARIA LTDA": [
+      "saúde e bem-estar",
+      "Cuidados Pessoais (Barbearia)",
+      12
+    ],
+    "A BARBEARIA LTDABELO HORIZONTBR": [
+      "saúde e bem-estar",
+      "Cuidados Pessoais (Barbearia)",
+      1
+    ],
+    "AEROTRIO": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "AGUA": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "AIRBNB * HM8SAZY3X2": [
+      "viagem",
+      "hospedagem",
+      1
+    ],
+    "ALDINI": [
+      "alimentação",
+      "Alimentação Trabalho",
+      2
+    ],
+    "ALEXANDER AMARAL ANDRADE": [
+      "compras e lazer",
+      "eventos e atividades",
+      1
+    ],
+    "ALIMENTAÇÃO AEROPORTO": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "ALIMENTAÇÃO BELEM": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "ALMOÇO LANCHONETE": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "ALMOÇO NA LANCE": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "AMAZON BR": [
+      "transporte",
+      "manutenção do carro",
+      2
+    ],
+    "AMAZON MARKETPLACE": [
+      "saúde e bem-estar",
+      "Enrico",
+      2
+    ],
+    "AMAZON MKTPL*BB8F99Q52": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "AMAZON MKTPL*BI2SS2FY1": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "AMAZON PRIME BR": [
+      "assinaturas",
+      "Amazon Prime",
+      4
+    ],
+    "AMAZON.COM.BR": [
+      "compras e lazer",
+      "livros e materiais",
+      2
+    ],
+    "AMAZONMKTPLC*ADELMOSAN": [
+      "compras e lazer",
+      "coisas para casa",
+      1
+    ],
+    "AMAZONMKTPLC*BMDSTOREL": [
+      "saúde e bem-estar",
+      "Enrico",
+      1
+    ],
+    "AMAZONMKTPLC*HOMELIVEA": [
+      "compras e lazer",
+      "eletrônicos",
+      1
+    ],
+    "AMAZONMKTPLC*JOSEDEMEN": [
+      "compras e lazer",
+      "esportes e equipamentos",
+      1
+    ],
+    "AMAZONMKTPLC*LUFIARAEC": [
+      "compras e lazer",
+      "coisas para casa",
+      1
+    ],
+    "AMAZONMKTPLC*MANDDAONL": [
+      "compras e lazer",
+      "eletrônicos",
+      1
+    ],
+    "AMAZONMKTPLC*MARIALUCI": [
+      "saúde e bem-estar",
+      "Enrico",
+      1
+    ],
+    "AMAZONMKTPLC*OFERT": [
+      "saúde e bem-estar",
+      "Enrico",
+      2
+    ],
+    "AMAZONMKTPLC*PLANE": [
+      "saúde e bem-estar",
+      "Enrico",
+      4
+    ],
+    "AMAZONMKTPLC*ROCKSUPLE": [
+      "saúde e bem-estar",
+      "Enrico",
+      1
+    ],
+    "AMERICAN DAY SAVASSI": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "AMIGO #3": [
+      "viagem",
+      "alimentação em viagem",
+      1
+    ],
+    "ANCAR PARKING ESTACION": [
+      "transporte",
+      "estacionamento e pedágio",
+      2
+    ],
+    "ANNA CAROLINA SACRAMENTO RODRIGUES": [
+      "moradia",
+      "aluguel",
+      7
+    ],
+    "ANUIDADE DIFERENCI": [
+      "serviços financeiros e bancários",
+      "cartão de crédito",
+      23
+    ],
+    "APPLE": [
+      "assinaturas",
+      "Apple",
+      10
+    ],
+    "APPLECOMBILL": [
+      "assinaturas",
+      "Apple",
+      2
+    ],
+    "ARAUJO LOJA": [
+      "saúde e bem-estar",
+      "Enrico",
+      2
+    ],
+    "ARAUJO LOJABELO HORIZONTBR": [
+      "saúde e bem-estar",
+      "academia e fitness",
+      6
+    ],
+    "ARAUJO ONLINE": [
+      "saúde e bem-estar",
+      "Enrico",
+      1
+    ],
+    "AREATEC - TECNOLOGIA E SERVICOS LTDA": [
+      "transporte",
+      "estacionamento e pedágio",
+      2
+    ],
+    "ARMAZEM GONZALEZ": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "ARTHUR ANTONELLI DA COSTA BARBOSA": [
+      "compras e lazer",
+      "festas e encontros",
+      2
+    ],
+    "ASA*PAULA NUTRICIO": [
+      "saúde e bem-estar",
+      "academia e fitness",
+      1
+    ],
+    "ASSAI ATACADISTA": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "ASSB COMERCIO VAREJIST": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "ASSEMBLEIA": [
+      "alimentação",
+      "Alimentação Trabalho",
+      2
+    ],
+    "ASSEMBLEIABELO HORIZONTBR": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "ASSOCIACAO DE PAIS E AMIGOS DOS EXCEPCIONAIS DE SANTA LUZIA": [
+      "compras e lazer",
+      "eventos e atividades",
+      1
+    ],
+    "AUTOPOSTO": [
+      "transporte",
+      "Combustível",
+      1
+    ],
+    "AZUL LINHAS AEREAS BRAS": [
+      "assinaturas",
+      "Azul",
+      14
+    ],
+    "AZUL WE*WEUGSLGUED": [
+      "viagem",
+      "passagens e transporte",
+      3
+    ],
+    "AZULOPWPPK": [
+      "viagem",
+      "passagens e transporte",
+      3
+    ],
+    "AZULUR4DJX": [
+      "viagem",
+      "passagens e transporte",
+      1
+    ],
+    "AZULUR4DJX BARUERI BR": [
+      "investimentos",
+      "proventos de investimentos",
+      1
+    ],
+    "BAGAGGIO 143 SHEHR": [
+      "compras e lazer",
+      "presentes",
+      2
+    ],
+    "BAR DO JULIO": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "BAR DO TOTONHO SAO MAT": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "BAR DO VEIO": [
+      "alimentação",
+      "Alimentação Trabalho",
+      2
+    ],
+    "BAR E RESTAURANTE SAB": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "BEM SION": [
+      "alimentação",
+      "supermercado",
+      2
+    ],
+    "BENEFÍCIO ALIMENTAÇÃO": [
+      "renda",
+      "Benefício Salário",
+      9
+    ],
+    "BENEFÍCIO REFEIÇÃO": [
+      "renda",
+      "Benefício Salário",
+      9
+    ],
+    "BESTBUYCOM807116640142": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "BF RESTAURANTE": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "BFH ADM DE ESTACIONA": [
+      "transporte",
+      "estacionamento e pedágio",
+      1
+    ],
+    "BHZ RESTAURANTE LTDA": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "BIG CITY TOURISM": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "BILHETERIA DIGITAL": [
+      "compras e lazer",
+      "festas e encontros",
+      1
+    ],
+    "BOALI - DIAMOND GERACABELO HORIZONTBR": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "BR CONSORCIOS ADMINISTRADORA DE CONSORCIOS LTDA": [
+      "investimentos",
+      "Consórcio",
+      8
+    ],
+    "BRADESCO": [
+      "saúde e bem-estar",
+      "Samuel",
+      1
+    ],
+    "BRADESCO SAUDE - OPERADORA DE PLANOS S/A": [
+      "saúde e bem-estar",
+      "Enrico",
+      2
+    ],
+    "BRAGA CAMPOS LEITE SERVICOS MEDICOS LTDA": [
+      "saúde e bem-estar",
+      "Samuel",
+      1
+    ],
+    "BRINKEL BRINQUEDOS E": [
+      "compras e lazer",
+      "presentes",
+      2
+    ],
+    "BURGO": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "BUTECO FIADO LTDA": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "CABO FRIO 2": [
+      "viagem",
+      "restaurante ou delivery",
+      1
+    ],
+    "CAFETERIASAVASSI": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "CAIRU": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "CALVIN KLEIN": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "CAPPTA *DUDA E BASTOS": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      3
+    ],
+    "CARLOS HENRIQUE": [
+      "alimentação",
+      "Alimentação Trabalho",
+      2
+    ],
+    "CARLOS HENRIQUE SAUD D": [
+      "transporte",
+      "estacionamento e pedágio",
+      1
+    ],
+    "CARREFOUR BHA 416": [
+      "alimentação",
+      "supermercado",
+      2
+    ],
+    "CARREFOUR BHP 51": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "CARTER'S #636": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "CARTERS -CT": [
+      "compras e lazer",
+      "roupas e acessórios",
+      1
+    ],
+    "CASA DE CARNE": [
+      "alimentação",
+      "supermercado",
+      2
+    ],
+    "CASA DE CARNE ESTE": [
+      "compras e lazer",
+      "festas e encontros",
+      3
+    ],
+    "CASA DE CARNE ESTER D": [
+      "alimentação",
+      "supermercado",
+      3
+    ],
+    "CASA DE CARNE ESTER DE": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "CASA DO ALEMAO": [
+      "viagem",
+      "restaurante ou delivery",
+      1
+    ],
+    "CASA DO PAO DE QUEIJOINDAIATUBABR": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      2
+    ],
+    "CASAR *PRE*SENTE": [
+      "compras e lazer",
+      "presentes",
+      1
+    ],
+    "CCR AEROPORTO CONFINS": [
+      "viagem",
+      "passagens e transporte",
+      1
+    ],
+    "CCS ORLANDO PREMIUM 508": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "CEMIG DISTRIBUICAO S.A": [
+      "moradia",
+      "luz",
+      11
+    ],
+    "CENTAURO CE43": [
+      "compras e lazer",
+      "esportes e equipamentos",
+      2
+    ],
+    "CENTAURO CE55 MATR": [
+      "compras e lazer",
+      "esportes e equipamentos",
+      1
+    ],
+    "CERVEJARIA GRAO MOGOL": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "CERVEJARIA VERACE": [
+      "compras e lazer",
+      "festas e encontros",
+      2
+    ],
+    "CFX -E-PASS AIRPORT": [
+      "viagem",
+      "passagens e transporte",
+      2
+    ],
+    "CHEFAO CONVENIENCIA": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "CHEZ MICHOU": [
+      "viagem",
+      "restaurante ou delivery",
+      1
+    ],
+    "CHOPERIAALMANAQUE": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "CHOPP PAMPULH": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "CITY TORTAS LTDA": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "CLAUDE.AI SUBSCRIPTION": [
+      "assinaturas",
+      "IA - Claude",
+      2
+    ],
+    "COCO BAMBU CONCEITO D": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "COCO BOM": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "COCOBOM": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "COLHEIRA BARES": [
+      "compras e lazer",
+      "festas e encontros",
+      1
+    ],
+    "COLIBRI LOJA DE CONVENI": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "COML DAHANA S A": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "COMPRA VERDEMAR": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "CONDOMINIO DO EDIFICIO LUX II": [
+      "moradia",
+      "condomínio",
+      1
+    ],
+    "CONECTC*FELIPEGUED": [
+      "transporte",
+      "estacionamento e pedágio",
+      7
+    ],
+    "CONFIDENCE CORRETORA DE CAMBIO S/A": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "CONTA VIVO": [
+      "moradia",
+      "internet e telefone",
+      10
+    ],
+    "COYOTE BAR": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "COZINHA DE FOGO DEL REYBELO HORIZONTBR": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "COZINHA DE FOGO RESTAUR": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "COZINHADEFOGO": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "CRISTO RESTAURANTE EIR": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "CRUZEIROEC": [
+      "assinaturas",
+      "Cruzeiro",
+      9
+    ],
+    "CT PANIFICADORA LTDA": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "CURB NYC TAXI": [
+      "viagem",
+      "passagens e transporte",
+      1
+    ],
+    "CVO COMERCIO DE PRODUT": [
+      "viagem",
+      "supermercado",
+      3
+    ],
+    "DANVILLE RESTAURANTE": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "DARK STORE SAVASSI": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "DAVILA": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "DBH EMPREENDIMENTOS": [
+      "compras e lazer",
+      "jogos e entreterimento",
+      1
+    ],
+    "DEX": [
+      "compras e lazer",
+      "festas e encontros",
+      1
+    ],
+    "DIAMOND MALL": [
+      "transporte",
+      "estacionamento e pedágio",
+      2
+    ],
+    "DICKS SPORTING GOODS": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "DIRECAO": [
+      "transporte",
+      "estacionamento e pedágio",
+      1
+    ],
+    "DL *GOOGLE LINKEDIN CO": [
+      "assinaturas",
+      "Linkedin",
+      2
+    ],
+    "DL *GOOGLE LINKEDIN JO": [
+      "assinaturas",
+      "Linkedin",
+      1
+    ],
+    "DL *UBERRIDES": [
+      "transporte",
+      "aplicativos de mobilidade",
+      3
+    ],
+    "DL*99 RIDE": [
+      "transporte",
+      "aplicativos de mobilidade",
+      1
+    ],
+    "DL*GOOGLE DESPEZ": [
+      "assinaturas",
+      "Despezzas",
+      1
+    ],
+    "DL*GOOGLE LINKED": [
+      "assinaturas",
+      "Linkedin",
+      9
+    ],
+    "DL*GOOGLE LINKEDSAO PAULOBR": [
+      "assinaturas",
+      "Linkedin",
+      1
+    ],
+    "DL*GOOGLE STRAVA": [
+      "assinaturas",
+      "Strava",
+      1
+    ],
+    "DM *SPOTIFY": [
+      "assinaturas",
+      "Spotify",
+      4
+    ],
+    "DM *TEMU": [
+      "compras e lazer",
+      "eletrônicos",
+      2
+    ],
+    "DM*SPOTIFY": [
+      "assinaturas",
+      "Spotify",
+      1
+    ],
+    "DM*TEMU": [
+      "compras e lazer",
+      "eletrônicos",
+      7
+    ],
+    "DOCE NEVE": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "DOMINO'S 5014": [
+      "viagem",
+      "alimentação em viagem",
+      1
+    ],
+    "DOMINOS CIDADE NOVA": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "DON ALCIDES": [
+      "saúde e bem-estar",
+      "Cuidados Pessoais (Barbearia)",
+      1
+    ],
+    "DRAWN TO LIFE": [
+      "viagem",
+      "passagens e transporte",
+      1
+    ],
+    "DROG ARAUJO FILIAL 100": [
+      "saúde e bem-estar",
+      "Enrico",
+      1
+    ],
+    "DROG ARAUJO LOJA 36": [
+      "saúde e bem-estar",
+      "farmácia e medicamentos",
+      2
+    ],
+    "DROGARIA ARA*ARAU": [
+      "saúde e bem-estar",
+      "Enrico",
+      2
+    ],
+    "DROGARIA ARA-CT": [
+      "saúde e bem-estar",
+      "farmácia e medicamentos",
+      2
+    ],
+    "DROGARIA ARAUJO": [
+      "saúde e bem-estar",
+      "farmácia e medicamentos",
+      15
+    ],
+    "DROGARIA ARAUJO FILIAL": [
+      "saúde e bem-estar",
+      "Enrico",
+      3
+    ],
+    "DROGARIA ARAUJO LJ 46": [
+      "saúde e bem-estar",
+      "farmácia e medicamentos",
+      5
+    ],
+    "DROGARIA ARAUJO LJ 60": [
+      "saúde e bem-estar",
+      "farmácia e medicamentos",
+      1
+    ],
+    "DROGARIA ARAUJO MATRIZ": [
+      "saúde e bem-estar",
+      "farmácia e medicamentos",
+      1
+    ],
+    "DROGARIA ARAUJO S A": [
+      "saúde e bem-estar",
+      "farmácia e medicamentos",
+      2
+    ],
+    "DROGARIA ARAUJO SA FIL": [
+      "saúde e bem-estar",
+      "Enrico",
+      1
+    ],
+    "DROGARIAS PACHECO SA": [
+      "saúde e bem-estar",
+      "Enrico",
+      1
+    ],
+    "DUANE READE #14101": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "EC*MELIMAIS": [
+      "assinaturas",
+      "Meli",
+      1
+    ],
+    "EDILSON": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      2
+    ],
+    "EDILSONMARCIO": [
+      "alimentação",
+      "supermercado",
+      2
+    ],
+    "EHS NEGOCIOS LTDA": [
+      "renda",
+      "renda extra",
+      10
+    ],
+    "ELASA": [
+      "alimentação",
+      "Alimentação Trabalho",
+      49
+    ],
+    "ELASABELO HORIZONTBR": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "ELIASMOREIRADE": [
+      "viagem",
+      "supermercado",
+      1
+    ],
+    "ENCARGOS DE ATRASO": [
+      "serviços financeiros e bancários",
+      "taxas de contas bancárias",
+      1
+    ],
+    "ENGENHEIROS CRUZEIRO": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      2
+    ],
+    "ENGENHEIROS CRUZEIRO R": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      2
+    ],
+    "ESPETO DO MANOEL 2": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "ESTACIONAMENTO CARPA": [
+      "transporte",
+      "estacionamento e pedágio",
+      1
+    ],
+    "ESTACIONAMENTO OTONI": [
+      "transporte",
+      "estacionamento e pedágio",
+      1
+    ],
+    "ESTACIONAMENTO VILLE PA": [
+      "transporte",
+      "estacionamento e pedágio",
+      1
+    ],
+    "ESTAPAR": [
+      "compras e lazer",
+      "Cruzeiro",
+      1
+    ],
+    "ESTORNO ANUIDADE DIFERE": [
+      "serviços financeiros e bancários",
+      "taxas de contas bancárias",
+      1
+    ],
+    "ESTORNO CUSTO DE IOF": [
+      "viagem",
+      "passeios e lazer",
+      2
+    ],
+    "ESTORNO DE ANUIDADE DIF": [
+      "serviços financeiros e bancários",
+      "cartão de crédito",
+      8
+    ],
+    "ESTORNO IOF": [
+      "serviços financeiros e bancários",
+      "taxas de contas bancárias",
+      1
+    ],
+    "ESTORNO JUROS DE FINANC": [
+      "serviços financeiros e bancários",
+      "taxas de contas bancárias",
+      2
+    ],
+    "ESTORNO JUROS FINANCIAM": [
+      "serviços financeiros e bancários",
+      "taxas de contas bancárias",
+      1
+    ],
+    "ESTORNO JUROS MORA": [
+      "serviços financeiros e bancários",
+      "taxas de contas bancárias",
+      1
+    ],
+    "ESTORNO MULTA ATRASO": [
+      "serviços financeiros e bancários",
+      "taxas de contas bancárias",
+      1
+    ],
+    "FAVORITO BEER LTDA": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "FCD ENGENHARIA LTDA": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "FEL EMPREENDIMENTOS C": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "FERNANDO SILVA MACHADO": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "FILIAL 9 - SAVASSI": [
+      "alimentação",
+      "Alimentação Trabalho",
+      2
+    ],
+    "FILTROLAR UTILIDADES D": [
+      "compras e lazer",
+      "presentes",
+      1
+    ],
+    "FISIA NIKE ECOMMER": [
+      "compras e lazer",
+      "esportes e equipamentos",
+      5
+    ],
+    "FLIP PARK": [
+      "transporte",
+      "estacionamento e pedágio",
+      2
+    ],
+    "FLORESTA": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "FORNERIA ORIGINAL": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "FRANCETTE": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "GAP OUTLET U-CT 30": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "GATAGORDASISTEMAS": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "GENNARO SAVASSI": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "GESTAO E OPERACAO DE VIAGENS S.A": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "GOLD LOUNGE": [
+      "viagem",
+      "alimentação em viagem",
+      1
+    ],
+    "GOMES DINIZ COMERCIO D": [
+      "compras e lazer",
+      "presentes",
+      1
+    ],
+    "GRANADO PHAR-CT AS": [
+      "compras e lazer",
+      "presentes",
+      1
+    ],
+    "GRANADO PHARMACIAS": [
+      "compras e lazer",
+      "presentes",
+      1
+    ],
+    "GUILHERME SEABRA PINTO": [
+      "compras e lazer",
+      "eventos e atividades",
+      1
+    ],
+    "GUUD DELIVERY - IPIRAN": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      2
+    ],
+    "HEBERTONVILLARDA": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "HENRIQUE FERREIRA VALLE": [
+      "compras e lazer",
+      "festas e encontros",
+      1
+    ],
+    "HF TREINAMENTO ESPORTIVO LTDA": [
+      "saúde e bem-estar",
+      "academia e fitness",
+      1
+    ],
+    "HIGHWOODS- 300 S. ORANG": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "HN CONFINS 4": [
+      "viagem",
+      "passagens e transporte",
+      1
+    ],
+    "HOFBRAUHAUS BELO HORIZO": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "HORTIFRUTI BEM": [
+      "alimentação",
+      "supermercado",
+      3
+    ],
+    "HORTIFRUTI DA PRACA": [
+      "compras e lazer",
+      "festas e encontros",
+      1
+    ],
+    "HORTIFRUTI JCARANGOLA": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "HOSPITAL MATER DEI": [
+      "saúde e bem-estar",
+      "Enrico",
+      4
+    ],
+    "HOSPITAL MATER DEIBELO HORIZONTBR": [
+      "saúde e bem-estar",
+      "Enrico",
+      1
+    ],
+    "HUGO BRUNO FERNANDES V": [
+      "transporte",
+      "manutenção do carro",
+      1
+    ],
+    "HUNTERTRAINING": [
+      "saúde e bem-estar",
+      "academia e fitness",
+      1
+    ],
+    "IBERICO EMPREENDIMENTO": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "IFD *ZAMP SA": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "IFD*43.930.733 CARLOS E": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      2
+    ],
+    "IFD*68 LA PIZZERIA LOUR": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "IFD*ARCOS DOURADOS COM": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      2
+    ],
+    "IFD*BRS COMERCIO DE AL": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "IFD*CB HAMBURGUERIA LT": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "IFD*COMPANHIA BRASILEIBELO HORIZONTBR": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "IFD*DAKI BELO HORIZONT": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "IFD*DAY ONE BURGUER LT": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "IFD*DINOS ALIMENTOS LTD": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "IFD*ENGENHEIROS CRUZEI": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "IFD*ENGENHEIROS CRUZEIBELO HORIZONTBR": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "IFD*ENGENHEIROS CRUZEIR": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "IFD*FREDERICO DE CASTR": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "IFD*GAE COMERCIO DE ALI": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "IFD*GO SALAD DELIVERY S": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "IFD*GROK FOOD DELIVERY": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "IFD*IFOOD": [
+      "alimentação",
+      "Alimentação Trabalho",
+      3
+    ],
+    "IFD*IFOOD CLUB": [
+      "assinaturas",
+      "Ifood",
+      6
+    ],
+    "IFD*LAPETELLE COMIDINHA": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "IFD*LIFEBOX BH RESTAURA": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "IFD*LOURDES COMERCIO DE": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "IFD*ORGANIZACAO BATISTA": [
+      "alimentação",
+      "Alimentação Trabalho",
+      2
+    ],
+    "IFD*REIS RESTAURANTE E": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      2
+    ],
+    "IFD*VARANDA 1389 - LOUR": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "IFOOD": [
+      "assinaturas",
+      "Ifood",
+      1
+    ],
+    "IFOOD *IFOOD": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "IFOOD CLUB": [
+      "assinaturas",
+      "Ifood",
+      4
+    ],
+    "IKEBANA FLORES": [
+      "compras e lazer",
+      "presentes",
+      1
+    ],
+    "INT /CEMIG DISTRIBUICA 0": [
+      "moradia",
+      "luz",
+      3
+    ],
+    "INTER CAFE": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "INTER CAFE LTDA": [
+      "alimentação",
+      "Alimentação Trabalho",
+      10
+    ],
+    "IOF": [
+      "serviços financeiros e bancários",
+      "taxas de contas bancárias",
+      4
+    ],
+    "IOF COMPRA INTERNACIONA": [
+      "viagem",
+      "passeios e lazer",
+      71
+    ],
+    "IOF DE FINANCIAMENTO": [
+      "serviços financeiros e bancários",
+      "taxas de contas bancárias",
+      1
+    ],
+    "IQ DELICATESSENBELO HORIZONTBR": [
+      "saúde e bem-estar",
+      "academia e fitness",
+      1
+    ],
+    "J E L EMPREENDIMENTOS": [
+      "transporte",
+      "estacionamento e pedágio",
+      2
+    ],
+    "JERONIMOMINASSHOP": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "JET BLUE AIR27921920307": [
+      "viagem",
+      "passagens e transporte",
+      1
+    ],
+    "JETSHRSERRABR": [
+      "transporte",
+      "aplicativos de mobilidade",
+      3
+    ],
+    "JFK T5 ARTICHOKE": [
+      "viagem",
+      "alimentação em viagem",
+      1
+    ],
+    "JNX ESTACIONAMENTOS": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "JOAO PEDRO MIRANDA PINA ASSIS 87169479249": [
+      "compras e lazer",
+      "eventos e atividades",
+      1
+    ],
+    "JULIANO ALMEIDA LOUREIRO": [
+      "compras e lazer",
+      "eventos e atividades",
+      1
+    ],
+    "JUROS DE FINANCIAMENTO": [
+      "saúde e bem-estar",
+      "Enrico",
+      1
+    ],
+    "JUROS DE MORA": [
+      "serviços financeiros e bancários",
+      "taxas de contas bancárias",
+      1
+    ],
+    "JUROS FINANCIAMENTO": [
+      "serviços financeiros e bancários",
+      "taxas de contas bancárias",
+      1
+    ],
+    "KIWIFY": [
+      "assinaturas",
+      "kiwify",
+      1
+    ],
+    "LEVY@2KIA CENTER": [
+      "viagem",
+      "passeios e lazer",
+      2
+    ],
+    "LINDT SPRUNGLI BRAZIL": [
+      "compras e lazer",
+      "presentes",
+      1
+    ],
+    "LINGERIE DEL MODA IN": [
+      "compras e lazer",
+      "roupas e acessórios",
+      1
+    ],
+    "LM LUCIO MACEDO COMERC": [
+      "transporte",
+      "manutenção do carro",
+      1
+    ],
+    "LOCALIZA": [
+      "empréstimos",
+      "empréstimos pessoais",
+      4
+    ],
+    "LOCALIZA RENT A CAR SA": [
+      "renda",
+      "salários e bônus",
+      19
+    ],
+    "LOJALUPOSPORT": [
+      "compras e lazer",
+      "roupas e acessórios",
+      1
+    ],
+    "LOPES E TEIXEIRA C": [
+      "compras e lazer",
+      "roupas e acessórios",
+      1
+    ],
+    "LOURDES PARK ESTACIO": [
+      "transporte",
+      "estacionamento e pedágio",
+      1
+    ],
+    "LUCAS FRAGA REIS": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "LULLO COMERCIO VAREJIS": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "M CARDOSO ENGENHARIA EIRELI": [
+      "moradia",
+      "Compra Imóvel",
+      5
+    ],
+    "MADEIRAMADEIRA": [
+      "moradia",
+      "Mobiliário",
+      5
+    ],
+    "MAG RESTAURANTE LTDA": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "MAGALU*MAGALU": [
+      "saúde e bem-estar",
+      "Enrico",
+      7
+    ],
+    "MAGALU*MAGAZINELU": [
+      "saúde e bem-estar",
+      "Enrico",
+      1
+    ],
+    "MAGAZINE LUIZA": [
+      "compras e lazer",
+      "presentes",
+      10
+    ],
+    "MANUS AI": [
+      "assinaturas",
+      "IA - Manus",
+      3
+    ],
+    "MARCIO CORREIA": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "MARCIO CORREIA BISPO": [
+      "alimentação",
+      "Alimentação Trabalho",
+      2
+    ],
+    "MARIAHELENA": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "MARINA MARIZ CLNIC": [
+      "saúde e bem-estar",
+      "Enrico",
+      1
+    ],
+    "MARINA MARIZ*MARIN": [
+      "saúde e bem-estar",
+      "Enrico",
+      3
+    ],
+    "MARRMA RESTAURANTE": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      2
+    ],
+    "MARSHALLS #0420": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "MARU": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "MC DONALDS - ARCOS DOUR": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "MCDONALD'S F39147": [
+      "viagem",
+      "alimentação em viagem",
+      1
+    ],
+    "MCDONALD'S M2190": [
+      "viagem",
+      "alimentação em viagem",
+      1
+    ],
+    "MCDONALDS": [
+      "alimentação",
+      "Alimentação Trabalho",
+      2
+    ],
+    "MCDONALDSECOMMERCE": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "MCSWIGGAN'S": [
+      "viagem",
+      "alimentação em viagem",
+      1
+    ],
+    "MDTECH DIGITAL LTDA": [
+      "assinaturas",
+      "iptv box",
+      1
+    ],
+    "MEP*DO CHEF SANTO AGOS": [
+      "compras e lazer",
+      "festas e encontros",
+      1
+    ],
+    "MEPAYFINANCIAL": [
+      "compras e lazer",
+      "festas e encontros",
+      1
+    ],
+    "MERCADOLIVRE*BALAQUI": [
+      "moradia",
+      "Mobiliário",
+      1
+    ],
+    "MERCADOLIVRE*COMPELECTR": [
+      "compras e lazer",
+      "eletrônicos",
+      1
+    ],
+    "MERCADOLIVRE*WEBFONESCO": [
+      "moradia",
+      "internet e telefone",
+      1
+    ],
+    "MERCADOPAGO*DPALMAIMPOR": [
+      "compras e lazer",
+      "coisas pra casa",
+      1
+    ],
+    "MERCADOPAGO*LUUKYOUNG": [
+      "compras e lazer",
+      "eletrônicos",
+      1
+    ],
+    "MERCADOPAGO*MARCIA": [
+      "compras e lazer",
+      "presentes",
+      1
+    ],
+    "MERCADOPAGO*VENDASMARCO": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "MERCEARIA 130 LOURDES": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "MERITISSIMO RESTAURAN": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "MG BH SAVASSI SH C": [
+      "compras e lazer",
+      "eletrônicos",
+      3
+    ],
+    "MICHAEL KORS - 135": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "MICROSOFT*MICROSOFT 365": [
+      "assinaturas",
+      "Microsoft",
+      1
+    ],
+    "MICROSOFT*STORE": [
+      "assinaturas",
+      "Microsoft",
+      2
+    ],
+    "MILLER S ALE HOUSE 008": [
+      "viagem",
+      "alimentação em viagem",
+      1
+    ],
+    "MINEIRAO - TROPEIRO REA": [
+      "alimentação",
+      "Alimentação Trabalho",
+      2
+    ],
+    "MINI CAR": [
+      "compras e lazer",
+      "jogos e entreterimento",
+      1
+    ],
+    "MINISTERIO DA ECONOMIA": [
+      "renda",
+      "Restituição",
+      1
+    ],
+    "MINISTERIO DA FAZENDA": [
+      "moradia",
+      "Faxina",
+      1
+    ],
+    "MLP*MAGAZINELUIZA": [
+      "compras e lazer",
+      "presentes",
+      1
+    ],
+    "MMS NEW YORK": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "MOBILE PAG TIT BANCO 364": [
+      "moradia",
+      "aluguel",
+      4
+    ],
+    "MOMENTO SUPER NOSSO": [
+      "alimentação",
+      "supermercado",
+      2
+    ],
+    "MOMENTO SUPER NOSSO BE": [
+      "alimentação",
+      "supermercado",
+      2
+    ],
+    "MONUMENTAL": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "MP*64197516KENNE": [
+      "compras e lazer",
+      "festas e encontros",
+      1
+    ],
+    "MP*ALIEXPRESS": [
+      "compras e lazer",
+      "eletrônicos",
+      1
+    ],
+    "MP*ENDORFINA": [
+      "saúde e bem-estar",
+      "academia e fitness",
+      1
+    ],
+    "MP*HBOMAXASSIN": [
+      "assinaturas",
+      "HBO",
+      5
+    ],
+    "MP*INGRESSODIGITALLTDA": [
+      "compras e lazer",
+      "eventos e atividades",
+      1
+    ],
+    "MP*JAQUEPRESENTES": [
+      "compras e lazer",
+      "coisas para casa",
+      1
+    ],
+    "MP*JOSE": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "MP*LOTERIASONLINEHGW9": [
+      "compras e lazer",
+      "jogos e entreterimento",
+      1
+    ],
+    "MP*LOTERIASONLINEP4KG": [
+      "compras e lazer",
+      "jogos e entreterimento",
+      1
+    ],
+    "MP*LOTERIASONLINETJGR": [
+      "compras e lazer",
+      "jogos e entreterimento",
+      1
+    ],
+    "MP*MELIMAIS": [
+      "assinaturas",
+      "Meli",
+      12
+    ],
+    "MP*MELIMAISOSASCOBR": [
+      "assinaturas",
+      "Meli",
+      1
+    ],
+    "MP*VENDASMARCOLI": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "MP*VITINHO": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "MTA*NYCT PAYGO": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "MULTA POR ATRASO": [
+      "serviços financeiros e bancários",
+      "taxas de contas bancárias",
+      1
+    ],
+    "MULTIPLAN ADMINISTRADO": [
+      "transporte",
+      "estacionamento e pedágio",
+      5
+    ],
+    "MUNGAI DISTRIBUICAO LTD": [
+      "compras e lazer",
+      "festas e encontros",
+      3
+    ],
+    "MY PAD -CT": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "NCA NOSSA SENHORA DO C": [
+      "compras e lazer",
+      "festas e encontros",
+      1
+    ],
+    "NELOGICA SISTEMAS DE SOFTWARE LTDA.": [
+      "assinaturas",
+      "Neologica",
+      2
+    ],
+    "NETFLIX ENTRETENIMENTO": [
+      "assinaturas",
+      "Netflix",
+      1
+    ],
+    "NETFLIX.COM": [
+      "assinaturas",
+      "Netflix",
+      14
+    ],
+    "NIKEPOS_US": [
+      "viagem",
+      "passeios e lazer",
+      2
+    ],
+    "NOBRE SABOR BAR E RES": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "NPSUCULENTAS": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "O BURGUES SAVASSI": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "OAKBERRY": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "OAKBERRY ACAI PRADO": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "OAKBERRY ACAI PRADOBELO HORIZONTBR": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "OAKBERRY CONTORNO": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "OAKBERRY MG": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "OLEGARIO": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "OLHA O PICOLE": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "OLIVE GARDEN ZK 0021614": [
+      "viagem",
+      "alimentação em viagem",
+      1
+    ],
+    "OMNY VENDING*": [
+      "viagem",
+      "passagens e transporte",
+      2
+    ],
+    "ORGANIZACAO PETROMAR LT": [
+      "transporte",
+      "Combustível",
+      1
+    ],
+    "OUTBACK": [
+      "alimentação",
+      "Alimentação Trabalho",
+      3
+    ],
+    "PADARIA CACHOEIRINHA": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "PADARIA E CONFEITARIA": [
+      "alimentação",
+      "supermercado",
+      4
+    ],
+    "PADARIA FLORIDA": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "PADARIA LISB-CT": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "PADARIA LISBOA": [
+      "alimentação",
+      "supermercado",
+      7
+    ],
+    "PADARIA PADUA I": [
+      "alimentação",
+      "supermercado",
+      2
+    ],
+    "PADARIA PAN MEL": [
+      "alimentação",
+      "supermercado",
+      6
+    ],
+    "PAG BOLETO ANNA CAROLINA SACRAMENTO ROD": [
+      "moradia",
+      "aluguel",
+      4
+    ],
+    "PAG BOLETO CAIXA ECONOMICA FEDERAL - EN": [
+      "moradia",
+      "financiamento de imóvel",
+      1
+    ],
+    "PAG BOLETO PARTNERBANK INSTITUICAO DE P": [
+      "moradia",
+      "condomínio",
+      4
+    ],
+    "PAG BOLETO PJBANK PAGAMENTOS S A": [
+      "moradia",
+      "Mudança",
+      1
+    ],
+    "PAG BOLETO PORTO SEGURO ADMINISTRADORA": [
+      "empréstimos",
+      "empréstimos pessoais",
+      8
+    ],
+    "PAGUE MENOS 1232": [
+      "saúde e bem-estar",
+      "farmácia e medicamentos",
+      1
+    ],
+    "PAGUE MENOS@ 12": [
+      "saúde e bem-estar",
+      "Enrico",
+      1
+    ],
+    "PAN E CON VE-CT": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "PAN E CON VECTRA": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "PANIFICADORA CONFEIBELO HORIZONTBR": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "PANIFICADORA E CONFEI": [
+      "compras e lazer",
+      "eventos e atividades",
+      1
+    ],
+    "PANIFICADORA E CONFEIBELO HORIZONTBR": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "PANIFICADORA E CONFEIT": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "PANIFICADORA E CONFEITBELO HORIZONTBR": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "PANIFICADORA MELLO VIANA": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "PANIFICADORA MELO VIAN": [
+      "alimentação",
+      "supermercado",
+      4
+    ],
+    "PAO & COMPANHIA": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "PAO AMP COMPANHIA": [
+      "alimentação",
+      "supermercado",
+      3
+    ],
+    "PAO AMP COMPANHIABELO HORIZONTBR": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "PAO E COMPANHIA": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "PARTNERBANK INSTITUICAO DE PAGAMENTO S.A.": [
+      "moradia",
+      "condomínio",
+      10
+    ],
+    "PATH TAPP PAYGO CP": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "PATOLOGIA CLINICA": [
+      "saúde e bem-estar",
+      "Samuel",
+      3
+    ],
+    "PAYPAL *BOOKING HOTEL A": [
+      "viagem",
+      "hospedagem",
+      2
+    ],
+    "PAYPAL *VIAGOGO TIX": [
+      "viagem",
+      "passeios e lazer",
+      2
+    ],
+    "PAYPAL *Z2FOODSSAO PAULOBR": [
+      "saúde e bem-estar",
+      "academia e fitness",
+      1
+    ],
+    "PAYPAL*PAYPAL *Z2": [
+      "saúde e bem-estar",
+      "academia e fitness",
+      1
+    ],
+    "PAYU *ADIDA": [
+      "compras e lazer",
+      "esportes e equipamentos",
+      1
+    ],
+    "PBADMINISTRADORA": [
+      "transporte",
+      "estacionamento e pedágio",
+      3
+    ],
+    "PDV*FRIGO REI": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "PEDRO HENRIQUE OLIVEIRA DE JESUS": [
+      "compras e lazer",
+      "festas e encontros",
+      1
+    ],
+    "PELLEGRINO": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "PENNAFERNANDEZ": [
+      "moradia",
+      "Mobiliário",
+      2
+    ],
+    "PETROLAGOS COMERCIAL D": [
+      "transporte",
+      "Combustível",
+      1
+    ],
+    "PG *FOCO RADICAL": [
+      "saúde e bem-estar",
+      "academia e fitness",
+      1
+    ],
+    "PG *SELIA - SERVICOS D": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "PG *TREINUS HF": [
+      "saúde e bem-estar",
+      "academia e fitness",
+      9
+    ],
+    "PG *WE PINK": [
+      "compras e lazer",
+      "presentes",
+      1
+    ],
+    "PG *ZE DELIVERY": [
+      "compras e lazer",
+      "festas e encontros",
+      3
+    ],
+    "PG*CARREFOUR": [
+      "compras e lazer",
+      "eletrônicos",
+      3
+    ],
+    "PICCO RESTAURANTE LTDA": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      2
+    ],
+    "PIRATAS": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "PIRATAS BAR": [
+      "alimentação",
+      "Alimentação Trabalho",
+      6
+    ],
+    "PIRATAS BBQ": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "PIRATAS BBQ BEER E DRI": [
+      "alimentação",
+      "Alimentação Trabalho",
+      17
+    ],
+    "PIRATAS BBQ BEER E DRIBELO HORIZONTBR": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "PIRATAS RESTAURANTE": [
+      "alimentação",
+      "Alimentação Trabalho",
+      2
+    ],
+    "PIX QRS ANA BARBARA": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "PIX QRS BALADA BILH": [
+      "compras e lazer",
+      "Cruzeiro",
+      1
+    ],
+    "PIX QRS CELSO NUNES": [
+      "compras e lazer",
+      "presentes",
+      1
+    ],
+    "PIX QRS CEMIG DISTR": [
+      "moradia",
+      "luz",
+      1
+    ],
+    "PIX QRS EASYJET MOB": [
+      "transporte",
+      "aplicativos de mobilidade",
+      2
+    ],
+    "PIX QRS JULIA GARCI": [
+      "compras e lazer",
+      "eventos e atividades",
+      2
+    ],
+    "PIX QRS MARIA EDUAR": [
+      "compras e lazer",
+      "eventos e atividades",
+      1
+    ],
+    "PIX QRS OSIRIS NATA": [
+      "transporte",
+      "Combustível",
+      1
+    ],
+    "PIX QRS RECEITA FED": [
+      "moradia",
+      "Faxina",
+      4
+    ],
+    "PIX QRS REINALDO AM": [
+      "compras e lazer",
+      "presentes",
+      1
+    ],
+    "PIX QRS TAUA HOTEL": [
+      "viagem",
+      "hospedagem",
+      1
+    ],
+    "PIX RECEBIDO ARTHUR HENRIQUE SANGLARD": [
+      "compras e lazer",
+      "jogos e entreterimento",
+      1
+    ],
+    "PIX RECEBIDO LINCOLN CARNEIRO GUIMARAE": [
+      "compras e lazer",
+      "presentes",
+      1
+    ],
+    "PIX RECEBIDO YURI LUKAS ALENCAR SILVA": [
+      "compras e lazer",
+      "festas e encontros",
+      1
+    ],
+    "PIX TRANSF ADENILT": [
+      "compras e lazer",
+      "festas e encontros",
+      1
+    ],
+    "PIX TRANSF AGORA P": [
+      "compras e lazer",
+      "esportes e equipamentos",
+      1
+    ],
+    "PIX TRANSF ALAN DU": [
+      "compras e lazer",
+      "jogos e entreterimento",
+      1
+    ],
+    "PIX TRANSF ALEXAND": [
+      "compras e lazer",
+      "eventos e atividades",
+      1
+    ],
+    "PIX TRANSF ALYSSON": [
+      "transporte",
+      "estacionamento e pedágio",
+      1
+    ],
+    "PIX TRANSF AMELIA": [
+      "compras e lazer",
+      "eventos e atividades",
+      1
+    ],
+    "PIX TRANSF ANA LUI": [
+      "compras e lazer",
+      "festas e encontros",
+      1
+    ],
+    "PIX TRANSF ANA PAU": [
+      "saúde e bem-estar",
+      "Samuel",
+      1
+    ],
+    "PIX TRANSF ARTHUR": [
+      "compras e lazer",
+      "festas e encontros",
+      2
+    ],
+    "PIX TRANSF BRAGA C": [
+      "saúde e bem-estar",
+      "Samuel",
+      1
+    ],
+    "PIX TRANSF BRENO R": [
+      "compras e lazer",
+      "jogos e entreterimento",
+      1
+    ],
+    "PIX TRANSF BRUNO S": [
+      "transporte",
+      "estacionamento e pedágio",
+      1
+    ],
+    "PIX TRANSF BRUNO V": [
+      "compras e lazer",
+      "presentes",
+      1
+    ],
+    "PIX TRANSF CAMILA": [
+      "moradia",
+      "Babá",
+      2
+    ],
+    "PIX TRANSF CELIA T": [
+      "saúde e bem-estar",
+      "Samuel",
+      3
+    ],
+    "PIX TRANSF CHARLEN": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "PIX TRANSF CLAUDIA": [
+      "compras e lazer",
+      "festas e encontros",
+      1
+    ],
+    "PIX TRANSF DANIEL": [
+      "compras e lazer",
+      "eventos e atividades",
+      1
+    ],
+    "PIX TRANSF DANIELE": [
+      "compras e lazer",
+      "presentes",
+      1
+    ],
+    "PIX TRANSF EHS NEG": [
+      "renda",
+      "renda extra",
+      3
+    ],
+    "PIX TRANSF FELIPE": [
+      "moradia",
+      "Compra Imóvel",
+      1
+    ],
+    "PIX TRANSF FERNAND": [
+      "empréstimos",
+      "empréstimos pessoais",
+      1
+    ],
+    "PIX TRANSF GABRIEL": [
+      "compras e lazer",
+      "eventos e atividades",
+      1
+    ],
+    "PIX TRANSF GILBERT": [
+      "compras e lazer",
+      "Cruzeiro",
+      1
+    ],
+    "PIX TRANSF GILSON": [
+      "compras e lazer",
+      "jogos e entreterimento",
+      1
+    ],
+    "PIX TRANSF GLEBSON": [
+      "outros",
+      "outros",
+      1
+    ],
+    "PIX TRANSF GUILHER": [
+      "compras e lazer",
+      "festas e encontros",
+      4
+    ],
+    "PIX TRANSF GUSTAVO": [
+      "transporte",
+      "estacionamento e pedágio",
+      2
+    ],
+    "PIX TRANSF HENRIQU": [
+      "compras e lazer",
+      "jogos e entreterimento",
+      1
+    ],
+    "PIX TRANSF IGOR SA": [
+      "compras e lazer",
+      "jogos e entreterimento",
+      1
+    ],
+    "PIX TRANSF ISABEL": [
+      "compras e lazer",
+      "festas e encontros",
+      1
+    ],
+    "PIX TRANSF JEFFERS": [
+      "compras e lazer",
+      "presentes",
+      1
+    ],
+    "PIX TRANSF JOSE CR": [
+      "compras e lazer",
+      "jogos e entreterimento",
+      1
+    ],
+    "PIX TRANSF JOSUEL": [
+      "outros",
+      "outros",
+      1
+    ],
+    "PIX TRANSF JULIANO": [
+      "compras e lazer",
+      "jogos e entreterimento",
+      1
+    ],
+    "PIX TRANSF JULIO C": [
+      "empréstimos",
+      "empréstimos pessoais",
+      3
+    ],
+    "PIX TRANSF JUNIO F": [
+      "compras e lazer",
+      "eventos e atividades",
+      1
+    ],
+    "PIX TRANSF LAIS BA": [
+      "moradia",
+      "Faxina",
+      11
+    ],
+    "PIX TRANSF LAURA H": [
+      "moradia",
+      "Mobiliário",
+      3
+    ],
+    "PIX TRANSF LEANDRO": [
+      "compras e lazer",
+      "presentes",
+      1
+    ],
+    "PIX TRANSF LETICIA": [
+      "compras e lazer",
+      "Cruzeiro",
+      1
+    ],
+    "PIX TRANSF LINCOLN": [
+      "compras e lazer",
+      "festas e encontros",
+      3
+    ],
+    "PIX TRANSF LUCAS C": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "PIX TRANSF LUCAS N": [
+      "compras e lazer",
+      "festas e encontros",
+      3
+    ],
+    "PIX TRANSF LUIS FE": [
+      "compras e lazer",
+      "festas e encontros",
+      3
+    ],
+    "PIX TRANSF LUISA L": [
+      "renda",
+      "renda extra",
+      20
+    ],
+    "PIX TRANSF LUÍSA L": [
+      "renda",
+      "renda extra",
+      8
+    ],
+    "PIX TRANSF MAISA V": [
+      "compras e lazer",
+      "presentes",
+      1
+    ],
+    "PIX TRANSF MARCILI": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "PIX TRANSF MARCO T": [
+      "compras e lazer",
+      "jogos e entreterimento",
+      1
+    ],
+    "PIX TRANSF MARIA A": [
+      "compras e lazer",
+      "festas e encontros",
+      1
+    ],
+    "PIX TRANSF MARIA C": [
+      "compras e lazer",
+      "jogos e entreterimento",
+      1
+    ],
+    "PIX TRANSF MARIANN": [
+      "compras e lazer",
+      "jogos e entreterimento",
+      1
+    ],
+    "PIX TRANSF MARINA": [
+      "compras e lazer",
+      "presentes",
+      1
+    ],
+    "PIX TRANSF MATHEUS": [
+      "compras e lazer",
+      "festas e encontros",
+      1
+    ],
+    "PIX TRANSF MICHELL": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "PIX TRANSF NATHALI": [
+      "renda",
+      "renda extra",
+      1
+    ],
+    "PIX TRANSF PATRÍCI": [
+      "compras e lazer",
+      "presentes",
+      2
+    ],
+    "PIX TRANSF PEDRO H": [
+      "empréstimos",
+      "empréstimos pessoais",
+      9
+    ],
+    "PIX TRANSF RAIRAN": [
+      "compras e lazer",
+      "jogos e entreterimento",
+      1
+    ],
+    "PIX TRANSF RENATA": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "PIX TRANSF RENATO": [
+      "transporte",
+      "estacionamento e pedágio",
+      1
+    ],
+    "PIX TRANSF RICARDO": [
+      "saúde e bem-estar",
+      "academia e fitness",
+      1
+    ],
+    "PIX TRANSF RICHARD": [
+      "compras e lazer",
+      "jogos e entreterimento",
+      1
+    ],
+    "PIX TRANSF RIVIANE": [
+      "compras e lazer",
+      "eventos e atividades",
+      1
+    ],
+    "PIX TRANSF ROBERT": [
+      "empréstimos",
+      "empréstimos pessoais",
+      9
+    ],
+    "PIX TRANSF ROBSON": [
+      "empréstimos",
+      "empréstimos pessoais",
+      15
+    ],
+    "PIX TRANSF ROMULO": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "PIX TRANSF RONAN D": [
+      "compras e lazer",
+      "eventos e atividades",
+      1
+    ],
+    "PIX TRANSF ROZILAI": [
+      "compras e lazer",
+      "eventos e atividades",
+      1
+    ],
+    "PIX TRANSF SERGIO": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "PIX TRANSF UIARA M": [
+      "compras e lazer",
+      "eventos e atividades",
+      1
+    ],
+    "PIX TRANSF VICTOR": [
+      "compras e lazer",
+      "eventos e atividades",
+      1
+    ],
+    "PIX TRANSF WELLING": [
+      "compras e lazer",
+      "eventos e atividades",
+      1
+    ],
+    "PIZZA HUT 26545": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "PIZZARIA PONTE FURADA": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "PIZZATREMBAO": [
+      "compras e lazer",
+      "Alimentação Trabalho",
+      1
+    ],
+    "PONTE FURADA": [
+      "alimentação",
+      "Alimentação Trabalho",
+      4
+    ],
+    "PORTO SEGURO ADMINISTRADORA DE CONSORCIOS LTDA": [
+      "empréstimos",
+      "empréstimos pessoais",
+      20
+    ],
+    "POSTO CAMILA": [
+      "transporte",
+      "Combustível",
+      3
+    ],
+    "POSTO CENTER SUL": [
+      "transporte",
+      "Combustível",
+      1
+    ],
+    "POSTO CHEFAO LTDA": [
+      "transporte",
+      "manutenção do carro",
+      1
+    ],
+    "POSTO CORUJAO": [
+      "transporte",
+      "Combustível",
+      1
+    ],
+    "POSTO DEL REY": [
+      "transporte",
+      "Combustível",
+      1
+    ],
+    "POSTO DO PAPAI LTDA": [
+      "transporte",
+      "Combustível",
+      4
+    ],
+    "POSTO ESTANCIA REAL": [
+      "transporte",
+      "Combustível",
+      1
+    ],
+    "POSTO HUGO WERNECK": [
+      "transporte",
+      "Combustível",
+      1
+    ],
+    "POSTO ITATIA-CT TDA": [
+      "transporte",
+      "Combustível",
+      1
+    ],
+    "POSTO MINEIRAO": [
+      "transporte",
+      "Combustível",
+      3
+    ],
+    "POSTO MUSTANG": [
+      "transporte",
+      "Combustível",
+      1
+    ],
+    "POSTO MUTUCA": [
+      "transporte",
+      "manutenção do carro",
+      1
+    ],
+    "POSTO NIQUELINA": [
+      "transporte",
+      "manutenção do carro",
+      1
+    ],
+    "POSTO PIO XII": [
+      "transporte",
+      "Combustível",
+      2
+    ],
+    "POSTO PIO XIIBELO HORIZONTBR": [
+      "transporte",
+      "Combustível",
+      1
+    ],
+    "POSTO SANTOS DUMONT L": [
+      "transporte",
+      "Combustível",
+      1
+    ],
+    "POSTO SAO JOSE": [
+      "transporte",
+      "Combustível",
+      1
+    ],
+    "POSTO SIGMA": [
+      "transporte",
+      "Combustível",
+      1
+    ],
+    "POSTO TIC TAC": [
+      "transporte",
+      "Combustível",
+      3
+    ],
+    "POSTOMARTELTDA": [
+      "transporte",
+      "Combustível",
+      1
+    ],
+    "PPRO *MICROSOFT": [
+      "assinaturas",
+      "Microsoft",
+      1
+    ],
+    "PRIME VIDEO E COMERCIO": [
+      "assinaturas",
+      "Amazon Prime",
+      6
+    ],
+    "PRO TECH GARMIN": [
+      "viagem",
+      "alimentação em viagem",
+      1
+    ],
+    "PRUDENT*APOL000736734": [
+      "seguros",
+      "seguro de vida",
+      15
+    ],
+    "PRUDENTIAL D*APOL": [
+      "seguros",
+      "seguro de vida",
+      1
+    ],
+    "PRUDENTIAL DO BRASIL VIDA EM GRUPO S.A.": [
+      "seguros",
+      "seguro de vida",
+      1
+    ],
+    "QUICK EXPRESS": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "QUINTAL SAO BENTO": [
+      "compras e lazer",
+      "festas e encontros",
+      1
+    ],
+    "R & B SERVICOS, TRANSPORTES E LOGISTICA LTDA": [
+      "transporte",
+      "estacionamento e pedágio",
+      1
+    ],
+    "RAFAEL BATISTA": [
+      "compras e lazer",
+      "festas e encontros",
+      1
+    ],
+    "RANCHO DO BOI": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "RECOMPENSA ALELO": [
+      "renda",
+      "Auxílios Salário",
+      3
+    ],
+    "REDE RODO PARK": [
+      "transporte",
+      "estacionamento e pedágio",
+      2
+    ],
+    "REI DO PASTEL": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "REMUNERACAO APLICACAO AUTOMATICA": [
+      "investimentos",
+      "proventos de investimentos",
+      3
+    ],
+    "REMUNERACAO/SALARIO": [
+      "renda",
+      "salários e bônus",
+      14
+    ],
+    "RENATO LIRIO": [
+      "saúde e bem-estar",
+      "academia e fitness",
+      1
+    ],
+    "REND PAGO APLIC AUT APR": [
+      "investimentos",
+      "proventos de investimentos",
+      22
+    ],
+    "REND PAGO APLIC AUT MAIS": [
+      "investimentos",
+      "proventos de investimentos",
+      34
+    ],
+    "RENNER": [
+      "compras e lazer",
+      "roupas e acessórios",
+      2
+    ],
+    "RENTALCARS.COM": [
+      "viagem",
+      "passagens e transporte",
+      1
+    ],
+    "RESGATE RDB": [
+      "moradia",
+      "Mobiliário",
+      1
+    ],
+    "REST.IBISSBELEMHANGAR": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "RESTAURANTE *AMARELINH": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "RESTAURANTE DO VANDECO": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "RESTAURANTE IRMAOS SALE": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "RESTAURANTE MANIA MINE": [
+      "alimentação",
+      "Alimentação Trabalho",
+      6
+    ],
+    "RESTAURANTE SANVILLE G": [
+      "alimentação",
+      "Alimentação Trabalho",
+      10
+    ],
+    "RESTAURANTEPATIO": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "RIVIANE MICHELLE F JESUS": [
+      "compras e lazer",
+      "eventos e atividades",
+      1
+    ],
+    "ROMA PLUS": [
+      "compras e lazer",
+      "festas e encontros",
+      1
+    ],
+    "ROSANGELAMARIA": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "ROSS STORE #350": [
+      "viagem",
+      "passeios e lazer",
+      2
+    ],
+    "RRC ALIMENTOS LTDA": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "RUANRODRIGUESDE": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "RUTHMARTINS": [
+      "compras e lazer",
+      "roupas e acessórios",
+      1
+    ],
+    "SACOLÃO": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "SANVILLE": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "SANVILLE GRILL": [
+      "alimentação",
+      "Alimentação Trabalho",
+      2
+    ],
+    "SANVILLE RESTAURANTE L": [
+      "alimentação",
+      "Alimentação Trabalho",
+      2
+    ],
+    "SAO CRISTOVA-CT MBUSTI": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "SAO CRISTOVAO COMBUSTI": [
+      "transporte",
+      "Combustível",
+      3
+    ],
+    "SAVASSI": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "SERVICOSDIGITAIS": [
+      "compras e lazer",
+      "presentes",
+      1
+    ],
+    "SHAKE SHACK - 1148": [
+      "viagem",
+      "alimentação em viagem",
+      1
+    ],
+    "SHAKE SHACK - 1296": [
+      "viagem",
+      "alimentação em viagem",
+      1
+    ],
+    "SHELL": [
+      "viagem",
+      "passagens e transporte",
+      1
+    ],
+    "SHOPEE": [
+      "compras e lazer",
+      "roupas e acessórios",
+      3
+    ],
+    "SIMPLICIDADE MINEIRA": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "SMC.": [
+      "assinaturas",
+      "HBO",
+      2
+    ],
+    "SOL E NEVE SORVETERI": [
+      "viagem",
+      "restaurante ou delivery",
+      1
+    ],
+    "SORVETACA": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "SORVETERIA MU": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "SPOTIFY BRASIL": [
+      "assinaturas",
+      "Spotify",
+      10
+    ],
+    "SPOTPASSSOLUCOES": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "STAR 201 BH AIRPORT T": [
+      "viagem",
+      "passagens e transporte",
+      1
+    ],
+    "STARBUCKS 69422": [
+      "viagem",
+      "alimentação em viagem",
+      1
+    ],
+    "STARBUCKS STORE 65421": [
+      "viagem",
+      "alimentação em viagem",
+      1
+    ],
+    "STARK *ROTATIVO PROD": [
+      "transporte",
+      "estacionamento e pedágio",
+      1
+    ],
+    "SUMMIT ONE VANDERBILT": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "SUP EPA DEZESSEIS": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "SUP VERDRMAR": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "SUPER MAIS": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "SUPER NOSSO": [
+      "alimentação",
+      "supermercado",
+      11
+    ],
+    "SUPER NOSSO GRAO MOGOL": [
+      "alimentação",
+      "supermercado",
+      3
+    ],
+    "SUPER NOSSO GUTIERREZ": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "SUPER NOSSO PRACA DA L": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "SUPERMARKET": [
+      "viagem",
+      "supermercado",
+      1
+    ],
+    "SUPERMERCADO BH": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "SUPERMERCADO E PADARIA": [
+      "alimentação",
+      "supermercado",
+      51
+    ],
+    "SUPERMERCADO E PADARIABELO HORIZONTBR": [
+      "alimentação",
+      "supermercado",
+      2
+    ],
+    "SUPERMERCADO-CT ADARIA": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "SUPERMERCADOS BH": [
+      "alimentação",
+      "supermercado",
+      8
+    ],
+    "SUPERNOSSO": [
+      "alimentação",
+      "supermercado",
+      3
+    ],
+    "SURUBIMNOESPETO": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "SYMPLA": [
+      "compras e lazer",
+      "festas e encontros",
+      1
+    ],
+    "SYMPLA INTERNET SOLUCOES S/A": [
+      "compras e lazer",
+      "festas e encontros",
+      1
+    ],
+    "TAGITAU*FELIPEGUEDES": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "TARGET 00033548": [
+      "viagem",
+      "passeios e lazer",
+      2
+    ],
+    "TARGET 00033787": [
+      "viagem",
+      "alimentação em viagem",
+      1
+    ],
+    "TAXA DE EMBARQUE": [
+      "viagem",
+      "passagens e transporte",
+      2
+    ],
+    "TC PANIFICADORA LTDA": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "TED 102.0001.FELIPE H S": [
+      "empréstimos",
+      "empréstimos pessoais",
+      2
+    ],
+    "TED 104.0000CAIXA ECON F": [
+      "renda",
+      "renda extra",
+      3
+    ],
+    "TEF CREDITO SALARIO": [
+      "renda",
+      "salários e bônus",
+      1
+    ],
+    "TEIXEIRA DO PEIXE": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "TELEFONICA BRASIL S.A.": [
+      "moradia",
+      "internet e telefone",
+      2
+    ],
+    "TERMOLAR": [
+      "compras e lazer",
+      "coisas para casa",
+      1
+    ],
+    "TGIF 2635 -CT": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "THAYS MENEZES SOBRINHO DUARTE": [
+      "compras e lazer",
+      "eventos e atividades",
+      1
+    ],
+    "THE LION KING TICKETS": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "TICKETSPORTS": [
+      "compras e lazer",
+      "eventos e atividades",
+      1
+    ],
+    "TM *ORLANDO MAGIC": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "TNF ORLANDO": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "TOMMY HILFIGER": [
+      "viagem",
+      "passeios e lazer",
+      2
+    ],
+    "TOTACIOS BAR": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "TOWER PARK MASSUD": [
+      "transporte",
+      "estacionamento e pedágio",
+      3
+    ],
+    "TRACK E FIELD SHOP": [
+      "compras e lazer",
+      "esportes e equipamentos",
+      1
+    ],
+    "TRANSAMERICA FIT": [
+      "transporte",
+      "estacionamento e pedágio",
+      1
+    ],
+    "TRANSFERÊNCIA ENVIADA|ALESSON JUNIOR OLIVEIRA GOMES": [
+      "moradia",
+      "Mobiliário",
+      1
+    ],
+    "TRANSFERÊNCIA ENVIADA|FELIPE HENRIQUE SILVA GUEDES": [
+      "moradia",
+      "Compra Imóvel",
+      2
+    ],
+    "TRF PAG INSS02305568473": [
+      "renda",
+      "Restituição",
+      1
+    ],
+    "TST*LOS TACOS NO. 1 HUD": [
+      "viagem",
+      "alimentação em viagem",
+      1
+    ],
+    "TST*PICCOLA CUCINA UPTO": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "TST*VITOS SLICES AND IC": [
+      "viagem",
+      "alimentação em viagem",
+      1
+    ],
+    "TUPINAMBAS 1001 FE": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "UBER * PENDING": [
+      "transporte",
+      "aplicativos de mobilidade",
+      9
+    ],
+    "UBER *TRIP": [
+      "viagem",
+      "passagens e transporte",
+      7
+    ],
+    "UBER *TRIP HELP.UBER.CO": [
+      "transporte",
+      "aplicativos de mobilidade",
+      1
+    ],
+    "UBER* TRIP": [
+      "transporte",
+      "aplicativos de mobilidade",
+      9
+    ],
+    "VACA LOKA": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "VALE ALIMENTAÇÃO": [
+      "renda",
+      "Benefício Salário",
+      1
+    ],
+    "VALE REFEIÇÃO": [
+      "renda",
+      "Benefício Salário",
+      1
+    ],
+    "VASCOLIS BBQ": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "VERDEMAR": [
+      "alimentação",
+      "supermercado",
+      19
+    ],
+    "VERDINHO": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "VICTORIA'S SECRET #1493": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "VICTORY BUSINESS": [
+      "viagem",
+      "hospedagem",
+      1
+    ],
+    "VILAMALOCA": [
+      "alimentação",
+      "Alimentação Trabalho",
+      3
+    ],
+    "VILLAMBLTDAVESPASIANOBR": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "VINDI *DDFORNERIAORIG": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "VINDI *INVESTIDOR": [
+      "assinaturas",
+      "investidor10",
+      9
+    ],
+    "VIVO": [
+      "moradia",
+      "internet e telefone",
+      18
+    ],
+    "VIVO TRAVEL": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "VORR": [
+      "compras e lazer",
+      "roupas e acessórios",
+      4
+    ],
+    "WAL-MART #5420": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "WALGREENS #15023": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "WELLHUB GYMPASS BR GYMP": [
+      "saúde e bem-estar",
+      "academia e fitness",
+      1
+    ],
+    "WELLHUB GYMPASS BR WELL": [
+      "saúde e bem-estar",
+      "academia e fitness",
+      1
+    ],
+    "WELLHUB LUISA LUGAO": [
+      "saúde e bem-estar",
+      "academia e fitness",
+      1
+    ],
+    "WENDY'S # 12868": [
+      "viagem",
+      "alimentação em viagem",
+      1
+    ],
+    "WESLEY NASCENTE DA SILV": [
+      "compras e lazer",
+      "eventos e atividades",
+      1
+    ],
+    "WM SUPERCENTER #1220": [
+      "viagem",
+      "passeios e lazer",
+      2
+    ],
+    "WM SUPERCENTER #5420": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "XICO DA CARNE": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "YOGOBERRY BH SHOP": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "ZARA BRASIL": [
+      "compras e lazer",
+      "roupas e acessórios",
+      1
+    ],
+    "ZARA.COM BRASIL": [
+      "compras e lazer",
+      "roupas e acessórios",
+      1
+    ],
+    "ZIG *MINAS ARENA GE": [
+      "compras e lazer",
+      "festas e encontros",
+      1
+    ],
+    "ZIG *MINEIRAO ANCHO": [
+      "compras e lazer",
+      "Cruzeiro",
+      1
+    ],
+    "ZIG *MITRA": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "ZIG*FAZENDA CERVEJEIRA": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      2
+    ],
+    "ZIG*MINEIRAO 2025 CA": [
+      "compras e lazer",
+      "festas e encontros",
+      1
+    ],
+    "ZIG*MINEIRAO CAMPEON": [
+      "compras e lazer",
+      "festas e encontros",
+      1
+    ],
+    "ZP *CORRERIA TREIN": [
+      "saúde e bem-estar",
+      "academia e fitness",
+      3
+    ],
+    "ZP*HARD SOLUCOES E SER": [
+      "compras e lazer",
+      "festas e encontros",
+      2
+    ]
+  },
+  "rulesPrefix": {
+    "99": [
+      "transporte",
+      "aplicativos de mobilidade",
+      9
+    ],
+    "AIRBNB": [
+      "viagem",
+      "hospedagem",
+      1
+    ],
+    "AMAZON MKTPL": [
+      "viagem",
+      "passeios e lazer",
+      2
+    ],
+    "ASA": [
+      "saúde e bem-estar",
+      "academia e fitness",
+      1
+    ],
+    "AZUL WE": [
+      "viagem",
+      "passagens e transporte",
+      3
+    ],
+    "CAPPTA": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      3
+    ],
+    "CASAR": [
+      "compras e lazer",
+      "presentes",
+      1
+    ],
+    "CONECTC": [
+      "transporte",
+      "estacionamento e pedágio",
+      7
+    ],
+    "DL": [
+      "assinaturas",
+      "Linkedin",
+      13
+    ],
+    "DM": [
+      "compras e lazer",
+      "eletrônicos",
+      9
+    ],
+    "DROGARIA ARA": [
+      "saúde e bem-estar",
+      "Enrico",
+      2
+    ],
+    "EC": [
+      "assinaturas",
+      "Meli",
+      1
+    ],
+    "IFOOD": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "MAGALU": [
+      "saúde e bem-estar",
+      "Enrico",
+      8
+    ],
+    "MARINA MARIZ": [
+      "saúde e bem-estar",
+      "Enrico",
+      3
+    ],
+    "MEP": [
+      "compras e lazer",
+      "festas e encontros",
+      1
+    ],
+    "MICROSOFT": [
+      "assinaturas",
+      "Microsoft",
+      3
+    ],
+    "MLP": [
+      "compras e lazer",
+      "presentes",
+      1
+    ],
+    "MTA": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "OMNY VENDING": [
+      "viagem",
+      "passagens e transporte",
+      2
+    ],
+    "PAYU": [
+      "compras e lazer",
+      "esportes e equipamentos",
+      1
+    ],
+    "PDV": [
+      "alimentação",
+      "supermercado",
+      1
+    ],
+    "PPRO": [
+      "assinaturas",
+      "Microsoft",
+      1
+    ],
+    "PRUDENT": [
+      "seguros",
+      "seguro de vida",
+      15
+    ],
+    "PRUDENTIAL D": [
+      "seguros",
+      "seguro de vida",
+      1
+    ],
+    "RESTAURANTE": [
+      "alimentação",
+      "Alimentação Trabalho",
+      1
+    ],
+    "STARK": [
+      "transporte",
+      "estacionamento e pedágio",
+      1
+    ],
+    "TAGITAU": [
+      "compras e lazer",
+      "Restaurante ou Delivery",
+      1
+    ],
+    "TM": [
+      "viagem",
+      "passeios e lazer",
+      1
+    ],
+    "TST": [
+      "viagem",
+      "alimentação em viagem",
+      2
+    ],
+    "UBER": [
+      "transporte",
+      "aplicativos de mobilidade",
+      19
+    ],
+    "VINDI": [
+      "assinaturas",
+      "investidor10",
+      9
+    ],
+    "ZP": [
+      "saúde e bem-estar",
+      "academia e fitness",
+      3
+    ]
+  }
+}
