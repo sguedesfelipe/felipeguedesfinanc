@@ -79,15 +79,25 @@ npm run report -- --months=12 --out=meus-relatorios
 Os arquivos sao gravados em `reports/<data-de-hoje>/`:
 
 - `relatorio-gastos.html` — dashboard com abas: Resumo, Categorias,
-  Transacoes e Pendencias de Classificacao. As abas Categorias/Transacoes/
-  Pendencias sao editaveis: alterar a Categoria/Subcategoria de qualquer
-  linha recalcula os totais por categoria na hora, direto no navegador (sem
-  precisar de servidor). Essas edicoes valem so nessa pagina aberta — para
-  valerem no proximo `npm run report`, repita a mesma classificacao na
-  planilha `.xlsx`.
+  Transacoes e Pendencias de Classificacao.
+  - Tem um **filtro de periodo** (De/Ate) no topo, valido para as 4 abas —
+    KPIs, graficos e as tabelas de Transacoes/Pendencias sao recalculados na
+    hora para o intervalo escolhido, sem precisar de servidor.
+  - As abas Categorias/Transacoes/Pendencias sao editaveis: alterar a
+    Categoria/Subcategoria de qualquer linha recalcula os totais por
+    categoria na hora.
+  - A aba Transacoes traz todos os dados que o Pluggy devolveu para cada
+    lancamento (quando o banco/cartao os fornece): descricao original do
+    banco, estabelecimento (nome/CNPJ/CNAE), pagador/recebedor de
+    PIX/boleto (nome + CPF ou CNPJ), forma de pagamento, parcela e valor
+    total da compra, cartao (4 ultimos digitos), MCC, data da compra,
+    status no banco e saldo apos a transacao.
+  - Essas edicoes e o filtro valem so nessa pagina aberta — para valerem no
+    proximo `npm run report`, repita a mesma classificacao na planilha
+    `.xlsx`.
 - `relatorio-gastos.xlsx` — planilha com abas de Resumo, Resumo Mensal,
-  Categorias, Maiores Gastos, Contas, a lista completa de Transacoes e
-  Pendencias de Classificacao.
+  Categorias, Maiores Gastos, Contas, a lista completa de Transacoes (com as
+  mesmas colunas extras do dashboard) e Pendencias de Classificacao.
 
 ## Como os gastos sao calculados
 

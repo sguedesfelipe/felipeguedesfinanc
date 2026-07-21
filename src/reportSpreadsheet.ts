@@ -129,6 +129,21 @@ export async function writeSpreadsheet(report: Report, filePath: string): Promis
     { header: 'Subcategoria', key: 'subcategoria', width: 26 },
     { header: 'Pendente de revisao?', key: 'pendente', width: 18 },
     { header: 'Categoria do banco', key: 'bankCategory', width: 22 },
+    { header: 'Descricao original do banco', key: 'descriptionRaw', width: 34 },
+    { header: 'Estabelecimento', key: 'merchantName', width: 30 },
+    { header: 'CNPJ do estabelecimento', key: 'merchantCnpj', width: 20 },
+    { header: 'CNAE', key: 'merchantCnae', width: 12 },
+    { header: 'Pagador', key: 'payer', width: 34 },
+    { header: 'Recebedor', key: 'receiver', width: 34 },
+    { header: 'Forma de pagamento', key: 'paymentMethod', width: 18 },
+    { header: 'Tipo de operacao', key: 'operationType', width: 22 },
+    { header: 'Parcela', key: 'installment', width: 10 },
+    { header: 'Valor total da compra', key: 'installmentTotalAmount', width: 18 },
+    { header: 'Cartao (final)', key: 'cardLastDigits', width: 14 },
+    { header: 'MCC', key: 'payeeMCC', width: 10 },
+    { header: 'Data da compra', key: 'purchaseDate', width: 14 },
+    { header: 'Status (banco)', key: 'statusBanco', width: 14 },
+    { header: 'Saldo apos', key: 'balanceAfter', width: 16 },
     { header: 'Tipo', key: 'kind', width: 12 },
     { header: 'Valor', key: 'amount', width: 16 },
   ];
@@ -141,12 +156,30 @@ export async function writeSpreadsheet(report: Report, filePath: string): Promis
       subcategoria: t.subcategoria,
       pendente: t.pendente ? 'Sim' : '',
       bankCategory: t.bankCategory,
+      descriptionRaw: t.descriptionRaw,
+      merchantName: t.merchantName,
+      merchantCnpj: t.merchantCnpj,
+      merchantCnae: t.merchantCnae,
+      payer: t.payer,
+      receiver: t.receiver,
+      paymentMethod: t.paymentMethod,
+      operationType: t.operationType,
+      installment: t.installment,
+      installmentTotalAmount: t.installmentTotalAmount,
+      cardLastDigits: t.cardLastDigits,
+      payeeMCC: t.payeeMCC,
+      purchaseDate: t.purchaseDate,
+      statusBanco: t.statusBanco,
+      balanceAfter: t.balanceAfter,
       kind: t.isExpense ? 'Gasto' : 'Receita',
       amount: t.amount,
     });
   }
   transacoes.getColumn('date').numFmt = 'dd/mm/yyyy';
+  transacoes.getColumn('purchaseDate').numFmt = 'dd/mm/yyyy';
   transacoes.getColumn('amount').numFmt = BRL;
+  transacoes.getColumn('installmentTotalAmount').numFmt = BRL;
+  transacoes.getColumn('balanceAfter').numFmt = BRL;
   transacoes.getRow(1).font = { bold: true };
   applyClassificationDropdowns(transacoes, categoriasRange, subcategoriasRange);
 

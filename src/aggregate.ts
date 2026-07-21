@@ -1,8 +1,60 @@
-import { Account, Transaction } from 'pluggy-sdk';
+import { Account, Transaction, TransactionPaymentParticipantDocument } from 'pluggy-sdk';
 import { AccountTransactions } from './fetchData.js';
 import { classifyTransaction, Confianca } from './classify.js';
 
-export interface CategorizedTransaction {
+function formatParticipant(name: string | null | undefined, doc: TransactionPaymentParticipantDocument | undefined): string {
+  const parts = [name?.trim()].filter(Boolean) as string[];
+  if (doc?.value) parts.push(`${doc.type ?? 'doc'}: ${doc.value}`);
+  return parts.join(' — ');
+}
+
+// Todos os campos extras que o Pluggy pode trazer por transacao, alem do que
+// ja usamos para classificar/agregar. Nem todo banco/conector preenche tudo
+// (ex.: "merchant" costuma vir vazio em transacoes de conta corrente) — os
+// campos ficam string vazia quando o Pluggy nao devolveu o dado.
+export interface TransactionExtra {
+  descriptionRaw: string;
+  statusBanco: string;
+  operationType: string;
+  merchantName: string;
+  merchantCnpj: string;
+  merchantCnae: string;
+  payer: string;
+  receiver: string;
+  paymentMethod: string;
+  cardLastDigits: string;
+  installment: string;
+  installmentTotalAmount: number | null;
+  payeeMCC: string;
+  purchaseDate: Date | null;
+  balanceAfter: number | null;
+}
+
+function extractExtra(tx: Transaction): TransactionExtra {
+  const merchant = tx.merchant;
+  const cc = tx.creditCardMetadata;
+  const payment = tx.paymentData;
+
+  return {
+    descriptionRaw: tx.descriptionRaw && tx.descriptionRaw !== tx.description ? tx.descriptionRaw : '',
+    statusBanco: tx.status ?? '',
+    operationType: [tx.operationType, tx.operationTypeAdditionalInfo].filter(Boolean).join(' — '),
+    merchantName: merchant?.businessName || merchant?.name || '',
+    merchantCnpj: merchant?.cnpj ?? '',
+    merchantCnae: merchant?.cnae ?? '',
+    payer: payment?.payer ? formatParticipant(payment.payer.name, payment.payer.documentNumber) : '',
+    receiver: payment?.receiver ? formatParticipant(payment.receiver.name, payment.receiver.documentNumber) : '',
+    paymentMethod: payment?.paymentMethod ?? '',
+    cardLastDigits: cc?.cardNumber ?? '',
+    installment: cc?.installmentNumber && cc?.totalInstallments ? `${cc.installmentNumber}/${cc.totalInstallments}` : '',
+    installmentTotalAmount: cc?.totalAmount ?? null,
+    payeeMCC: cc?.payeeMCC ? String(cc.payeeMCC) : '',
+    purchaseDate: cc?.purchaseDate ? new Date(cc.purchaseDate) : null,
+    balanceAfter: tx.balance ?? null,
+  };
+}
+
+export interface CategorizedTransaction extends TransactionExtra {
   accountId: string;
   accountName: string;
   date: Date;
@@ -85,6 +137,7 @@ export function buildReport(data: AccountTransactions[]): Report {
       const classification = classifyTransaction(tx.description, tx.category ?? null);
 
       transactions.push({
+        ...extractExtra(tx),
         accountId: account.id,
         accountName: account.name,
         date,
