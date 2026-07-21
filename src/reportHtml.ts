@@ -431,6 +431,39 @@ function clientScript(): string {
     renderTable('pendencias-table');
   });
 
+  // --- exportar aba Transacoes para .csv (abre direto no Excel/Sheets) ---
+  function csvEscape(value) {
+    const s = String(value ?? '');
+    return /[",\\n;]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }
+
+  function csvValue(col, row) {
+    const v = col.value(row);
+    if ((col.type === 'currency' || col.type === 'number') && typeof v === 'number') {
+      return String(v).replace('.', ',');
+    }
+    return v;
+  }
+
+  function exportTransacoesCsv() {
+    const rows = getFiltered();
+    const lines = [TX_COLUMNS.map((c) => csvEscape(c.label)).join(';')];
+    for (const t of rows) {
+      lines.push(TX_COLUMNS.map((c) => csvEscape(csvValue(c, t))).join(';'));
+    }
+    const csv = '﻿' + lines.join('\\r\\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'transacoes-' + fromInput.value + '_a_' + toInput.value + '.csv';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+  document.getElementById('export-transacoes').addEventListener('click', exportTransacoesCsv);
+
   function renderAll() {
     const filtered = getFiltered();
     renderResumo(filtered);
@@ -653,6 +686,22 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
   }
   .btn-revisado:hover { background: var(--series-1-soft); }
 
+  .transacoes-toolbar { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
+  .btn-export {
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 14px;
+    border: 1px solid var(--series-1);
+    border-radius: 6px;
+    background: var(--series-1);
+    color: #fff;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .btn-export:hover { opacity: 0.9; }
+
   footer { color: var(--text-muted); font-size: 12px; margin-top: 40px; }
 </style>
 </head>
@@ -742,7 +791,10 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
 
     <div id="tab-transacoes" class="tab-panel">
       <section class="card">
-        <p class="subtitle">Clique num cabecalho pra ordenar, digite no campo abaixo dele pra filtrar. Edite Categoria/Subcategoria/Valido direto na tabela — os totais das outras abas se ajustam sozinhos. Todos os dados que o Pluggy devolveu para cada lancamento estao aqui (quando o banco/cartao os fornece).</p>
+        <div class="transacoes-toolbar">
+          <p class="subtitle" style="margin:0;">Clique num cabecalho pra ordenar, digite no campo abaixo dele pra filtrar. Edite Categoria/Subcategoria/Valido direto na tabela — os totais das outras abas se ajustam sozinhos. Todos os dados que o Pluggy devolveu para cada lancamento estao aqui (quando o banco/cartao os fornece).</p>
+          <button type="button" id="export-transacoes" class="btn-export">Exportar CSV</button>
+        </div>
         <div class="table-scroll">
           <table class="data-table" id="transacoes-table">
             <thead></thead>

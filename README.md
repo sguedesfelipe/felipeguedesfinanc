@@ -98,9 +98,14 @@ Os arquivos sao gravados em `reports/<data-de-hoje>/`:
     PIX/boleto (nome + CPF ou CNPJ), forma de pagamento, parcela e valor
     total da compra, cartao (4 ultimos digitos), MCC, data da compra,
     status no banco e saldo apos a transacao.
+  - A aba Transacoes tem um botao **"Exportar CSV"** que baixa a tabela
+    inteira (respeitando o filtro de periodo, com as edicoes que voce ja fez
+    na tela) num arquivo `.csv` pronto pra abrir no Excel/Google Sheets —
+    mais facil de revisar em lote do que clicar linha por linha na pagina.
   - Essas edicoes, o filtro de periodo e os filtros/ordenacao de coluna
     valem so nessa pagina aberta — para valerem no proximo `npm run
-    report`, repita a mesma classificacao na planilha `.xlsx`.
+    report`, repita a mesma classificacao na planilha `.xlsx` (ou exporte o
+    CSV, ajuste e mande de volta).
 - `relatorio-gastos.xlsx` — planilha com abas de Resumo, Resumo Mensal,
   Categorias, Maiores Gastos, Contas, a lista completa de Transacoes (com as
   mesmas colunas extras do dashboard, incluindo ID e Valido) e Pendencias de
