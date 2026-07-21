@@ -80,24 +80,32 @@ Os arquivos sao gravados em `reports/<data-de-hoje>/`:
 
 - `relatorio-gastos.html` — dashboard com abas: Resumo, Categorias,
   Transacoes e Pendencias de Classificacao.
-  - Tem um **filtro de periodo** (De/Ate) no topo, valido para as 4 abas —
-    KPIs, graficos e as tabelas de Transacoes/Pendencias sao recalculados na
-    hora para o intervalo escolhido, sem precisar de servidor.
+  - Tem um **filtro de periodo** (De/Ate) no topo, valido para as 5 tabelas
+    do relatorio (Maiores Gastos, Contas, Categorias, Transacoes e
+    Pendencias) — KPIs, graficos e tabelas sao recalculados na hora para o
+    intervalo escolhido, sem precisar de servidor.
+  - **Cada cabecalho de coluna funciona como ordenador e filtro**: clique no
+    nome da coluna pra ordenar (crescente/decrescente, alternando a cada
+    clique), digite no campinho abaixo do nome pra filtrar por aquele valor.
+  - Cada transacao tem um **ID** (o id que o Pluggy atribui; se algum dia
+    vier vazio, um id proprio e gerado a partir da data + um sufixo
+    aleatorio).
   - As abas Categorias/Transacoes/Pendencias sao editaveis: alterar a
-    Categoria/Subcategoria de qualquer linha recalcula os totais por
-    categoria na hora.
+    Categoria/Subcategoria de qualquer linha recalcula os totais na hora.
   - A aba Transacoes traz todos os dados que o Pluggy devolveu para cada
     lancamento (quando o banco/cartao os fornece): descricao original do
     banco, estabelecimento (nome/CNPJ/CNAE), pagador/recebedor de
     PIX/boleto (nome + CPF ou CNPJ), forma de pagamento, parcela e valor
     total da compra, cartao (4 ultimos digitos), MCC, data da compra,
     status no banco e saldo apos a transacao.
-  - Essas edicoes e o filtro valem so nessa pagina aberta — para valerem no
-    proximo `npm run report`, repita a mesma classificacao na planilha
-    `.xlsx`.
+  - Essas edicoes, o filtro de periodo e os filtros/ordenacao de coluna
+    valem so nessa pagina aberta — para valerem no proximo `npm run
+    report`, repita a mesma classificacao na planilha `.xlsx`.
 - `relatorio-gastos.xlsx` — planilha com abas de Resumo, Resumo Mensal,
   Categorias, Maiores Gastos, Contas, a lista completa de Transacoes (com as
-  mesmas colunas extras do dashboard) e Pendencias de Classificacao.
+  mesmas colunas extras do dashboard, incluindo ID e Valido) e Pendencias de
+  Classificacao. As abas de tabela tem os **filtros nativos do Excel**
+  habilitados no cabecalho (ordenar e filtrar por qualquer coluna).
 
 ## Como os gastos sao calculados
 
@@ -138,12 +146,25 @@ As regras de classificacao (taxonomia + historico de estabelecimentos ja
 classificados) ficam em `data/despesas-classificacao.json`, gerado uma vez a
 partir da planilha pessoal do usuario.
 
-**Limitacao conhecida:** se voce paga a fatura do cartao pela mesma conta
-corrente conectada, essa transferencia aparece duas vezes nos dados brutos —
-como gasto (`DEBIT`) na conta corrente e como receita (`CREDIT`) no cartao.
-O relatorio atual nao tenta casar/anular transferencias entre contas prorias;
-se isso distorcer muito os totais, e possivel filtrar essas transacoes na aba
-"Transacoes" da planilha.
+## Coluna "Valido" (evita contar a fatura do cartao 2x)
+
+Quando voce paga a fatura do cartao pela mesma conta corrente conectada, o
+Pluggy traz essa transferencia duas vezes: como gasto (boleto/pix) na conta
+corrente e como "Credit card payment" (credito) na conta do cartao. Como os
+gastos individuais do cartao ja entram no relatorio um a um, contar essa
+fatura de novo dobraria o total.
+
+`src/aggregate.ts` detecta esse caso automaticamente e marca as duas pontas
+como **invalidas** (coluna `Valido?` = Nao): tudo que tem a categoria do
+banco "Credit card payment", e qualquer debito de conta corrente cujo valor e
+data batam com um desses pagamentos recebidos no cartao (janela de 5 dias).
+Transacoes invalidas continuam visiveis na aba Transacoes/no dashboard, mas
+nao entram nos totais, nas Categorias, no Resumo Mensal nem em Maiores
+Gastos.
+
+Voce tem controle total: a coluna `Valido?` e editavel (dropdown Sim/Nao no
+Excel, checkbox no dashboard) — se a deteccao errar em algum caso especifico,
+so mudar o valor manualmente. O motivo da invalidacao fica na coluna ao lado.
 
 ## Estrutura
 

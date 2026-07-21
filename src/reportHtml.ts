@@ -3,6 +3,7 @@ import { CATEGORIAS, SUBCATEGORIAS } from './classify.js';
 
 interface ClientTransaction {
   id: number;
+  transactionId: string;
   dateISO: string;
   dateLabel: string;
   month: string;
@@ -29,6 +30,8 @@ interface ClientTransaction {
   balanceAfter: number | null;
   pendente: boolean;
   motivo: string;
+  valido: boolean;
+  motivoInvalido: string;
   isExpense: boolean;
   amount: number;
 }
@@ -40,6 +43,7 @@ function monthKey(date: Date): string {
 function toClientTransactions(report: Report): ClientTransaction[] {
   return report.transactions.map((t, id) => ({
     id,
+    transactionId: t.transactionId,
     dateISO: t.date.toISOString().slice(0, 10),
     dateLabel: t.date.toLocaleDateString('pt-BR'),
     month: monthKey(t.date),
@@ -66,6 +70,8 @@ function toClientTransactions(report: Report): ClientTransaction[] {
     balanceAfter: t.balanceAfter,
     pendente: t.pendente,
     motivo: t.motivoClassificacao,
+    valido: t.valido,
+    motivoInvalido: t.motivoInvalido,
     isExpense: t.isExpense,
     amount: t.amount,
   }));
@@ -96,7 +102,7 @@ function clientScript(): string {
   const MONTH_NAMES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
   const monthLabel = (m) => { const [y, mm] = m.split('-'); return MONTH_NAMES[Number(mm) - 1] + '/' + y.slice(2); };
 
-  // --- filtro de periodo, valido para as 4 abas ---
+  // --- filtro de periodo, valido para as 5 tabelas ---
   const allDates = state.map((t) => t.dateISO).sort();
   const minDate = allDates[0];
   const maxDate = allDates[allDates.length - 1];
@@ -113,55 +119,97 @@ function clientScript(): string {
     return state.filter((t) => t.dateISO >= from && t.dateISO <= to);
   }
 
+  function findTransaction(id) {
+    return state.find((t) => t.id === Number(id));
+  }
+
   function datalistOptions(id, values) {
     return '<datalist id="' + id + '">' + values.map((v) => '<option value="' + esc(v) + '"></option>').join('') + '</datalist>';
   }
   document.getElementById('datalists').innerHTML =
     datalistOptions('categorias-list', DATA.categorias) + datalistOptions('subcategorias-list', DATA.subcategorias);
 
-  function classificationInputs(t) {
-    return (
-      '<input class="cls-input" list="categorias-list" data-id="' + t.id + '" data-field="categoria" value="' + esc(t.categoria) + '" placeholder="Categoria">' +
-      '<input class="cls-input" list="subcategorias-list" data-id="' + t.id + '" data-field="subcategoria" value="' + esc(t.subcategoria) + '" placeholder="Subcategoria">'
-    );
+  function classificationInput(t, field) {
+    const list = field === 'categoria' ? 'categorias-list' : 'subcategorias-list';
+    return '<input class="cls-input" list="' + list + '" data-id="' + t.id + '" data-field="' + field + '" value="' + esc(t[field]) + '">';
   }
 
-  // --- aba Resumo ---
-  function renderResumo(filtered) {
+  function validoCheckbox(t) {
+    return '<input type="checkbox" class="valido-input" data-id="' + t.id + '"' + (t.valido ? ' checked' : '') + '>';
+  }
+
+  // --- agregacoes (so consideram transacoes com valido=true) ---
+  function computeTotals(filtered) {
+    const validas = filtered.filter((t) => t.valido);
     let expenses = 0, income = 0;
-    const monthly = new Map();
-    const merchants = new Map();
-    const accountExpenses = new Map();
+    for (const t of validas) { if (t.isExpense) expenses += t.amount; else income += t.amount; }
+    return {
+      expenses, income, net: income - expenses,
+      count: validas.length,
+      pendentes: validas.filter((t) => t.pendente).length,
+    };
+  }
+
+  function computeMonthly(filtered) {
+    const map = new Map();
     for (const t of filtered) {
-      const me = monthly.get(t.month) || { month: t.month, expenses: 0, income: 0 };
-      if (t.isExpense) {
-        expenses += t.amount;
-        me.expenses += t.amount;
-        accountExpenses.set(t.accountId, (accountExpenses.get(t.accountId) || 0) + t.amount);
-        const me2 = merchants.get(t.description) || { description: t.description, total: 0, count: 0 };
-        me2.total += t.amount;
-        me2.count += 1;
-        merchants.set(t.description, me2);
-      } else {
-        income += t.amount;
-        me.income += t.amount;
-      }
-      monthly.set(t.month, me);
+      if (!t.valido) continue;
+      const m = map.get(t.month) || { month: t.month, expenses: 0, income: 0 };
+      if (t.isExpense) m.expenses += t.amount; else m.income += t.amount;
+      map.set(t.month, m);
     }
-    const pendentes = filtered.filter((t) => t.pendente).length;
+    return [...map.values()].sort((a, b) => a.month.localeCompare(b.month));
+  }
 
-    document.getElementById('kpi-expenses').textContent = brl(expenses);
-    document.getElementById('kpi-income').textContent = brl(income);
+  function computeCategorias(filtered) {
+    const map = new Map();
+    for (const t of filtered) {
+      if (!t.valido || !t.isExpense) continue;
+      const key = t.categoria || '(sem categoria)';
+      const entry = map.get(key) || { category: key, total: 0, count: 0 };
+      entry.total += t.amount;
+      entry.count += 1;
+      map.set(key, entry);
+    }
+    return [...map.values()].sort((a, b) => b.total - a.total);
+  }
+
+  function computeMerchants(filtered) {
+    const map = new Map();
+    for (const t of filtered) {
+      if (!t.valido || !t.isExpense) continue;
+      const entry = map.get(t.description) || { description: t.description, total: 0, count: 0 };
+      entry.total += t.amount;
+      entry.count += 1;
+      map.set(t.description, entry);
+    }
+    return [...map.values()].sort((a, b) => b.total - a.total).slice(0, 15);
+  }
+
+  function computeAccounts(filtered) {
+    const byAccount = new Map();
+    for (const t of filtered) {
+      if (!t.valido || !t.isExpense) continue;
+      byAccount.set(t.accountId, (byAccount.get(t.accountId) || 0) + t.amount);
+    }
+    return DATA.accounts.map((a) => ({ ...a, totalExpenses: byAccount.get(a.id) || 0 }));
+  }
+
+  // --- aba Resumo: KPIs + grafico mensal (as 5 tabelas ficam em renderTable) ---
+  function renderResumo(filtered) {
+    const totals = computeTotals(filtered);
+    document.getElementById('kpi-expenses').textContent = brl(totals.expenses);
+    document.getElementById('kpi-income').textContent = brl(totals.income);
     const netEl = document.getElementById('kpi-net');
-    netEl.textContent = brl(income - expenses);
-    netEl.classList.toggle('net-positive', income - expenses >= 0);
-    document.getElementById('kpi-count').textContent = filtered.length;
+    netEl.textContent = brl(totals.net);
+    netEl.classList.toggle('net-positive', totals.net >= 0);
+    document.getElementById('kpi-count').textContent = totals.count;
     const pendEl = document.getElementById('kpi-pendentes');
-    pendEl.textContent = pendentes;
-    pendEl.classList.toggle('net-negative', pendentes > 0);
-    document.getElementById('pend-tab-count').textContent = pendentes;
+    pendEl.textContent = totals.pendentes;
+    pendEl.classList.toggle('net-negative', totals.pendentes > 0);
+    document.getElementById('pend-tab-count').textContent = totals.pendentes;
 
-    const months = [...monthly.values()].sort((a, b) => a.month.localeCompare(b.month));
+    const months = computeMonthly(filtered);
     const max = Math.max(1, ...months.map((m) => m.expenses));
     document.getElementById('monthly-chart').innerHTML =
       '<div class="bar-chart">' +
@@ -175,107 +223,218 @@ function clientScript(): string {
         .join('') +
       '</div>';
 
-    const topMerchants = [...merchants.values()].sort((a, b) => b.total - a.total).slice(0, 15);
-    document.querySelector('#merchants-table tbody').innerHTML = topMerchants
-      .map((m) => '<tr><td>' + esc(m.description) + '</td><td class="num">' + m.count + '</td><td class="num">' + brl(m.total) + '</td></tr>')
-      .join('');
-
-    document.querySelector('#accounts-table tbody').innerHTML = DATA.accounts
-      .map(
-        (a) =>
-          '<tr><td>' + esc(a.name) + '</td><td>' + (a.type === 'CREDIT' ? 'Cartao de credito' : 'Conta') + '</td><td class="num">' +
-          brl(a.balance) + '</td><td class="num">' + brl(accountExpenses.get(a.id) || 0) + '</td></tr>'
-      )
-      .join('');
+    renderCategoriasChart(filtered);
   }
 
-  // --- aba Categorias ---
-  function computeCategorias(filtered) {
-    const map = new Map();
-    for (const t of filtered) {
-      if (!t.isExpense) continue;
-      const key = t.categoria || '(sem categoria)';
-      const entry = map.get(key) || { category: key, total: 0, count: 0 };
-      entry.total += t.amount;
-      entry.count += 1;
-      map.set(key, entry);
-    }
-    return [...map.values()].sort((a, b) => b.total - a.total);
-  }
-
-  function renderCategorias(filtered) {
+  function renderCategoriasChart(filtered) {
     const categorias = computeCategorias(filtered);
-    const max = Math.max(1, ...categorias.map((c) => c.total));
+    const catMax = Math.max(1, ...categorias.map((c) => c.total));
     document.getElementById('categorias-chart').innerHTML =
       '<div class="hbar-chart">' +
       categorias
         .map(
           (c) =>
             '<div class="hbar-row"><div class="hbar-label">' + esc(c.category) + '</div><div class="hbar-track"><div class="hbar-fill" style="width:' +
-            Math.max(2, Math.round((c.total / max) * 100)) + '%" title="' + esc(c.category) + ': ' + brl(c.total) + '"></div></div><div class="hbar-value">' +
+            Math.max(2, Math.round((c.total / catMax) * 100)) + '%" title="' + esc(c.category) + ': ' + brl(c.total) + '"></div></div><div class="hbar-value">' +
             brl(c.total) + '</div></div>'
         )
         .join('') +
       '</div>';
-    document.querySelector('#categorias-table tbody').innerHTML = categorias
-      .map((c) => '<tr><td>' + esc(c.category) + '</td><td class="num">' + brl(c.total) + '</td><td class="num">' + c.count + '</td></tr>')
+  }
+
+  // --- tabelas genericas: cabecalho clicavel pra ordenar + filtro por coluna ---
+  const TX_COLUMNS = [
+    { key: 'transactionId', label: 'ID', value: (t) => t.transactionId },
+    { key: 'dateISO', label: 'Data', value: (t) => t.dateISO, render: (t) => t.dateLabel },
+    { key: 'account', label: 'Conta', value: (t) => t.account },
+    { key: 'description', label: 'Descricao', value: (t) => t.description },
+    { key: 'categoria', label: 'Categoria', value: (t) => t.categoria, render: (t) => classificationInput(t, 'categoria') },
+    { key: 'subcategoria', label: 'Subcategoria', value: (t) => t.subcategoria, render: (t) => classificationInput(t, 'subcategoria') },
+    { key: 'pendente', label: 'Pendente', value: (t) => (t.pendente ? 'Sim' : 'Nao'), render: (t) => (t.pendente ? '<span class="badge-pend">pendente</span>' : '') },
+    { key: 'valido', label: 'Valido?', value: (t) => (t.valido ? 'Sim' : 'Nao'), render: (t) => validoCheckbox(t) },
+    { key: 'motivoInvalido', label: 'Motivo (invalido)', value: (t) => t.motivoInvalido },
+    { key: 'bankCategory', label: 'Categoria do banco', value: (t) => t.bankCategory },
+    { key: 'descriptionRaw', label: 'Descricao original do banco', value: (t) => t.descriptionRaw },
+    { key: 'merchantName', label: 'Estabelecimento', value: (t) => t.merchantName },
+    { key: 'merchantCnpj', label: 'CNPJ do estabelecimento', value: (t) => t.merchantCnpj },
+    { key: 'merchantCnae', label: 'CNAE', value: (t) => t.merchantCnae },
+    { key: 'payer', label: 'Pagador', value: (t) => t.payer },
+    { key: 'receiver', label: 'Recebedor', value: (t) => t.receiver },
+    { key: 'paymentMethod', label: 'Forma de pagamento', value: (t) => t.paymentMethod },
+    { key: 'operationType', label: 'Tipo de operacao', value: (t) => t.operationType },
+    { key: 'installment', label: 'Parcela', value: (t) => t.installment },
+    { key: 'installmentTotalAmount', label: 'Valor total da compra', value: (t) => t.installmentTotalAmount, type: 'currency' },
+    { key: 'cardLastDigits', label: 'Cartao (final)', value: (t) => t.cardLastDigits },
+    { key: 'payeeMCC', label: 'MCC', value: (t) => t.payeeMCC },
+    { key: 'purchaseDateLabel', label: 'Data da compra', value: (t) => t.purchaseDateLabel },
+    { key: 'statusBanco', label: 'Status (banco)', value: (t) => t.statusBanco },
+    { key: 'balanceAfter', label: 'Saldo apos', value: (t) => t.balanceAfter, type: 'currency' },
+    { key: 'isExpense', label: 'Tipo', value: (t) => (t.isExpense ? 'Gasto' : 'Receita') },
+    { key: 'amount', label: 'Valor', value: (t) => t.amount, type: 'currency' },
+  ];
+  const PEND_COLUMNS = TX_COLUMNS.concat([
+    { key: 'motivo', label: 'Motivo da pendencia', value: (t) => t.motivo },
+    { key: '_acao', label: '', value: () => '', render: (t) => '<button type="button" class="btn-revisado" data-id="' + t.id + '">Marcar como revisado</button>', noSort: true, noFilter: true },
+  ]);
+  const CAT_COLUMNS = [
+    { key: 'category', label: 'Categoria', value: (c) => c.category },
+    { key: 'total', label: 'Total gasto', value: (c) => c.total, type: 'currency' },
+    { key: 'count', label: 'Qtde.', value: (c) => c.count, type: 'number' },
+  ];
+  const MERCHANT_COLUMNS = [
+    { key: 'description', label: 'Descricao', value: (m) => m.description },
+    { key: 'count', label: 'Qtde.', value: (m) => m.count, type: 'number' },
+    { key: 'total', label: 'Total', value: (m) => m.total, type: 'currency' },
+  ];
+  const ACCOUNT_COLUMNS = [
+    { key: 'name', label: 'Conta', value: (a) => a.name },
+    { key: 'typeLabel', label: 'Tipo', value: (a) => (a.type === 'CREDIT' ? 'Cartao de credito' : 'Conta') },
+    { key: 'balance', label: 'Saldo atual', value: (a) => a.balance, type: 'currency' },
+    { key: 'totalExpenses', label: 'Gasto no periodo', value: (a) => a.totalExpenses, type: 'currency' },
+  ];
+
+  const TABLE_DEFS = {
+    'transacoes-table': { columns: TX_COLUMNS, rows: () => getFiltered(), rowId: (t) => t.id },
+    'pendencias-table': { columns: PEND_COLUMNS, rows: () => getFiltered().filter((t) => t.pendente && t.valido), rowId: (t) => t.id },
+    'categorias-table': { columns: CAT_COLUMNS, rows: () => computeCategorias(getFiltered()) },
+    'merchants-table': { columns: MERCHANT_COLUMNS, rows: () => computeMerchants(getFiltered()) },
+    'accounts-table': { columns: ACCOUNT_COLUMNS, rows: () => computeAccounts(getFiltered()) },
+  };
+  const tableStates = {};
+
+  function defaultCellContent(col, row) {
+    const v = col.value(row);
+    return col.type === 'currency' ? (v == null ? '' : brl(v)) : esc(v);
+  }
+
+  function cellHtml(col, row) {
+    const content = col.render ? col.render(row) : defaultCellContent(col, row);
+    const cls = col.type === 'currency' || col.type === 'number' ? ' class="num"' : '';
+    return '<td' + cls + '>' + content + '</td>';
+  }
+
+  function compareRows(a, b, col) {
+    const av = col.value(a);
+    const bv = col.value(b);
+    if (col.type === 'currency' || col.type === 'number') return (av ?? -Infinity) - (bv ?? -Infinity);
+    return String(av ?? '').localeCompare(String(bv ?? ''), 'pt-BR');
+  }
+
+  function buildHeaderHtml(tableId, columns) {
+    const state = tableStates[tableId];
+    return (
+      '<tr>' +
+      columns
+        .map((c) => {
+          const arrow = state.sortKey === c.key ? (state.sortDir === 1 ? ' ▲' : ' ▼') : '';
+          const sortAttr = c.noSort ? '' : ' data-sort-key="' + c.key + '" data-table="' + tableId + '"';
+          const filterHtml = c.noFilter
+            ? ''
+            : '<br><input type="text" class="col-filter" data-table="' + tableId + '" data-filter-key="' + c.key + '" placeholder="filtrar...">';
+          return '<th' + sortAttr + (c.noSort ? '' : ' class="sortable"') + '>' + esc(c.label) + arrow + filterHtml + '</th>';
+        })
+        .join('') +
+      '</tr>'
+    );
+  }
+
+  function initTable(tableId) {
+    tableStates[tableId] = { sortKey: null, sortDir: 1, filters: {} };
+    document.querySelector('#' + tableId + ' thead').innerHTML = buildHeaderHtml(tableId, TABLE_DEFS[tableId].columns);
+  }
+
+  function renderTable(tableId) {
+    const def = TABLE_DEFS[tableId];
+    const state = tableStates[tableId];
+    let rows = def.rows();
+
+    const activeFilters = Object.entries(state.filters).filter(([, v]) => v);
+    if (activeFilters.length > 0) {
+      rows = rows.filter((row) =>
+        activeFilters.every(([key, needle]) => {
+          const col = def.columns.find((c) => c.key === key);
+          return String(col.value(row) ?? '').toLowerCase().includes(needle.toLowerCase());
+        })
+      );
+    }
+    if (state.sortKey) {
+      const col = def.columns.find((c) => c.key === state.sortKey);
+      rows = [...rows].sort((a, b) => state.sortDir * compareRows(a, b, col));
+    }
+
+    document.querySelector('#' + tableId + ' tbody').innerHTML = rows
+      .map((row) => {
+        const idAttr = def.rowId ? ' data-row-id="' + def.rowId(row) + '"' : '';
+        return '<tr' + idAttr + '>' + def.columns.map((c) => cellHtml(c, row)).join('') + '</tr>';
+      })
       .join('');
   }
 
-  // --- aba Transacoes ---
-  function transactionRow(t, extraCols) {
-    return \`
-        <tr data-row-id="\${t.id}">
-          <td>\${t.dateLabel}</td>
-          <td>\${esc(t.account)}</td>
-          <td>\${esc(t.description)}</td>
-          <td class="cls-cell">\${classificationInputs(t)}</td>
-          <td>\${t.pendente ? '<span class="badge-pend">pendente</span>' : ''}</td>
-          <td>\${esc(t.bankCategory)}</td>
-          <td>\${esc(t.descriptionRaw)}</td>
-          <td>\${esc(t.merchantName)}</td>
-          <td>\${esc(t.merchantCnpj)}</td>
-          <td>\${esc(t.merchantCnae)}</td>
-          <td>\${esc(t.payer)}</td>
-          <td>\${esc(t.receiver)}</td>
-          <td>\${esc(t.paymentMethod)}</td>
-          <td>\${esc(t.operationType)}</td>
-          <td>\${esc(t.installment)}</td>
-          <td class="num">\${t.installmentTotalAmount != null ? brl(t.installmentTotalAmount) : ''}</td>
-          <td>\${esc(t.cardLastDigits)}</td>
-          <td>\${esc(t.payeeMCC)}</td>
-          <td>\${esc(t.purchaseDateLabel)}</td>
-          <td>\${esc(t.statusBanco)}</td>
-          <td class="num">\${t.balanceAfter != null ? brl(t.balanceAfter) : ''}</td>
-          <td>\${t.isExpense ? 'Gasto' : 'Receita'}</td>
-          <td class="num">\${brl(t.amount)}</td>
-          \${extraCols ? extraCols(t) : ''}
-        </tr>\`;
-  }
+  Object.keys(TABLE_DEFS).forEach(initTable);
 
-  function renderTransacoes(filtered) {
-    document.querySelector('#transacoes-table tbody').innerHTML = filtered.map((t) => transactionRow(t)).join('');
-  }
+  document.addEventListener('click', (ev) => {
+    const th = ev.target.closest('th[data-sort-key]');
+    if (th) {
+      const tableId = th.dataset.table;
+      const state = tableStates[tableId];
+      const key = th.dataset.sortKey;
+      if (state.sortKey === key) state.sortDir *= -1;
+      else { state.sortKey = key; state.sortDir = 1; }
+      document.querySelector('#' + tableId + ' thead').innerHTML = buildHeaderHtml(tableId, TABLE_DEFS[tableId].columns);
+      renderTable(tableId);
+      return;
+    }
 
-  // --- aba Pendencias de Classificacao ---
-  function renderPendencias(filtered) {
-    const pendentes = filtered.filter((t) => t.pendente);
-    document.querySelector('#pendencias-table tbody').innerHTML = pendentes
-      .map((t) =>
-        transactionRow(
-          t,
-          (t) => '<td>' + esc(t.motivo) + '</td><td><button type="button" class="btn-revisado" data-id="' + t.id + '">Marcar como revisado</button></td>'
-        )
-      )
-      .join('');
-  }
+    const btn = ev.target.closest('.btn-revisado');
+    if (btn) {
+      const t = findTransaction(btn.dataset.id);
+      if (!t) return;
+      t.pendente = false;
+      renderTable('pendencias-table');
+      renderTable('transacoes-table');
+      renderResumo(getFiltered());
+    }
+  });
+
+  document.addEventListener('input', (ev) => {
+    const el = ev.target;
+    if (el.classList && el.classList.contains('col-filter')) {
+      tableStates[el.dataset.table].filters[el.dataset.filterKey] = el.value;
+      renderTable(el.dataset.table);
+      return;
+    }
+    if (el.classList && el.classList.contains('cls-input')) {
+      const t = findTransaction(el.dataset.id);
+      if (!t) return;
+      t[el.dataset.field] = el.value;
+      document.querySelectorAll('input.cls-input[data-id="' + el.dataset.id + '"][data-field="' + el.dataset.field + '"]').forEach((other) => {
+        if (other !== el) other.value = el.value;
+      });
+      renderTable('categorias-table');
+      renderCategoriasChart(getFiltered());
+    }
+  });
+
+  document.addEventListener('change', (ev) => {
+    const el = ev.target;
+    if (!el.classList || !el.classList.contains('valido-input')) return;
+    const t = findTransaction(el.dataset.id);
+    if (!t) return;
+    t.valido = el.checked;
+    document.querySelectorAll('.valido-input[data-id="' + el.dataset.id + '"]').forEach((other) => {
+      if (other !== el) other.checked = el.checked;
+    });
+    renderResumo(getFiltered());
+    renderTable('categorias-table');
+    renderTable('merchants-table');
+    renderTable('accounts-table');
+    renderTable('pendencias-table');
+  });
 
   function renderAll() {
     const filtered = getFiltered();
     renderResumo(filtered);
-    renderCategorias(filtered);
-    renderTransacoes(filtered);
-    renderPendencias(filtered);
+    Object.keys(TABLE_DEFS).forEach(renderTable);
   }
 
   fromInput.addEventListener('change', renderAll);
@@ -292,38 +451,6 @@ function clientScript(): string {
       document.querySelectorAll('.tab-panel').forEach((p) => p.classList.toggle('active', p.id === 'tab-' + b.dataset.tab));
     })
   );
-
-  function findTransaction(id) {
-    return state.find((t) => t.id === Number(id));
-  }
-
-  document.addEventListener('input', (ev) => {
-    const el = ev.target;
-    if (!el.classList || !el.classList.contains('cls-input')) return;
-    const t = findTransaction(el.dataset.id);
-    if (!t) return;
-    t[el.dataset.field] = el.value;
-    document.querySelectorAll('input.cls-input[data-id="' + el.dataset.id + '"][data-field="' + el.dataset.field + '"]').forEach((other) => {
-      if (other !== el) other.value = el.value;
-    });
-    renderCategorias(getFiltered());
-  });
-
-  document.addEventListener('click', (ev) => {
-    const el = ev.target;
-    if (!el.classList || !el.classList.contains('btn-revisado')) return;
-    const t = findTransaction(el.dataset.id);
-    if (!t) return;
-    t.pendente = false;
-    el.closest('tr').remove();
-    const badge = document.querySelector('#transacoes-table tr[data-row-id="' + t.id + '"] .badge-pend');
-    if (badge) badge.remove();
-    const pendEl = document.getElementById('kpi-pendentes');
-    const n = Number(pendEl.textContent) - 1;
-    pendEl.textContent = n;
-    pendEl.classList.toggle('net-negative', n > 0);
-    document.getElementById('pend-tab-count').textContent = n;
-  });
 
   renderAll();
   `;
@@ -473,9 +600,25 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
   .table-scroll { overflow-x: auto; max-height: 70vh; }
   table.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
   table.data-table th, table.data-table td { padding: 8px 10px; border-bottom: 1px solid var(--grid); text-align: left; white-space: nowrap; }
-  table.data-table th { color: var(--text-secondary); font-weight: 600; position: sticky; top: 0; background: var(--surface-1); }
+  table.data-table th { color: var(--text-secondary); font-weight: 600; font-size: 12px; position: sticky; top: 0; background: var(--surface-1); vertical-align: top; }
+  table.data-table th.sortable { cursor: pointer; user-select: none; }
+  table.data-table th.sortable:hover { color: var(--text-primary); }
   table.data-table td.num, table.data-table th.num { text-align: right; font-variant-numeric: tabular-nums; }
-  td.cls-cell { display: flex; gap: 6px; }
+
+  input.col-filter {
+    font: inherit;
+    font-size: 11px;
+    font-weight: 400;
+    padding: 3px 6px;
+    margin-top: 4px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    background: var(--page);
+    color: var(--text-primary);
+    width: 100%;
+    box-sizing: border-box;
+    cursor: text;
+  }
 
   input.cls-input {
     font: inherit;
@@ -487,7 +630,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
     color: var(--text-primary);
     width: 130px;
   }
-  input.cls-input:focus { outline: 2px solid var(--series-1); outline-offset: 1px; }
+  input.cls-input:focus, input.col-filter:focus { outline: 2px solid var(--series-1); outline-offset: 1px; }
 
   .badge-pend {
     display: inline-block;
@@ -565,7 +708,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
         <h2>Maiores gastos (por descricao)</h2>
         <div class="table-scroll">
           <table class="data-table" id="merchants-table">
-            <thead><tr><th>Descricao</th><th class="num">Qtde.</th><th class="num">Total</th></tr></thead>
+            <thead></thead>
             <tbody></tbody>
           </table>
         </div>
@@ -575,7 +718,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
         <h2>Contas conectadas</h2>
         <div class="table-scroll">
           <table class="data-table" id="accounts-table">
-            <thead><tr><th>Conta</th><th>Tipo</th><th class="num">Saldo atual</th><th class="num">Gasto no periodo</th></tr></thead>
+            <thead></thead>
             <tbody></tbody>
           </table>
         </div>
@@ -590,7 +733,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
       <section class="card">
         <div class="table-scroll">
           <table class="data-table" id="categorias-table">
-            <thead><tr><th>Categoria</th><th class="num">Total gasto</th><th class="num">Qtde.</th></tr></thead>
+            <thead></thead>
             <tbody></tbody>
           </table>
         </div>
@@ -599,18 +742,10 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
 
     <div id="tab-transacoes" class="tab-panel">
       <section class="card">
-        <p class="subtitle">Edite Categoria/Subcategoria diretamente na tabela — os totais da aba Categorias se ajustam sozinhos. Todos os dados que o Pluggy devolveu para cada lancamento estao aqui (quando o banco/cartao os fornece).</p>
+        <p class="subtitle">Clique num cabecalho pra ordenar, digite no campo abaixo dele pra filtrar. Edite Categoria/Subcategoria/Valido direto na tabela — os totais das outras abas se ajustam sozinhos. Todos os dados que o Pluggy devolveu para cada lancamento estao aqui (quando o banco/cartao os fornece).</p>
         <div class="table-scroll">
           <table class="data-table" id="transacoes-table">
-            <thead><tr>
-              <th>Data</th><th>Conta</th><th>Descricao</th><th>Categoria / Subcategoria</th><th></th>
-              <th>Categoria do banco</th><th>Descricao original do banco</th><th>Estabelecimento</th>
-              <th>CNPJ do estabelecimento</th><th>CNAE</th><th>Pagador</th><th>Recebedor</th>
-              <th>Forma de pagamento</th><th>Tipo de operacao</th><th>Parcela</th>
-              <th class="num">Valor total da compra</th><th>Cartao (final)</th><th>MCC</th>
-              <th>Data da compra</th><th>Status (banco)</th><th class="num">Saldo apos</th>
-              <th>Tipo</th><th class="num">Valor</th>
-            </tr></thead>
+            <thead></thead>
             <tbody></tbody>
           </table>
         </div>
@@ -622,15 +757,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
         <p class="subtitle">Lancamentos sem historico parecido, com uma sugestao automatica. Ajuste a classificacao e clique em "Marcar como revisado".</p>
         <div class="table-scroll">
           <table class="data-table" id="pendencias-table">
-            <thead><tr>
-              <th>Data</th><th>Conta</th><th>Descricao</th><th>Categoria / Subcategoria</th><th></th>
-              <th>Categoria do banco</th><th>Descricao original do banco</th><th>Estabelecimento</th>
-              <th>CNPJ do estabelecimento</th><th>CNAE</th><th>Pagador</th><th>Recebedor</th>
-              <th>Forma de pagamento</th><th>Tipo de operacao</th><th>Parcela</th>
-              <th class="num">Valor total da compra</th><th>Cartao (final)</th><th>MCC</th>
-              <th>Data da compra</th><th>Status (banco)</th><th class="num">Saldo apos</th>
-              <th>Tipo</th><th class="num">Valor</th><th>Motivo</th><th></th>
-            </tr></thead>
+            <thead></thead>
             <tbody></tbody>
           </table>
         </div>

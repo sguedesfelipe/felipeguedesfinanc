@@ -1,4 +1,4 @@
-import { Account, Transaction, TransactionPaymentParticipantDocument } from 'pluggy-sdk';
+import { Transaction, TransactionPaymentParticipantDocument } from 'pluggy-sdk';
 import { AccountTransactions } from './fetchData.js';
 import { classifyTransaction, Confianca } from './classify.js';
 
@@ -8,11 +8,16 @@ function formatParticipant(name: string | null | undefined, doc: TransactionPaym
   return parts.join(' — ');
 }
 
+function fallbackTransactionId(date: Date): string {
+  return `${date.getTime()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
 // Todos os campos extras que o Pluggy pode trazer por transacao, alem do que
 // ja usamos para classificar/agregar. Nem todo banco/conector preenche tudo
 // (ex.: "merchant" costuma vir vazio em transacoes de conta corrente) — os
 // campos ficam string vazia quando o Pluggy nao devolveu o dado.
 export interface TransactionExtra {
+  transactionId: string;
   descriptionRaw: string;
   statusBanco: string;
   operationType: string;
@@ -30,12 +35,13 @@ export interface TransactionExtra {
   balanceAfter: number | null;
 }
 
-function extractExtra(tx: Transaction): TransactionExtra {
+function extractExtra(tx: Transaction, date: Date): TransactionExtra {
   const merchant = tx.merchant;
   const cc = tx.creditCardMetadata;
   const payment = tx.paymentData;
 
   return {
+    transactionId: tx.id || fallbackTransactionId(date),
     descriptionRaw: tx.descriptionRaw && tx.descriptionRaw !== tx.description ? tx.descriptionRaw : '',
     statusBanco: tx.status ?? '',
     operationType: [tx.operationType, tx.operationTypeAdditionalInfo].filter(Boolean).join(' — '),
@@ -57,6 +63,7 @@ function extractExtra(tx: Transaction): TransactionExtra {
 export interface CategorizedTransaction extends TransactionExtra {
   accountId: string;
   accountName: string;
+  accountType: string;
   date: Date;
   description: string;
   bankCategory: string;
@@ -65,6 +72,8 @@ export interface CategorizedTransaction extends TransactionExtra {
   confianca: Confianca;
   pendente: boolean;
   motivoClassificacao: string;
+  valido: boolean;
+  motivoInvalido: string;
   amount: number;
   isExpense: boolean;
 }
@@ -107,28 +116,53 @@ export interface Report {
     net: number;
     transactionCount: number;
     pendentesClassificacao: number;
+    invalidas: number;
   };
 }
 
 const UNCATEGORIZED = 'Sem categoria';
+const CARD_PAYMENT_CATEGORY = 'Credit card payment';
+// Janela de dias para casar o pagamento da fatura (debito na conta corrente)
+// com o "pagamento recebido" no cartao (credito), mesmo que as datas de
+// processamento nao coincidam exatamente entre as duas contas.
+const CARD_PAYMENT_MATCH_WINDOW_DAYS = 5;
 
 function monthKey(date: Date): string {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
 }
 
+// Quando a fatura do cartao e paga pela mesma conta corrente conectada, o
+// Pluggy traz o mesmo valor duas vezes: como "Credit card payment" (credito)
+// na conta do cartao, e como um debito de boleto/pix na conta corrente. Os
+// gastos individuais do cartao ja entram no relatorio, entao contar essa
+// fatura de novo dobraria o total — as duas pontas sao marcadas invalidas por
+// padrao (o usuario pode reverter manualmente se algum caso for diferente).
+function flagCardPaymentDuplicates(transactions: CategorizedTransaction[]): void {
+  const cardPayments = transactions.filter(
+    (t) => t.accountType === 'CREDIT' && t.bankCategory === CARD_PAYMENT_CATEGORY
+  );
+  for (const payment of cardPayments) {
+    payment.valido = false;
+    payment.motivoInvalido = 'Pagamento de fatura recebido no cartao (categoria do banco "Credit card payment").';
+  }
+
+  const windowMs = CARD_PAYMENT_MATCH_WINDOW_DAYS * 24 * 60 * 60 * 1000;
+  for (const t of transactions) {
+    if (!t.valido || t.accountType === 'CREDIT') continue;
+    const match = cardPayments.find(
+      (p) => Math.abs(Math.abs(p.amount) - Math.abs(t.amount)) < 0.01 && Math.abs(p.date.getTime() - t.date.getTime()) <= windowMs
+    );
+    if (match) {
+      t.valido = false;
+      t.motivoInvalido = 'Provavel pagamento da fatura do cartao (mesmo valor de um "Credit card payment" na conta de credito).';
+    }
+  }
+}
+
 export function buildReport(data: AccountTransactions[]): Report {
   const transactions: CategorizedTransaction[] = [];
-  const monthlyMap = new Map<string, MonthTotal>();
-  const categoryMap = new Map<string, CategoryTotal>();
-  const merchantMap = new Map<string, MerchantTotal>();
-  const accounts: AccountSummary[] = [];
-
-  let totalExpenses = 0;
-  let totalIncome = 0;
 
   for (const { account, transactions: txs } of data) {
-    let accountExpenses = 0;
-
     for (const tx of txs) {
       const date = new Date(tx.date);
       const isExpense = tx.type === 'DEBIT';
@@ -137,9 +171,10 @@ export function buildReport(data: AccountTransactions[]): Report {
       const classification = classifyTransaction(tx.description, tx.category ?? null);
 
       transactions.push({
-        ...extractExtra(tx),
+        ...extractExtra(tx, date),
         accountId: account.id,
         accountName: account.name,
+        accountType: account.type,
         date,
         description: tx.description,
         bankCategory,
@@ -148,51 +183,57 @@ export function buildReport(data: AccountTransactions[]): Report {
         confianca: classification.confianca,
         pendente: classification.pendente,
         motivoClassificacao: classification.motivo,
+        valido: true,
+        motivoInvalido: '',
         amount,
         isExpense,
       });
-
-      const mKey = monthKey(date);
-      const monthEntry = monthlyMap.get(mKey) ?? { month: mKey, expenses: 0, income: 0 };
-      if (isExpense) {
-        monthEntry.expenses += amount;
-        accountExpenses += amount;
-        totalExpenses += amount;
-
-        const catEntry = categoryMap.get(classification.categoria) ?? {
-          category: classification.categoria,
-          total: 0,
-          count: 0,
-        };
-        catEntry.total += amount;
-        catEntry.count += 1;
-        categoryMap.set(classification.categoria, catEntry);
-
-        const merchantEntry = merchantMap.get(tx.description) ?? {
-          description: tx.description,
-          total: 0,
-          count: 0,
-        };
-        merchantEntry.total += amount;
-        merchantEntry.count += 1;
-        merchantMap.set(tx.description, merchantEntry);
-      } else {
-        monthEntry.income += amount;
-        totalIncome += amount;
-      }
-      monthlyMap.set(mKey, monthEntry);
     }
-
-    accounts.push({
-      id: account.id,
-      name: account.name,
-      type: account.type,
-      balance: account.balance,
-      totalExpenses: accountExpenses,
-    });
   }
 
+  flagCardPaymentDuplicates(transactions);
   transactions.sort((a, b) => b.date.getTime() - a.date.getTime());
+
+  const monthlyMap = new Map<string, MonthTotal>();
+  const categoryMap = new Map<string, CategoryTotal>();
+  const merchantMap = new Map<string, MerchantTotal>();
+  const accountExpensesMap = new Map<string, number>();
+  let totalExpenses = 0;
+  let totalIncome = 0;
+
+  for (const t of transactions) {
+    if (!t.valido) continue;
+
+    const mKey = monthKey(t.date);
+    const monthEntry = monthlyMap.get(mKey) ?? { month: mKey, expenses: 0, income: 0 };
+    if (t.isExpense) {
+      monthEntry.expenses += t.amount;
+      totalExpenses += t.amount;
+      accountExpensesMap.set(t.accountId, (accountExpensesMap.get(t.accountId) ?? 0) + t.amount);
+
+      const catEntry = categoryMap.get(t.categoria) ?? { category: t.categoria, total: 0, count: 0 };
+      catEntry.total += t.amount;
+      catEntry.count += 1;
+      categoryMap.set(t.categoria, catEntry);
+
+      const merchantEntry = merchantMap.get(t.description) ?? { description: t.description, total: 0, count: 0 };
+      merchantEntry.total += t.amount;
+      merchantEntry.count += 1;
+      merchantMap.set(t.description, merchantEntry);
+    } else {
+      monthEntry.income += t.amount;
+      totalIncome += t.amount;
+    }
+    monthlyMap.set(mKey, monthEntry);
+  }
+
+  const accounts: AccountSummary[] = data.map(({ account }) => ({
+    id: account.id,
+    name: account.name,
+    type: account.type,
+    balance: account.balance,
+    totalExpenses: accountExpensesMap.get(account.id) ?? 0,
+  }));
 
   const monthly = [...monthlyMap.values()].sort((a, b) => a.month.localeCompare(b.month));
   const categories = [...categoryMap.values()].sort((a, b) => b.total - a.total);
@@ -210,8 +251,9 @@ export function buildReport(data: AccountTransactions[]): Report {
       expenses: totalExpenses,
       income: totalIncome,
       net: totalIncome - totalExpenses,
-      transactionCount: transactions.length,
-      pendentesClassificacao: transactions.filter((t) => t.pendente).length,
+      transactionCount: transactions.filter((t) => t.valido).length,
+      pendentesClassificacao: transactions.filter((t) => t.valido && t.pendente).length,
+      invalidas: transactions.filter((t) => !t.valido).length,
     },
   };
 }

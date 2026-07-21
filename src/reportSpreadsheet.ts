@@ -23,6 +23,22 @@ function classificationValidation(kind: 'Categoria' | 'Subcategoria', range: str
   };
 }
 
+const VALIDO_VALIDATION: ExcelJS.DataValidation = {
+  type: 'list',
+  allowBlank: true,
+  showErrorMessage: false,
+  formulae: ['"Sim,Nao"'],
+  promptTitle: 'Considerar no relatorio?',
+  prompt: 'Sim conta nos totais, Nao exclui (ex.: pagamento de fatura ja contado nas compras do cartao).',
+  showInputMessage: true,
+};
+
+function addColumnValidation(sheet: ExcelJS.Worksheet, columnKey: string, validation: ExcelJS.DataValidation): void {
+  if (sheet.rowCount < 2) return;
+  const col = sheet.getColumn(columnKey).letter;
+  (sheet as WorksheetWithRangeValidations).dataValidations.add(`${col}2:${col}${sheet.rowCount}`, validation);
+}
+
 // Aplica o dropdown de Categoria/Subcategoria em todas as linhas de dados de
 // uma planilha que tenha colunas com essas keys (Transacoes e Pendencias).
 function applyClassificationDropdowns(
@@ -30,18 +46,14 @@ function applyClassificationDropdowns(
   categoriasRange: string,
   subcategoriasRange: string
 ): void {
-  if (sheet.rowCount < 2) return;
-  const categoriaCol = sheet.getColumn('categoria').letter;
-  const subcategoriaCol = sheet.getColumn('subcategoria').letter;
-  const validations = (sheet as WorksheetWithRangeValidations).dataValidations;
-  validations.add(
-    `${categoriaCol}2:${categoriaCol}${sheet.rowCount}`,
-    classificationValidation('Categoria', categoriasRange)
-  );
-  validations.add(
-    `${subcategoriaCol}2:${subcategoriaCol}${sheet.rowCount}`,
-    classificationValidation('Subcategoria', subcategoriasRange)
-  );
+  addColumnValidation(sheet, 'categoria', classificationValidation('Categoria', categoriasRange));
+  addColumnValidation(sheet, 'subcategoria', classificationValidation('Subcategoria', subcategoriasRange));
+}
+
+// Habilita os filtros/ordenacao nativos do Excel na linha de cabecalho.
+function enableAutoFilter(sheet: ExcelJS.Worksheet): void {
+  const lastCol = sheet.getColumn(sheet.columnCount).letter;
+  sheet.autoFilter = `A1:${lastCol}1`;
 }
 
 export async function writeSpreadsheet(report: Report, filePath: string): Promise<void> {
@@ -64,7 +76,8 @@ export async function writeSpreadsheet(report: Report, filePath: string): Promis
     { label: 'Total de gastos', value: report.totals.expenses },
     { label: 'Total de receitas', value: report.totals.income },
     { label: 'Saldo (receitas - gastos)', value: report.totals.net },
-    { label: 'Numero de transacoes', value: report.totals.transactionCount },
+    { label: 'Numero de transacoes (validas)', value: report.totals.transactionCount },
+    { label: 'Transacoes invalidadas (nao contam no relatorio)', value: report.totals.invalidas },
     { label: 'Pendentes de classificacao', value: report.totals.pendentesClassificacao },
   ]);
   resumo.getColumn('value').numFmt = BRL;
@@ -94,6 +107,7 @@ export async function writeSpreadsheet(report: Report, filePath: string): Promis
   }
   categorias.getColumn('total').numFmt = BRL;
   categorias.getRow(1).font = { bold: true };
+  enableAutoFilter(categorias);
 
   const maioresGastos = workbook.addWorksheet('Maiores Gastos');
   maioresGastos.columns = [
@@ -106,6 +120,7 @@ export async function writeSpreadsheet(report: Report, filePath: string): Promis
   }
   maioresGastos.getColumn('total').numFmt = BRL;
   maioresGastos.getRow(1).font = { bold: true };
+  enableAutoFilter(maioresGastos);
 
   const contas = workbook.addWorksheet('Contas');
   contas.columns = [
@@ -119,15 +134,19 @@ export async function writeSpreadsheet(report: Report, filePath: string): Promis
   }
   ['balance', 'totalExpenses'].forEach((key) => (contas.getColumn(key).numFmt = BRL));
   contas.getRow(1).font = { bold: true };
+  enableAutoFilter(contas);
 
   const transacoes = workbook.addWorksheet('Transacoes');
   transacoes.columns = [
+    { header: 'ID', key: 'id', width: 22 },
     { header: 'Data', key: 'date', width: 14 },
     { header: 'Conta', key: 'account', width: 22 },
     { header: 'Descricao', key: 'description', width: 40 },
     { header: 'Categoria', key: 'categoria', width: 26 },
     { header: 'Subcategoria', key: 'subcategoria', width: 26 },
     { header: 'Pendente de revisao?', key: 'pendente', width: 18 },
+    { header: 'Valido?', key: 'valido', width: 10 },
+    { header: 'Motivo (se invalido)', key: 'motivoInvalido', width: 40 },
     { header: 'Categoria do banco', key: 'bankCategory', width: 22 },
     { header: 'Descricao original do banco', key: 'descriptionRaw', width: 34 },
     { header: 'Estabelecimento', key: 'merchantName', width: 30 },
@@ -149,12 +168,15 @@ export async function writeSpreadsheet(report: Report, filePath: string): Promis
   ];
   for (const t of report.transactions) {
     transacoes.addRow({
+      id: t.transactionId,
       date: t.date,
       account: t.accountName,
       description: t.description,
       categoria: t.categoria,
       subcategoria: t.subcategoria,
       pendente: t.pendente ? 'Sim' : '',
+      valido: t.valido ? 'Sim' : 'Nao',
+      motivoInvalido: t.motivoInvalido,
       bankCategory: t.bankCategory,
       descriptionRaw: t.descriptionRaw,
       merchantName: t.merchantName,
@@ -182,9 +204,12 @@ export async function writeSpreadsheet(report: Report, filePath: string): Promis
   transacoes.getColumn('balanceAfter').numFmt = BRL;
   transacoes.getRow(1).font = { bold: true };
   applyClassificationDropdowns(transacoes, categoriasRange, subcategoriasRange);
+  addColumnValidation(transacoes, 'valido', VALIDO_VALIDATION);
+  enableAutoFilter(transacoes);
 
   const pendencias = workbook.addWorksheet('Pendencias de Classificacao');
   pendencias.columns = [
+    { header: 'ID', key: 'id', width: 22 },
     { header: 'Data', key: 'date', width: 14 },
     { header: 'Conta', key: 'account', width: 22 },
     { header: 'Descricao', key: 'description', width: 40 },
@@ -195,8 +220,9 @@ export async function writeSpreadsheet(report: Report, filePath: string): Promis
     { header: 'Linha na aba Transacoes', key: 'linha', width: 20 },
   ];
   report.transactions.forEach((t, index) => {
-    if (!t.pendente) return;
+    if (!t.pendente || !t.valido) return;
     pendencias.addRow({
+      id: t.transactionId,
       date: t.date,
       account: t.accountName,
       description: t.description,
@@ -211,6 +237,7 @@ export async function writeSpreadsheet(report: Report, filePath: string): Promis
   pendencias.getColumn('amount').numFmt = BRL;
   pendencias.getRow(1).font = { bold: true };
   applyClassificationDropdowns(pendencias, categoriasRange, subcategoriasRange);
+  enableAutoFilter(pendencias);
   pendencias.getCell('A1').note =
     'Sugestoes automaticas para lancamentos sem historico parecido. Corrija a Categoria/Subcategoria aqui ' +
     'e repita a mesma escolha na linha indicada da aba Transacoes (e la que os totais do relatorio sao calculados).';
