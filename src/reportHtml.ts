@@ -6,7 +6,11 @@ interface ClientTransaction {
   transactionId: string;
   dateISO: string;
   dateLabel: string;
+  dataConsideradaISO: string;
+  dataConsideradaLabel: string;
   month: string;
+  installmentNumber: number | null;
+  installmentGroupKey: string;
   accountId: string;
   account: string;
   description: string;
@@ -65,7 +69,11 @@ function toClientTransactions(report: Report): ClientTransaction[] {
     transactionId: t.transactionId,
     dateISO: t.date.toISOString().slice(0, 10),
     dateLabel: t.date.toLocaleDateString('pt-BR'),
+    dataConsideradaISO: t.dataConsiderada.toISOString().slice(0, 10),
+    dataConsideradaLabel: t.dataConsiderada.toLocaleDateString('pt-BR'),
     month: monthKey(t.date),
+    installmentNumber: t.installmentNumber,
+    installmentGroupKey: t.installmentGroupKey,
     accountId: t.accountId,
     account: t.accountName,
     description: t.description,
@@ -174,6 +182,46 @@ function clientScript(): string {
     return n;
   }
   const savedEditsCount = restoreSavedEdits();
+
+  // --- compras parceladas devem ter sempre a mesma classificacao: so a
+  // primeira parcela (menor installmentNumber) fica editavel, as demais
+  // seguem o valor dela (mesmo que edicoes salvas antigas tenham divergido). ---
+  const installmentGroups = new Map();
+  for (const t of state) {
+    if (!t.installmentGroupKey) continue;
+    const group = installmentGroups.get(t.installmentGroupKey) || [];
+    group.push(t);
+    installmentGroups.set(t.installmentGroupKey, group);
+  }
+  for (const group of installmentGroups.values()) {
+    if (group.length < 2) continue;
+    group.sort((a, b) => (a.installmentNumber ?? 1) - (b.installmentNumber ?? 1));
+    const leader = group[0];
+    for (const t of group) {
+      t.installmentLocked = t !== leader;
+      if (t !== leader) {
+        t.categoria = leader.categoria;
+        t.subcategoria = leader.subcategoria;
+      }
+    }
+  }
+  function propagateInstallmentGroup(t) {
+    if (!t.installmentGroupKey || t.installmentLocked) return;
+    const group = installmentGroups.get(t.installmentGroupKey);
+    if (!group || group.length < 2) return;
+    for (const sibling of group) {
+      if (sibling === t) continue;
+      sibling.categoria = t.categoria;
+      sibling.subcategoria = t.subcategoria;
+      saveEdit(sibling);
+      ['categoria', 'subcategoria'].forEach((field) => {
+        document.querySelectorAll('tr[data-row-id="' + sibling.id + '"] td[data-col="' + field + '"]').forEach((cell) => {
+          cell.innerHTML = classificationInput(sibling, field);
+        });
+      });
+    }
+  }
+
   const savedNotice = document.getElementById('saved-edits-notice');
   if (savedEditsCount > 0) {
     savedNotice.textContent = savedEditsCount + ' edicao(oes) salva(s) neste navegador foram restauradas.';
@@ -275,12 +323,41 @@ function clientScript(): string {
     datalistOptions('categorias-list', DATA.categorias) + datalistOptions('subcategorias-list', DATA.subcategorias);
 
   function classificationInput(t, field) {
+    if (t.installmentLocked) {
+      return '<span class="cls-locked" title="Segue a classificacao da 1a parcela desta compra">' + esc(t[field]) + '</span>';
+    }
     const list = field === 'categoria' ? 'categorias-list' : 'subcategorias-list';
     return '<input class="cls-input" list="' + list + '" data-id="' + t.id + '" data-field="' + field + '" value="' + esc(t[field]) + '">';
   }
 
   function validoCheckbox(t) {
     return '<input type="checkbox" class="valido-input" data-id="' + t.id + '"' + (t.valido ? ' checked' : '') + '>';
+  }
+
+  // --- selecao em lote na aba Pendencias ("Marcar selecionados como revisados") ---
+  const selectedPendentes = new Set();
+  function updatePendSelectedCount() {
+    document.getElementById('pend-selected-count').textContent = selectedPendentes.size;
+  }
+
+  // Usado tanto pelo botao individual quanto pelo botao em lote — ids pode
+  // ter 1 ou N elementos, o resto do fluxo (salvar, tirar da selecao,
+  // re-renderizar) e sempre o mesmo.
+  function markReviewed(ids) {
+    let changed = false;
+    for (const id of ids) {
+      const t = findTransaction(id);
+      if (!t) continue;
+      t.pendente = false;
+      saveEdit(t);
+      selectedPendentes.delete(t.id);
+      changed = true;
+    }
+    if (!changed) return;
+    renderTable('pendencias-table');
+    renderTable('transacoes-table');
+    renderResumo(getFiltered());
+    updatePendSelectedCount();
   }
 
   // --- agregacoes (so consideram transacoes com valido=true) ---
@@ -422,6 +499,7 @@ function clientScript(): string {
   const TX_COLUMNS = [
     { key: 'transactionId', label: 'ID', value: (t) => t.transactionId },
     { key: 'dateISO', label: 'Data', value: (t) => t.dateISO, render: (t) => t.dateLabel },
+    { key: 'dataConsideradaISO', label: 'DataConsiderada', value: (t) => t.dataConsideradaISO, render: (t) => t.dataConsideradaLabel },
     { key: 'account', label: 'Conta', value: (t) => t.account },
     { key: 'description', label: 'Descricao', value: (t) => t.description },
     { key: 'categoria', label: 'Categoria', value: (t) => t.categoria, render: (t) => classificationInput(t, 'categoria') },
@@ -467,10 +545,18 @@ function clientScript(): string {
     { key: 'isExpense', label: 'Tipo', value: (t) => (t.isExpense ? 'Gasto' : 'Receita') },
     { key: 'amount', label: 'Valor', value: (t) => t.amount, type: 'currency' },
   ];
-  const PEND_COLUMNS = TX_COLUMNS.concat([
-    { key: 'motivo', label: 'Motivo da pendencia', value: (t) => t.motivo },
+  const PEND_COLUMNS = [
+    {
+      key: '_select',
+      label: 'Selecionar',
+      value: () => '',
+      render: (t) => '<input type="checkbox" class="pend-select" data-id="' + t.id + '"' + (selectedPendentes.has(t.id) ? ' checked' : '') + '>',
+      noSort: true,
+      noFilter: true,
+    },
     { key: '_acao', label: '', value: () => '', render: (t) => '<button type="button" class="btn-revisado" data-id="' + t.id + '">Marcar como revisado</button>', noSort: true, noFilter: true },
-  ]);
+    { key: 'motivo', label: 'Motivo da pendencia', value: (t) => t.motivo },
+  ].concat(TX_COLUMNS);
   const CAT_COLUMNS = [
     { key: 'category', label: 'Categoria', value: (c) => c.category },
     { key: 'total', label: 'Total gasto', value: (c) => c.total, type: 'currency' },
@@ -505,7 +591,7 @@ function clientScript(): string {
   function cellHtml(col, row) {
     const content = col.render ? col.render(row) : defaultCellContent(col, row);
     const cls = col.type === 'currency' || col.type === 'number' ? ' class="num"' : '';
-    return '<td' + cls + '>' + content + '</td>';
+    return '<td' + cls + ' data-col="' + col.key + '">' + content + '</td>';
   }
 
   function compareRows(a, b, col) {
@@ -546,7 +632,7 @@ function clientScript(): string {
     document.querySelector('#' + tableId + ' thead').innerHTML = buildHeaderHtml(tableId, TABLE_DEFS[tableId].columns);
   }
 
-  function renderTable(tableId) {
+  function computeTableRows(tableId) {
     const def = TABLE_DEFS[tableId];
     const state = tableStates[tableId];
     let rows = def.rows();
@@ -564,7 +650,12 @@ function clientScript(): string {
       const col = def.columns.find((c) => c.key === state.sortKey);
       rows = [...rows].sort((a, b) => state.sortDir * compareRows(a, b, col));
     }
+    return rows;
+  }
 
+  function renderTable(tableId, precomputedRows) {
+    const def = TABLE_DEFS[tableId];
+    const rows = precomputedRows || computeTableRows(tableId);
     document.querySelector('#' + tableId + ' tbody').innerHTML = rows
       .map((row) => {
         const idAttr = def.rowId ? ' data-row-id="' + def.rowId(row) + '"' : '';
@@ -590,13 +681,13 @@ function clientScript(): string {
 
     const btn = ev.target.closest('.btn-revisado');
     if (btn) {
-      const t = findTransaction(btn.dataset.id);
-      if (!t) return;
-      t.pendente = false;
-      saveEdit(t);
-      renderTable('pendencias-table');
-      renderTable('transacoes-table');
-      renderResumo(getFiltered());
+      markReviewed([btn.dataset.id]);
+      return;
+    }
+
+    const bulkBtn = ev.target.closest('#pend-bulk-revisado');
+    if (bulkBtn) {
+      markReviewed([...selectedPendentes]);
     }
   });
 
@@ -622,6 +713,29 @@ function clientScript(): string {
 
   document.addEventListener('change', (ev) => {
     const el = ev.target;
+    if (el.id === 'pend-select-all') {
+      const rows = computeTableRows('pendencias-table');
+      if (el.checked) rows.forEach((t) => selectedPendentes.add(t.id));
+      else rows.forEach((t) => selectedPendentes.delete(t.id));
+      renderTable('pendencias-table', rows);
+      updatePendSelectedCount();
+      return;
+    }
+    if (el.classList && el.classList.contains('pend-select')) {
+      const id = Number(el.dataset.id);
+      if (el.checked) selectedPendentes.add(id);
+      else selectedPendentes.delete(id);
+      updatePendSelectedCount();
+      return;
+    }
+    // Propagar pra parcelas-irmas so ao sair do campo (nao a cada tecla) —
+    // evita reescrever o localStorage e varrer o DOM das outras linhas a
+    // cada letra digitada na classificacao da parcela lider.
+    if (el.classList && el.classList.contains('cls-input')) {
+      const t = findTransaction(el.dataset.id);
+      if (t) propagateInstallmentGroup(t);
+      return;
+    }
     if (!el.classList || !el.classList.contains('valido-input')) return;
     const t = findTransaction(el.dataset.id);
     if (!t) return;
@@ -673,7 +787,7 @@ function clientScript(): string {
   function renderAll() {
     const filtered = getFiltered();
     renderResumo(filtered);
-    Object.keys(TABLE_DEFS).forEach(renderTable);
+    Object.keys(TABLE_DEFS).forEach((tableId) => renderTable(tableId));
   }
 
   document.getElementById('filter-apply').addEventListener('click', renderAll);
@@ -695,6 +809,7 @@ function clientScript(): string {
     })
   );
 
+  updatePendSelectedCount();
   renderAll();
   `;
 }
@@ -910,6 +1025,24 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
   .btn-revisado:hover { background: var(--series-1-soft); }
 
   .transacoes-toolbar { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
+  .pendencias-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+    padding: 10px 12px;
+    background: var(--series-1-soft);
+    border-radius: 8px;
+  }
+  .pendencias-toolbar label { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-secondary); }
+  .cls-locked {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+  .cls-locked::after { content: '🔒'; font-size: 11px; }
   .btn-export {
     font: inherit;
     font-size: 13px;
@@ -1057,7 +1190,11 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
 
     <div id="tab-pendencias" class="tab-panel">
       <section class="card">
-        <p class="subtitle">Lancamentos sem historico parecido, com uma sugestao automatica. Ajuste a classificacao e clique em "Marcar como revisado".</p>
+        <p class="subtitle">Lancamentos sem historico parecido (ou lancamentos recentes ainda nao revisados por voce), com uma sugestao automatica. Ajuste a classificacao e clique em "Marcar como revisado", ou selecione varios e use o botao abaixo.</p>
+        <div class="pendencias-toolbar">
+          <label><input type="checkbox" id="pend-select-all"> Selecionar todos visiveis</label>
+          <button type="button" id="pend-bulk-revisado" class="btn-export">Marcar selecionados como revisados (<span id="pend-selected-count">0</span>)</button>
+        </div>
         <div class="table-scroll">
           <table class="data-table" id="pendencias-table">
             <thead></thead>

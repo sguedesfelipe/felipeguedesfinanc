@@ -10,9 +10,15 @@ interface RulesFile {
   rulesFull: Record<string, [string, string, number]>;
   rulesPrefix: Record<string, [string, string, number]>;
   invalidFull: Record<string, string>;
+  revisadoAte: string | null;
 }
 
 const rules: RulesFile = JSON.parse(fs.readFileSync(DATA_PATH, 'utf-8'));
+
+// Data (YYYY-MM-DD) ate onde o usuario ja revisou classificacoes manualmente.
+// Qualquer lancamento com DataConsiderada nesse dia ou depois ainda nao foi
+// visto por ele e deve ficar pendente, mesmo com sugestao de alta confianca.
+export const REVISADO_ATE: string | null = rules.revisadoAte;
 
 export const CATEGORIAS: string[] = Object.keys(rules.categories).sort((a, b) =>
   a.localeCompare(b, 'pt-BR')

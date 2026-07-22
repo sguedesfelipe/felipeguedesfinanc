@@ -140,6 +140,7 @@ export async function writeSpreadsheet(report: Report, filePath: string): Promis
   transacoes.columns = [
     { header: 'ID', key: 'id', width: 22 },
     { header: 'Data', key: 'date', width: 14 },
+    { header: 'DataConsiderada', key: 'dataConsiderada', width: 16 },
     { header: 'Conta', key: 'account', width: 22 },
     { header: 'Descricao', key: 'description', width: 40 },
     { header: 'Categoria', key: 'categoria', width: 26 },
@@ -189,6 +190,7 @@ export async function writeSpreadsheet(report: Report, filePath: string): Promis
     transacoes.addRow({
       id: t.transactionId,
       date: t.date,
+      dataConsiderada: t.dataConsiderada,
       account: t.accountName,
       description: t.description,
       categoria: t.categoria,
@@ -235,7 +237,7 @@ export async function writeSpreadsheet(report: Report, filePath: string): Promis
       amount: t.amount,
     });
   }
-  ['date', 'purchaseDate'].forEach((key) => (transacoes.getColumn(key).numFmt = 'dd/mm/yyyy'));
+  ['date', 'dataConsiderada', 'purchaseDate'].forEach((key) => (transacoes.getColumn(key).numFmt = 'dd/mm/yyyy'));
   ['createdAt', 'updatedAt'].forEach((key) => (transacoes.getColumn(key).numFmt = 'dd/mm/yyyy hh:mm'));
   [
     'amount',
@@ -254,36 +256,49 @@ export async function writeSpreadsheet(report: Report, filePath: string): Promis
 
   const pendencias = workbook.addWorksheet('Pendencias de Classificacao');
   pendencias.columns = [
+    { header: 'Revisado?', key: 'revisado', width: 12 },
+    { header: 'Por que ficou pendente', key: 'motivo', width: 46 },
     { header: 'ID', key: 'id', width: 22 },
     { header: 'Data', key: 'date', width: 14 },
+    { header: 'DataConsiderada', key: 'dataConsiderada', width: 16 },
     { header: 'Conta', key: 'account', width: 22 },
     { header: 'Descricao', key: 'description', width: 40 },
     { header: 'Categoria sugerida', key: 'categoria', width: 26 },
     { header: 'Subcategoria sugerida', key: 'subcategoria', width: 26 },
     { header: 'Valor', key: 'amount', width: 16 },
-    { header: 'Por que ficou pendente', key: 'motivo', width: 46 },
     { header: 'Linha na aba Transacoes', key: 'linha', width: 20 },
   ];
   report.transactions.forEach((t, index) => {
     if (!t.pendente || !t.valido) return;
     pendencias.addRow({
+      revisado: '',
+      motivo: t.motivoClassificacao,
       id: t.transactionId,
       date: t.date,
+      dataConsiderada: t.dataConsiderada,
       account: t.accountName,
       description: t.description,
       categoria: t.categoria,
       subcategoria: t.subcategoria,
       amount: t.amount,
-      motivo: t.motivoClassificacao,
       linha: index + 2,
     });
   });
-  pendencias.getColumn('date').numFmt = 'dd/mm/yyyy';
+  ['date', 'dataConsiderada'].forEach((key) => (pendencias.getColumn(key).numFmt = 'dd/mm/yyyy'));
   pendencias.getColumn('amount').numFmt = BRL;
   pendencias.getRow(1).font = { bold: true };
   applyClassificationDropdowns(pendencias, categoriasRange, subcategoriasRange);
+  addColumnValidation(pendencias, 'revisado', {
+    type: 'list',
+    allowBlank: true,
+    showErrorMessage: false,
+    formulae: ['"Sim,Nao"'],
+    promptTitle: 'Revisado?',
+    prompt: 'Marque "Sim" depois de conferir a classificacao (nao afeta os totais aqui, e so um lembrete pra voce).',
+    showInputMessage: true,
+  });
   enableAutoFilter(pendencias);
-  pendencias.getCell('A1').note =
+  pendencias.getCell('C1').note =
     'Sugestoes automaticas para lancamentos sem historico parecido. Corrija a Categoria/Subcategoria aqui ' +
     'e repita a mesma escolha na linha indicada da aba Transacoes (e la que os totais do relatorio sao calculados).';
 

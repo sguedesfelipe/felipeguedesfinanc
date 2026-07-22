@@ -1,6 +1,6 @@
 import { Transaction, TransactionPaymentParticipantDocument } from 'pluggy-sdk';
 import { AccountTransactions } from './fetchData.js';
-import { classifyTransaction, checkKnownInvalid, normalizeKey, Confianca } from './classify.js';
+import { classifyTransaction, checkKnownInvalid, normalizeKey, REVISADO_ATE, Confianca } from './classify.js';
 
 function formatParticipant(name: string | null | undefined, doc: TransactionPaymentParticipantDocument | undefined): string {
   const parts = [name?.trim()].filter(Boolean) as string[];
@@ -10,6 +10,12 @@ function formatParticipant(name: string | null | undefined, doc: TransactionPaym
 
 function fallbackTransactionId(date: Date): string {
   return `${date.getTime()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function addMonths(date: Date, months: number): Date {
+  const result = new Date(date);
+  result.setMonth(result.getMonth() + months);
+  return result;
 }
 
 // "billForecastDate" volta na API do Pluggy (mes/ano da fatura em que a
@@ -50,6 +56,7 @@ export interface TransactionExtra {
   boletoDiscountAmount: number | null;
   cardLastDigits: string;
   installment: string;
+  installmentNumber: number | null;
   installmentTotalAmount: number | null;
   payeeMCC: string;
   purchaseDate: Date | null;
@@ -60,6 +67,12 @@ export interface TransactionExtra {
   balanceAfter: number | null;
   createdAt: Date;
   updatedAt: Date;
+  dataConsiderada: Date;
+  // Chave que identifica "mesma compra parcelada" (descricao sem o sufixo de
+  // parcela + data real da compra) — vazia quando a transacao nao e uma
+  // parcela. Usada pra travar a classificacao das parcelas 2+ na mesma
+  // categoria/subcategoria da parcela 1.
+  installmentGroupKey: string;
 }
 
 function extractExtra(tx: Transaction, date: Date): TransactionExtra {
@@ -67,6 +80,22 @@ function extractExtra(tx: Transaction, date: Date): TransactionExtra {
   const cc = (tx as TransactionWithUndocumentedFields).creditCardMetadata;
   const payment = tx.paymentData;
   const boleto = payment?.boletoMetadata;
+  const purchaseDate = cc?.purchaseDate ? new Date(cc.purchaseDate) : null;
+  const installmentNumber = cc?.installmentNumber ?? null;
+  const totalInstallments = cc?.totalInstallments ?? null;
+
+  // DataConsiderada: quando dia a compra realmente aconteceu, pro efeito de
+  // "gasto do mes". Pra parcelas, a compra em si foi feita uma vez so
+  // (purchaseDate) mas cada parcela conceitualmente pertence a um mes
+  // diferente — soma (numero da parcela - 1) meses a partir da compra.
+  const dataConsiderada = purchaseDate
+    ? addMonths(purchaseDate, (installmentNumber ?? 1) - 1)
+    : date;
+
+  const installmentGroupKey =
+    purchaseDate && installmentNumber && totalInstallments
+      ? `${normalizeKey(tx.description)}|${purchaseDate.toISOString().slice(0, 10)}|${totalInstallments}`
+      : '';
 
   return {
     transactionId: tx.id || fallbackTransactionId(date),
@@ -93,10 +122,11 @@ function extractExtra(tx: Transaction, date: Date): TransactionExtra {
     boletoInterestAmount: boleto?.interestAmount ?? null,
     boletoDiscountAmount: boleto?.discountAmount ?? null,
     cardLastDigits: cc?.cardNumber ?? '',
-    installment: cc?.installmentNumber && cc?.totalInstallments ? `${cc.installmentNumber}/${cc.totalInstallments}` : '',
+    installment: installmentNumber && totalInstallments ? `${installmentNumber}/${totalInstallments}` : '',
+    installmentNumber,
     installmentTotalAmount: cc?.totalAmount ?? null,
     payeeMCC: cc?.payeeMCC ? String(cc.payeeMCC) : '',
-    purchaseDate: cc?.purchaseDate ? new Date(cc.purchaseDate) : null,
+    purchaseDate,
     billId: cc?.billId ?? '',
     billForecastMonth: cc?.billForecastDate ?? '',
     cardFeeType: [cc?.feeType, cc?.feeTypeAdditionalInfo].filter(Boolean).join(' — '),
@@ -104,6 +134,8 @@ function extractExtra(tx: Transaction, date: Date): TransactionExtra {
     balanceAfter: tx.balance ?? null,
     createdAt: new Date(tx.createdAt),
     updatedAt: new Date(tx.updatedAt),
+    dataConsiderada,
+    installmentGroupKey,
   };
 }
 
@@ -178,6 +210,56 @@ function monthKey(date: Date): string {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
 }
 
+// Lancamentos que o usuario ainda nao revisou (DataConsiderada no dia do
+// corte ou depois) sempre ficam pendentes, mesmo com um match exato no
+// historico — a sugestao continua vindo da classificacao normal, so a
+// confirmacao fica pendente ate ele checar pessoalmente. Usado tanto no
+// classificador principal quanto no enforceInstallmentConsistency abaixo
+// (cada parcela tem sua propria DataConsiderada projetada, entao o corte
+// precisa ser reavaliado por parcela, nao so uma vez pela lider do grupo).
+function applyReviewCutoff(
+  pendenteBase: boolean,
+  motivoBase: string,
+  dataConsiderada: Date
+): { pendente: boolean; motivo: string } {
+  const naoRevisadoAinda = REVISADO_ATE != null && dataConsiderada.toISOString().slice(0, 10) >= REVISADO_ATE;
+  return {
+    pendente: pendenteBase || naoRevisadoAinda,
+    motivo:
+      naoRevisadoAinda && !pendenteBase
+        ? `${motivoBase} Ainda nao revisado por voce (lançamento recente).`
+        : motivoBase,
+  };
+}
+
+// Todas as parcelas de uma mesma compra devem ter a mesma categoria/
+// subcategoria — a parcela de menor numero (idealmente a 1) manda nas
+// demais, mesmo que o classificador tenha dado palpites diferentes por
+// parcela (ex.: categoria do banco divergente entre parcelas).
+function enforceInstallmentConsistency(transactions: CategorizedTransaction[]): void {
+  const groups = new Map<string, CategorizedTransaction[]>();
+  for (const t of transactions) {
+    if (!t.installmentGroupKey) continue;
+    const group = groups.get(t.installmentGroupKey) ?? [];
+    group.push(t);
+    groups.set(t.installmentGroupKey, group);
+  }
+  for (const group of groups.values()) {
+    if (group.length < 2) continue;
+    const leader = group.reduce((a, b) => ((a.installmentNumber ?? 1) <= (b.installmentNumber ?? 1) ? a : b));
+    for (const t of group) {
+      if (t === leader) continue;
+      t.categoria = leader.categoria;
+      t.subcategoria = leader.subcategoria;
+      t.confianca = leader.confianca;
+      const motivoBase = `${leader.motivoClassificacao} (segue a classificacao da parcela ${leader.installment || '1'}.)`;
+      const { pendente, motivo } = applyReviewCutoff(leader.pendente, motivoBase, t.dataConsiderada);
+      t.pendente = pendente;
+      t.motivoClassificacao = motivo;
+    }
+  }
+}
+
 // Quando a fatura do cartao e paga pela mesma conta corrente conectada, o
 // Pluggy traz o mesmo valor duas vezes: como "Credit card payment" (credito)
 // na conta do cartao, e como um debito de boleto/pix na conta corrente. Os
@@ -218,9 +300,16 @@ export function buildReport(data: AccountTransactions[]): Report {
       const bankCategory = tx.category ?? UNCATEGORIZED;
       const classification = classifyTransaction(tx.description, tx.category ?? null);
       const knownInvalidReason = checkKnownInvalid(normalizeKey(tx.description));
+      const extra = extractExtra(tx, date);
+
+      const { pendente, motivo: motivoClassificacao } = applyReviewCutoff(
+        classification.pendente,
+        classification.motivo,
+        extra.dataConsiderada
+      );
 
       transactions.push({
-        ...extractExtra(tx, date),
+        ...extra,
         accountId: account.id,
         accountName: account.name,
         accountType: account.type,
@@ -230,8 +319,8 @@ export function buildReport(data: AccountTransactions[]): Report {
         categoria: classification.categoria,
         subcategoria: classification.subcategoria,
         confianca: classification.confianca,
-        pendente: classification.pendente,
-        motivoClassificacao: classification.motivo,
+        pendente,
+        motivoClassificacao,
         valido: !knownInvalidReason,
         motivoInvalido: knownInvalidReason ?? '',
         amount,
@@ -240,6 +329,7 @@ export function buildReport(data: AccountTransactions[]): Report {
     }
   }
 
+  enforceInstallmentConsistency(transactions);
   flagCardPaymentDuplicates(transactions);
   transactions.sort((a, b) => b.date.getTime() - a.date.getTime());
 

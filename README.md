@@ -103,6 +103,16 @@ Os arquivos sao gravados em `reports/<data-de-hoje>/`:
   - Cada transacao tem um **ID** (o id que o Pluggy atribui; se algum dia
     vier vazio, um id proprio e gerado a partir da data + um sufixo
     aleatorio).
+  - Alem da coluna "Data" (data da fatura, no caso de cartao), toda transacao
+    tem uma coluna **DataConsiderada**: a data real da compra e, em compras
+    parceladas, avancada um mes por parcela (parcela 3 de uma compra feita em
+    maio cai em julho) — e a data certa pra analisar quando o gasto realmente
+    aconteceu, em vez de quando ele apareceu na fatura.
+  - **Todas as parcelas de uma mesma compra sempre tem a mesma
+    Categoria/Subcategoria.** So a primeira parcela (a de menor numero que
+    apareceu no periodo buscado) e editavel; as demais ficam com um cadeado
+    🔒 e seguem automaticamente o que voce definir na primeira — tanto no
+    dashboard quanto na planilha.
   - As abas Categorias/Transacoes/Pendencias sao editaveis: alterar a
     Categoria/Subcategoria de qualquer linha recalcula os totais na hora.
   - A aba Transacoes traz **todos os campos que o Pluggy devolve** por
@@ -167,6 +177,22 @@ da linha correspondente na aba Transacoes. As colunas Categoria/Subcategoria
 tem uma lista suspensa (com as opcoes da sua taxonomia) para facilitar, mas
 aceitam qualquer texto — voce pode alterar qualquer classificacao, mesmo as
 que nao ficaram pendentes.
+
+No dashboard, a coluna **"Revisado?"** (planilha) / o checkbox de selecao
+(dashboard) ficam na frente, seguidos do motivo da pendencia — e da pra marcar
+varias linhas de uma vez e clicar em **"Marcar selecionados como revisados"**,
+em vez de uma por uma.
+
+### Corte de revisao ("o que ainda preciso conferir")
+
+`data/despesas-classificacao.json` guarda um campo `revisadoAte`: a data (com
+base na DataConsiderada real, nao projetada) ate onde voce ja revisou tudo
+manualmente da ultima vez que mandou a planilha de volta. Todo lancamento com
+DataConsiderada **nessa data ou depois** cai automaticamente na aba
+Pendencias — mesmo que a classificacao sugerida tenha confianca alta — porque
+ainda nao foi conferido por voce. Isso e recalculado a cada vez que voce manda
+uma planilha revisada: o novo corte passa a ser a data mais recente que
+aparece nela.
 
 **Importante:** os totais do relatorio (Categorias, HTML, etc.) sao calculados
 a partir da aba Transacoes. Se corrigir algo na aba Pendencias, repita a
