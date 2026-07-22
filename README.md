@@ -82,8 +82,9 @@ Os arquivos sao gravados em `reports/<data-de-hoje>/`:
   Transacoes e Pendencias de Classificacao.
   - Tem um **filtro de periodo** (De/Ate) no topo, valido para as 5 tabelas
     do relatorio (Maiores Gastos, Contas, Categorias, Transacoes e
-    Pendencias) — KPIs, graficos e tabelas sao recalculados na hora para o
-    intervalo escolhido, sem precisar de servidor.
+    Pendencias). Ele se aplica sozinho quando voce muda uma das datas, mas
+    tambem tem um botao **"Aplicar filtro"** pra forcar a atualizacao (e um
+    "Limpar filtro" pra voltar ao periodo completo).
   - **Cada cabecalho de coluna funciona como ordenador e filtro**: clique no
     nome da coluna pra ordenar (crescente/decrescente, alternando a cada
     clique), digite no campinho abaixo do nome pra filtrar por aquele valor.
@@ -92,12 +93,19 @@ Os arquivos sao gravados em `reports/<data-de-hoje>/`:
     aleatorio).
   - As abas Categorias/Transacoes/Pendencias sao editaveis: alterar a
     Categoria/Subcategoria de qualquer linha recalcula os totais na hora.
-  - A aba Transacoes traz todos os dados que o Pluggy devolveu para cada
-    lancamento (quando o banco/cartao os fornece): descricao original do
-    banco, estabelecimento (nome/CNPJ/CNAE), pagador/recebedor de
-    PIX/boleto (nome + CPF ou CNPJ), forma de pagamento, parcela e valor
-    total da compra, cartao (4 ultimos digitos), MCC, data da compra,
-    status no banco e saldo apos a transacao.
+  - A aba Transacoes traz **todos os campos que o Pluggy devolve** por
+    lancamento, exceto `categoryId` (a pedido do usuario): descricao
+    original do banco, moeda, valor na moeda da conta, codigos internos do
+    banco/Open Finance, estabelecimento (nome/CNPJ/CNAE), pagador/recebedor
+    de PIX/boleto (nome + CPF ou CNPJ), motivo do pagamento, tipo de
+    transferencia, dados do boleto (linha digitavel, codigo de barras,
+    multa/juros/desconto), parcela e valor total da compra, cartao (4
+    ultimos digitos), MCC, data da compra, **mes da fatura** (campo que nem
+    esta documentado no SDK oficial do Pluggy, so aparece na API — e o que
+    explica a coluna "Data" mostrar datas futuras em compras parceladas:
+    pra lancamentos de cartao, "Data" e a data da fatura, nao da compra),
+    ID/tipo de taxa do cartao, status no banco, saldo apos a transacao, e
+    quando o lancamento foi criado/atualizado no Pluggy.
   - A aba Transacoes tem um botao **"Exportar CSV"** que baixa a tabela
     inteira (respeitando o filtro de periodo, com as edicoes que voce ja fez
     na tela) num arquivo `.csv` pronto pra abrir no Excel/Google Sheets —
@@ -148,8 +156,13 @@ a partir da aba Transacoes. Se corrigir algo na aba Pendencias, repita a
 mesma correcao na linha indicada da aba Transacoes.
 
 As regras de classificacao (taxonomia + historico de estabelecimentos ja
-classificados) ficam em `data/despesas-classificacao.json`, gerado uma vez a
-partir da planilha pessoal do usuario.
+classificados) ficam em `data/despesas-classificacao.json`. Esse arquivo pode
+ser atualizado sempre que o usuario reclassificar transacoes numa planilha
+exportada e mandar de volta — nesse caso a classificacao **so vem do
+historico** (match exato ou por prefixo) ou do palpite generico baseado na
+categoria do banco; nenhuma categoria/subcategoria nova e criada por conta
+propria, so as que ja existem na taxonomia ou que o usuario incluiu
+explicitamente na planilha.
 
 ## Coluna "Valido" (evita contar a fatura do cartao 2x)
 
@@ -170,6 +183,12 @@ Gastos.
 Voce tem controle total: a coluna `Valido?` e editavel (dropdown Sim/Nao no
 Excel, checkbox no dashboard) — se a deteccao errar em algum caso especifico,
 so mudar o valor manualmente. O motivo da invalidacao fica na coluna ao lado.
+
+Alem da deteccao automatica, `data/despesas-classificacao.json` guarda uma
+lista de descricoes que o usuario ja marcou como invalidas manualmente (ex.:
+transferencias entre contas proprias, tipo "Pix enviado FELIPE ..." pro
+proprio nome) — essas continuam marcadas `Valido? = Nao` sempre que a mesma
+descricao aparecer de novo em relatorios futuros, ate o usuario reverter.
 
 ## Estrutura
 

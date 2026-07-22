@@ -14,20 +14,39 @@ interface ClientTransaction {
   categoria: string;
   subcategoria: string;
   bankCategory: string;
+  currencyCode: string;
+  amountInAccountCurrency: number | null;
+  providerCode: string;
+  providerId: string;
   merchantName: string;
   merchantCnpj: string;
   merchantCnae: string;
   payer: string;
   receiver: string;
   paymentMethod: string;
+  paymentReason: string;
+  transferType: string;
+  receiverReferenceId: string;
+  boletoDigitableLine: string;
+  boletoBarcode: string;
+  boletoBaseAmount: number | null;
+  boletoPenaltyAmount: number | null;
+  boletoInterestAmount: number | null;
+  boletoDiscountAmount: number | null;
   operationType: string;
   installment: string;
   installmentTotalAmount: number | null;
   cardLastDigits: string;
   payeeMCC: string;
   purchaseDateLabel: string;
+  billId: string;
+  billForecastMonth: string;
+  cardFeeType: string;
+  cardOtherCreditType: string;
   statusBanco: string;
   balanceAfter: number | null;
+  createdAtLabel: string;
+  updatedAtLabel: string;
   pendente: boolean;
   motivo: string;
   valido: boolean;
@@ -54,20 +73,39 @@ function toClientTransactions(report: Report): ClientTransaction[] {
     categoria: t.categoria,
     subcategoria: t.subcategoria,
     bankCategory: t.bankCategory,
+    currencyCode: t.currencyCode,
+    amountInAccountCurrency: t.amountInAccountCurrency,
+    providerCode: t.providerCode,
+    providerId: t.providerId,
     merchantName: t.merchantName,
     merchantCnpj: t.merchantCnpj,
     merchantCnae: t.merchantCnae,
     payer: t.payer,
     receiver: t.receiver,
     paymentMethod: t.paymentMethod,
+    paymentReason: t.paymentReason,
+    transferType: t.transferType,
+    receiverReferenceId: t.receiverReferenceId,
+    boletoDigitableLine: t.boletoDigitableLine,
+    boletoBarcode: t.boletoBarcode,
+    boletoBaseAmount: t.boletoBaseAmount,
+    boletoPenaltyAmount: t.boletoPenaltyAmount,
+    boletoInterestAmount: t.boletoInterestAmount,
+    boletoDiscountAmount: t.boletoDiscountAmount,
     operationType: t.operationType,
     installment: t.installment,
     installmentTotalAmount: t.installmentTotalAmount,
     cardLastDigits: t.cardLastDigits,
     payeeMCC: t.payeeMCC,
     purchaseDateLabel: t.purchaseDate ? t.purchaseDate.toLocaleDateString('pt-BR') : '',
+    billId: t.billId,
+    billForecastMonth: t.billForecastMonth,
+    cardFeeType: t.cardFeeType,
+    cardOtherCreditType: t.cardOtherCreditType,
     statusBanco: t.statusBanco,
     balanceAfter: t.balanceAfter,
+    createdAtLabel: t.createdAt.toLocaleString('pt-BR'),
+    updatedAtLabel: t.updatedAt.toLocaleString('pt-BR'),
     pendente: t.pendente,
     motivo: t.motivoClassificacao,
     valido: t.valido,
@@ -255,20 +293,39 @@ function clientScript(): string {
     { key: 'motivoInvalido', label: 'Motivo (invalido)', value: (t) => t.motivoInvalido },
     { key: 'bankCategory', label: 'Categoria do banco', value: (t) => t.bankCategory },
     { key: 'descriptionRaw', label: 'Descricao original do banco', value: (t) => t.descriptionRaw },
+    { key: 'currencyCode', label: 'Moeda', value: (t) => t.currencyCode },
+    { key: 'amountInAccountCurrency', label: 'Valor na moeda da conta', value: (t) => t.amountInAccountCurrency, type: 'currency' },
+    { key: 'providerCode', label: 'Codigo do banco (interno)', value: (t) => t.providerCode },
+    { key: 'providerId', label: 'Provider ID (Open Finance)', value: (t) => t.providerId },
     { key: 'merchantName', label: 'Estabelecimento', value: (t) => t.merchantName },
     { key: 'merchantCnpj', label: 'CNPJ do estabelecimento', value: (t) => t.merchantCnpj },
     { key: 'merchantCnae', label: 'CNAE', value: (t) => t.merchantCnae },
     { key: 'payer', label: 'Pagador', value: (t) => t.payer },
     { key: 'receiver', label: 'Recebedor', value: (t) => t.receiver },
     { key: 'paymentMethod', label: 'Forma de pagamento', value: (t) => t.paymentMethod },
+    { key: 'paymentReason', label: 'Motivo do pagamento', value: (t) => t.paymentReason },
+    { key: 'transferType', label: 'Tipo de transferencia', value: (t) => t.transferType },
+    { key: 'receiverReferenceId', label: 'Identificador do recebedor', value: (t) => t.receiverReferenceId },
+    { key: 'boletoDigitableLine', label: 'Linha digitavel (boleto)', value: (t) => t.boletoDigitableLine },
+    { key: 'boletoBarcode', label: 'Codigo de barras (boleto)', value: (t) => t.boletoBarcode },
+    { key: 'boletoBaseAmount', label: 'Valor base (boleto)', value: (t) => t.boletoBaseAmount, type: 'currency' },
+    { key: 'boletoPenaltyAmount', label: 'Multa (boleto)', value: (t) => t.boletoPenaltyAmount, type: 'currency' },
+    { key: 'boletoInterestAmount', label: 'Juros (boleto)', value: (t) => t.boletoInterestAmount, type: 'currency' },
+    { key: 'boletoDiscountAmount', label: 'Desconto (boleto)', value: (t) => t.boletoDiscountAmount, type: 'currency' },
     { key: 'operationType', label: 'Tipo de operacao', value: (t) => t.operationType },
     { key: 'installment', label: 'Parcela', value: (t) => t.installment },
     { key: 'installmentTotalAmount', label: 'Valor total da compra', value: (t) => t.installmentTotalAmount, type: 'currency' },
     { key: 'cardLastDigits', label: 'Cartao (final)', value: (t) => t.cardLastDigits },
     { key: 'payeeMCC', label: 'MCC', value: (t) => t.payeeMCC },
     { key: 'purchaseDateLabel', label: 'Data da compra', value: (t) => t.purchaseDateLabel },
+    { key: 'billId', label: 'ID da fatura', value: (t) => t.billId },
+    { key: 'billForecastMonth', label: 'Mes da fatura', value: (t) => t.billForecastMonth },
+    { key: 'cardFeeType', label: 'Tipo de taxa (cartao)', value: (t) => t.cardFeeType },
+    { key: 'cardOtherCreditType', label: 'Outro tipo de credito (cartao)', value: (t) => t.cardOtherCreditType },
     { key: 'statusBanco', label: 'Status (banco)', value: (t) => t.statusBanco },
     { key: 'balanceAfter', label: 'Saldo apos', value: (t) => t.balanceAfter, type: 'currency' },
+    { key: 'createdAtLabel', label: 'Criado no Pluggy em', value: (t) => t.createdAtLabel },
+    { key: 'updatedAtLabel', label: 'Atualizado no Pluggy em', value: (t) => t.updatedAtLabel },
     { key: 'isExpense', label: 'Tipo', value: (t) => (t.isExpense ? 'Gasto' : 'Receita') },
     { key: 'amount', label: 'Valor', value: (t) => t.amount, type: 'currency' },
   ];
@@ -470,6 +527,7 @@ function clientScript(): string {
     Object.keys(TABLE_DEFS).forEach(renderTable);
   }
 
+  document.getElementById('filter-apply').addEventListener('click', renderAll);
   fromInput.addEventListener('change', renderAll);
   toInput.addEventListener('change', renderAll);
   document.getElementById('filter-clear').addEventListener('click', () => {
@@ -713,6 +771,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
     <div class="filter-bar">
       <label>De <input type="date" id="filter-from"></label>
       <label>Ate <input type="date" id="filter-to"></label>
+      <button type="button" id="filter-apply" class="btn-export">Aplicar filtro</button>
       <button type="button" id="filter-clear">Limpar filtro</button>
       <span class="filter-hint">O periodo selecionado vale para todas as abas.</span>
     </div>

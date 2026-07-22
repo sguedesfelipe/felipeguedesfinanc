@@ -9,6 +9,7 @@ interface RulesFile {
   categories: Record<string, string[]>;
   rulesFull: Record<string, [string, string, number]>;
   rulesPrefix: Record<string, [string, string, number]>;
+  invalidFull: Record<string, string>;
 }
 
 const rules: RulesFile = JSON.parse(fs.readFileSync(DATA_PATH, 'utf-8'));
@@ -34,7 +35,7 @@ export interface Classification {
 // Descricoes de cartao/conta costumam trazer sufixo de parcela ou data no
 // final (ex: "AMAZONMKTPLC*WEBCO12/12", "PIX TRANSF LINCOLN02/01") — removemos
 // para conseguir casar o mesmo estabelecimento em meses diferentes.
-function normalizeKey(description: string): string {
+export function normalizeKey(description: string): string {
   return description
     .trim()
     .toUpperCase()
@@ -47,8 +48,47 @@ function prefixKey(normalizedDescription: string): string {
   return normalizedDescription.split('*')[0].trim();
 }
 
+// Chave "solta" pra comparar categoria/subcategoria ignorando acento,
+// maiusculas e pontuacao (a taxonomia do usuario ja apareceu tanto em
+// "saúde e bem-estar" quanto "SAUDE E BEM ESTAR" em revisoes diferentes).
+function fold(value: string): string {
+  return value
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+}
+
+interface CategoryIndexEntry {
+  categoria: string;
+  subcategorias: Map<string, string>; // fold(subcategoria) -> subcategoria canonica
+}
+
+const categoryIndex = new Map<string, CategoryIndexEntry>(); // fold(categoria) -> entry
+for (const [categoria, subcategorias] of Object.entries(rules.categories)) {
+  categoryIndex.set(fold(categoria), {
+    categoria,
+    subcategorias: new Map(subcategorias.map((s) => [fold(s), s])),
+  });
+}
+
+// Resolve um par categoria/subcategoria (em qualquer grafia) para a grafia
+// canonica atual da taxonomia. Usado pelo mapa de palpites abaixo, pra nao
+// quebrar toda vez que o usuario reclassifica a planilha e a grafia muda.
+function resolveCanonical(categoria: string, subcategoria: string): [string, string] {
+  const entry = categoryIndex.get(fold(categoria));
+  if (!entry) return [categoria, subcategoria];
+  const canonSub = entry.subcategorias.get(fold(subcategoria));
+  return [entry.categoria, canonSub ?? subcategoria];
+}
+
+const OUTROS = resolveCanonical('outros', 'outros');
+
 // Categoria generica que o Pluggy atribui (em ingles) -> melhor palpite na
-// taxonomia do usuario, para quando nao ha nenhum historico parecido.
+// taxonomia do usuario, para quando nao ha nenhum historico parecido. A
+// grafia aqui nao precisa ficar em dia com a taxonomia atual — resolveCanonical
+// acha a forma canonica correspondente (ou falha alto embaixo se ela sumiu).
 const FALLBACK_BY_PLUGGY_CATEGORY: Record<string, [string, string]> = {
   Groceries: ['alimentação', 'supermercado'],
   'Eating out': ['compras e lazer', 'Restaurante ou Delivery'],
@@ -93,16 +133,18 @@ const FALLBACK_BY_PLUGGY_CATEGORY: Record<string, [string, string]> = {
   'Proceeds interests and dividends': ['investimentos', 'proventos de investimentos'],
 };
 
-// Falha cedo se algum palpite acima referenciar uma categoria/subcategoria
-// que nao existe mais na taxonomia gerada a partir da planilha do usuario.
+// Falha cedo se algum palpite acima referenciar uma categoria que sumiu de
+// vez da taxonomia (subcategoria pode ter mudado de grafia sem problema,
+// resolveCanonical cobre isso — so a categoria em si precisa mesmo existir).
+const RESOLVED_FALLBACK = new Map<string, [string, string]>();
 for (const [pluggyCategory, [categoria, subcategoria]] of Object.entries(FALLBACK_BY_PLUGGY_CATEGORY)) {
-  const subcategorias = rules.categories[categoria];
-  if (!subcategorias || !subcategorias.includes(subcategoria)) {
+  if (!categoryIndex.has(fold(categoria))) {
     throw new Error(
-      `FALLBACK_BY_PLUGGY_CATEGORY["${pluggyCategory}"] aponta para "${categoria}" / "${subcategoria}", ` +
-        'que nao existe em data/despesas-classificacao.json. Atualize o mapeamento em src/classify.ts.'
+      `FALLBACK_BY_PLUGGY_CATEGORY["${pluggyCategory}"] aponta para a categoria "${categoria}", ` +
+        'que nao existe mais em data/despesas-classificacao.json. Atualize o mapeamento em src/classify.ts.'
     );
   }
+  RESOLVED_FALLBACK.set(pluggyCategory, resolveCanonical(categoria, subcategoria));
 }
 
 export function classifyTransaction(
@@ -133,7 +175,7 @@ export function classifyTransaction(
     };
   }
 
-  const fallback = pluggyCategory ? FALLBACK_BY_PLUGGY_CATEGORY[pluggyCategory] : undefined;
+  const fallback = pluggyCategory ? RESOLVED_FALLBACK.get(pluggyCategory) : undefined;
   if (fallback) {
     return {
       categoria: fallback[0],
@@ -145,12 +187,21 @@ export function classifyTransaction(
   }
 
   return {
-    categoria: 'outros',
-    subcategoria: 'outros',
+    categoria: OUTROS[0],
+    subcategoria: OUTROS[1],
     confianca: 'baixa',
     pendente: true,
     motivo: pluggyCategory
       ? `Sem histórico e sem palpite para a categoria do banco ("${pluggyCategory}").`
       : 'Sem histórico e sem categoria do banco para basear um palpite.',
   };
+}
+
+// Descricoes que o usuario ja marcou como invalidas antes (ex.: transferencia
+// entre contas proprias, pagamento de fatura) continuam invalidas por padrao
+// quando aparecerem de novo — mas o usuario sempre pode reverter na planilha.
+// Recebe a chave ja normalizada (normalizeKey) pra nao recalcular a mesma
+// coisa que classifyTransaction ja calculou pra essa transacao.
+export function checkKnownInvalid(normalizedDescription: string): string | null {
+  return rules.invalidFull[normalizedDescription] ?? null;
 }
