@@ -263,9 +263,10 @@ export async function writeSpreadsheet(report: Report, filePath: string): Promis
     { header: 'DataConsiderada', key: 'dataConsiderada', width: 16 },
     { header: 'Conta', key: 'account', width: 22 },
     { header: 'Descricao', key: 'description', width: 40 },
+    { header: 'Valor', key: 'amount', width: 16 },
+    { header: 'Tipo', key: 'tipo', width: 12 },
     { header: 'Categoria sugerida', key: 'categoria', width: 26 },
     { header: 'Subcategoria sugerida', key: 'subcategoria', width: 26 },
-    { header: 'Valor', key: 'amount', width: 16 },
     { header: 'Linha na aba Transacoes', key: 'linha', width: 20 },
   ];
   report.transactions.forEach((t, index) => {
@@ -278,9 +279,10 @@ export async function writeSpreadsheet(report: Report, filePath: string): Promis
       dataConsiderada: t.dataConsiderada,
       account: t.accountName,
       description: t.description,
+      amount: t.amount,
+      tipo: t.isExpense ? 'Gasto' : 'Receita',
       categoria: t.categoria,
       subcategoria: t.subcategoria,
-      amount: t.amount,
       linha: index + 2,
     });
   });

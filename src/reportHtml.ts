@@ -458,6 +458,7 @@ function clientScript(): string {
 
     renderTimeSeriesChart(filtered);
     renderCategoriasChart(filtered);
+    renderCategoriaTimeSeriesChart(filtered);
   }
 
   const granularitySelect = document.getElementById('chart-granularity');
@@ -494,6 +495,84 @@ function clientScript(): string {
         .join('') +
       '</div>';
   }
+
+  // --- grafico "Gastos por categoria ao longo do tempo": uma barra
+  // empilhada por periodo, uma cor por categoria. So as categorias com mais
+  // gasto no periodo filtrado ganham cor propria (limite de 7, a mesma
+  // ordem categorica validada do resto do relatorio); o restante cai em
+  // "Outros" pra nao estourar o numero de cores distinguiveis num grafico. ---
+  const CATEGORY_SERIES_COLORS = [
+    'var(--series-1)', 'var(--series-2)', 'var(--series-3)', 'var(--series-4)',
+    'var(--series-5)', 'var(--series-6)', 'var(--series-7)',
+  ];
+  const OUTROS_COLOR = 'var(--baseline)';
+
+  function computeCategoriaTimeSeries(filtered, granularity) {
+    const totalsByCategory = new Map();
+    const bucketMap = new Map();
+    for (const t of filtered) {
+      if (!t.valido || !t.isExpense) continue;
+      const cat = t.categoria || '(sem categoria)';
+      totalsByCategory.set(cat, (totalsByCategory.get(cat) || 0) + t.amount);
+      const key = bucketKey(t, granularity);
+      const byCat = bucketMap.get(key) || new Map();
+      byCat.set(cat, (byCat.get(cat) || 0) + t.amount);
+      bucketMap.set(key, byCat);
+    }
+
+    const topCategories = [...totalsByCategory.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, CATEGORY_SERIES_COLORS.length)
+      .map(([cat]) => cat);
+    const hasOutros = totalsByCategory.size > topCategories.length;
+    const series = hasOutros ? topCategories.concat(['Outros']) : topCategories;
+    const colors = topCategories.map((_, i) => CATEGORY_SERIES_COLORS[i]);
+    if (hasOutros) colors.push(OUTROS_COLOR);
+
+    const buckets = [...bucketMap.keys()].sort().map((key) => {
+      const byCat = bucketMap.get(key);
+      const values = topCategories.map((cat) => byCat.get(cat) || 0);
+      if (hasOutros) {
+        let outros = 0;
+        byCat.forEach((v, cat) => { if (!topCategories.includes(cat)) outros += v; });
+        values.push(outros);
+      }
+      return { key, values, total: values.reduce((a, b) => a + b, 0) };
+    });
+
+    return { series, colors, buckets };
+  }
+
+  const categoriaGranularitySelect = document.getElementById('categoria-chart-granularity');
+  function renderCategoriaTimeSeriesChart(filtered) {
+    const granularity = categoriaGranularitySelect.value;
+    const { series, colors, buckets } = computeCategoriaTimeSeries(filtered, granularity);
+    const max = Math.max(1, ...buckets.map((b) => b.total));
+
+    document.getElementById('categorias-timeseries-chart').innerHTML =
+      '<div class="stack-chart">' +
+      buckets
+        .map((b) => {
+          const segs = b.values
+            .map((v, i) => {
+              if (v <= 0) return '';
+              const pct = Math.max(0.6, (v / max) * 100);
+              return '<div class="stack-seg" style="height:' + pct + '%;background:' + colors[i] +
+                '" title="' + esc(series[i]) + ' — ' + bucketLabel(b.key, granularity) + ': ' + brl(v) + '"></div>';
+            })
+            .join('');
+          return '<div class="stack-col"><div class="stack-track">' + segs + '</div><div class="stack-label">' +
+            bucketLabel(b.key, granularity) + '</div></div>';
+        })
+        .join('') +
+      '</div>';
+
+    document.getElementById('categorias-timeseries-legend').innerHTML = series
+      .map((cat, i) => '<div class="stack-legend-item"><span class="stack-legend-swatch" style="background:' +
+        colors[i] + '"></span>' + esc(cat) + '</div>')
+      .join('');
+  }
+  categoriaGranularitySelect.addEventListener('change', () => renderCategoriaTimeSeriesChart(getFiltered()));
 
   // --- tabelas genericas: cabecalho clicavel pra ordenar + filtro por coluna ---
   const TX_COLUMNS = [
@@ -545,6 +624,14 @@ function clientScript(): string {
     { key: 'isExpense', label: 'Tipo', value: (t) => (t.isExpense ? 'Gasto' : 'Receita') },
     { key: 'amount', label: 'Valor', value: (t) => t.amount, type: 'currency' },
   ];
+  // Move colunas pra logo depois de "Descricao" numa copia de TX_COLUMNS,
+  // preservando a ordem/definicao original de cada coluna.
+  function withColumnsMovedAfter(columns, afterKey, keysToMove) {
+    const byKey = new Map(columns.map((c) => [c.key, c]));
+    const rest = columns.filter((c) => !keysToMove.includes(c.key));
+    const afterIdx = rest.findIndex((c) => c.key === afterKey);
+    return [...rest.slice(0, afterIdx + 1), ...keysToMove.map((k) => byKey.get(k)), ...rest.slice(afterIdx + 1)];
+  }
   const PEND_COLUMNS = [
     {
       key: '_select',
@@ -556,7 +643,8 @@ function clientScript(): string {
     },
     { key: '_acao', label: '', value: () => '', render: (t) => '<button type="button" class="btn-revisado" data-id="' + t.id + '">Marcar como revisado</button>', noSort: true, noFilter: true },
     { key: 'motivo', label: 'Motivo da pendencia', value: (t) => t.motivo },
-  ].concat(TX_COLUMNS);
+    ...withColumnsMovedAfter(TX_COLUMNS, 'description', ['amount', 'isExpense']),
+  ];
   const CAT_COLUMNS = [
     { key: 'category', label: 'Categoria', value: (c) => c.category },
     { key: 'total', label: 'Total gasto', value: (c) => c.total, type: 'currency' },
@@ -708,6 +796,7 @@ function clientScript(): string {
       });
       renderTable('categorias-table');
       renderCategoriasChart(getFiltered());
+      renderCategoriaTimeSeriesChart(getFiltered());
     }
   });
 
@@ -835,6 +924,12 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
     --border:         rgba(11,11,11,0.10);
     --series-1:       #2a78d6;
     --series-1-soft:  #cde2fb;
+    --series-2:       #eb6834;
+    --series-3:       #1baf7a;
+    --series-4:       #eda100;
+    --series-5:       #e87ba4;
+    --series-6:       #008300;
+    --series-7:       #4a3aa7;
     --good:           #006300;
     --warn:           #9a5b00;
   }
@@ -851,6 +946,12 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
       --border:         rgba(255,255,255,0.10);
       --series-1:       #3987e5;
       --series-1-soft:  #184f95;
+      --series-2:       #d95926;
+      --series-3:       #199e70;
+      --series-4:       #c98500;
+      --series-5:       #d55181;
+      --series-6:       #008300;
+      --series-7:       #9085e9;
       --good:           #0ca30c;
       --warn:           #e0a030;
     }
@@ -967,6 +1068,23 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
   .hbar-track { background: var(--series-1-soft); border-radius: 4px; height: 14px; }
   .hbar-fill { background: var(--series-1); height: 100%; border-radius: 4px; min-width: 4px; }
   .hbar-value { font-size: 13px; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+
+  .stack-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    height: 220px;
+    border-bottom: 1px solid var(--baseline);
+    padding-top: 8px;
+    overflow-x: auto;
+  }
+  .stack-col { flex: 1 1 28px; min-width: 28px; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; gap: 6px; }
+  .stack-track { width: 100%; height: 100%; display: flex; flex-direction: column-reverse; gap: 2px; }
+  .stack-seg { width: 100%; min-height: 2px; border-radius: 2px; }
+  .stack-label { font-size: 10px; color: var(--text-muted); white-space: nowrap; }
+  .stack-legend { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 14px; font-size: 12px; color: var(--text-secondary); }
+  .stack-legend-item { display: flex; align-items: center; gap: 6px; }
+  .stack-legend-swatch { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
 
   .table-scroll { overflow-x: auto; max-height: 70vh; }
   table.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -1162,6 +1280,20 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
       <section class="card">
         <h2>Gastos por categoria</h2>
         <div id="categorias-chart"></div>
+      </section>
+      <section class="card">
+        <div class="chart-header">
+          <h2>Gastos por categoria ao longo do tempo</h2>
+          <select id="categoria-chart-granularity">
+            <option value="dia">Por dia</option>
+            <option value="mes" selected>Acumulado por mes</option>
+            <option value="trimestre">Acumulado por trimestre</option>
+            <option value="semestre">Acumulado por semestre</option>
+            <option value="ano">Acumulado por ano</option>
+          </select>
+        </div>
+        <div id="categorias-timeseries-chart"></div>
+        <div id="categorias-timeseries-legend" class="stack-legend"></div>
       </section>
       <section class="card">
         <div class="table-scroll">

@@ -130,7 +130,7 @@
     "TED RECEBIDA FELIPE HENRIQUE SILVA GUEDES": "Classificado como invalido pelo usuario na revisao manual.",
     "TED RECEBIDA TED 104.0000CAIXA ECON F": "Classificado como invalido pelo usuario na revisao manual."
   },
-  "revisadoAte": "2026-07-21",
+  "revisadoAte": "2026-07-22",
   "rulesFull": {
     "00153 SH BOULEVARD BH": [
       "COMPRAS E LAZER",
@@ -592,6 +592,11 @@
       "COMBUSTIVEL",
       1
     ],
+    "AYLO INDUSTRIA E C": [
+      "GASTOS LUISA",
+      "GASTOS LUISA",
+      9999
+    ],
     "AZUL LINHAS AEREAS BRAS": [
       "ASSINATURAS",
       "AZUL",
@@ -671,6 +676,11 @@
       "ALIMENTACAO",
       "ALIMENTACAO TRABALHO",
       1
+    ],
+    "BEM - PRADOBELO HORIZONTBR": [
+      "ALIMENTACAO",
+      "SUPERMERCADO",
+      9999
     ],
     "BEM SION": [
       "ALIMENTACAO",
@@ -1862,6 +1872,11 @@
       "RESTAURANTE OU DELIVERY",
       1
     ],
+    "FCSN COMERCIO LTDABELO HORIZONTBR": [
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
+      9999
+    ],
     "FEL EMPREENDIMENTOS C": [
       "ALIMENTACAO",
       "SUPERMERCADO",
@@ -2236,6 +2251,11 @@
       "COMPRAS E LAZER",
       "RESTAURANTE OU DELIVERY",
       1
+    ],
+    "IFD*DINOS ALIMENTOS LTBELO HORIZONTBR": [
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
+      9999
     ],
     "IFD*DINOS ALIMENTOS LTD": [
       "COMPRAS E LAZER",
@@ -2682,6 +2702,11 @@
       "ROUPAS E ACESSORIOS",
       9999
     ],
+    "LOJAS RENNER FL 340BELO HORIZONTBR": [
+      "GASTOS LUISA",
+      "GASTOS LUISA",
+      9999
+    ],
     "LOPES E TEIXEIRA C": [
       "COMPRAS E LAZER",
       "ROUPAS E ACESSORIOS",
@@ -3041,6 +3066,11 @@
       "COMPRAS E LAZER",
       "ELETRONICOS",
       3
+    ],
+    "MGT COMERCIO DE ALIMEBELO HORIZONTBR": [
+      "ALIMENTACAO",
+      "SUPERMERCADO",
+      9999
     ],
     "MICHAEL KORS - 135": [
       "VIAGEM",
@@ -4280,6 +4310,11 @@
     "PIX ENVIADO CAMILA SILVA CORREA": [
       "MORADIA",
       "BABA",
+      9999
+    ],
+    "PIX ENVIADO CARLA ANTONIA ALVES MARINHO DE SOUZA": [
+      "OUTROS",
+      "OUTROS",
       9999
     ],
     "PIX ENVIADO CELIA TADEU PEREIRA SOARES": [
@@ -5757,6 +5792,11 @@
       "ALIMENTACAO TRABALHO",
       1
     ],
+    "RIACHUELO FILIAL 149BELO HORIZONTBR": [
+      "GASTOS LUISA",
+      "GASTOS LUISA",
+      9999
+    ],
     "RIBER PAOBELO HORIZONTBR": [
       "ALIMENTACAO",
       "SUPERMERCADO",
@@ -6013,6 +6053,11 @@
       9999
     ],
     "SHOPEE *PRATITOCONTAGEMBR": [
+      "GASTOS LUISA",
+      "GASTOS LUISA",
+      9999
+    ],
+    "SHOPEE *RLFDISTRIBUIDOBADY BASSITTBR": [
       "GASTOS LUISA",
       "GASTOS LUISA",
       9999
@@ -6565,6 +6610,11 @@
     "VACA LOKA BELO HORIZONT BR": [
       "ALIMENTACAO",
       "ALIMENTACAO TRABALHO",
+      9999
+    ],
+    "VACA LOKA ESPETOS E BUBELO HORIZONTBR": [
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       9999
     ],
     "VALE ALIMENTAÇÃO": [

@@ -83,6 +83,14 @@ Pra comecar numa data especifica (em vez de "ultimos N meses"), use `--from`
 npm run report -- --from=2025-01-01
 ```
 
+**Limite de historico:** `--from` so controla a partir de qual data o script
+*pede* transacoes — quanto o Pluggy de fato *tem* depende de quanto historico
+o banco/cartao compartilhou quando a conexao foi feita (normalmente ~12 meses
+em Open Finance no Brasil, contados a partir da data da conexao, nao da data
+de hoje). Pedir uma data anterior a esse limite nao traz mais nada — o script
+so devolve o que a API retornar. Transacoes mais antigas que isso precisam ser
+adicionadas manualmente (ex.: extrato do proprio banco), o Pluggy nao as tem.
+
 Os arquivos sao gravados em `reports/<data-de-hoje>/`:
 
 - `relatorio-gastos.html` — dashboard com abas: Resumo, Categorias,
@@ -97,9 +105,13 @@ Os arquivos sao gravados em `reports/<data-de-hoje>/`:
     filtro**: clique no nome da coluna pra ordenar (crescente/decrescente,
     alternando a cada clique), digite no campinho abaixo do nome pra
     filtrar por aquele valor especifico daquela tabela.
-  - O grafico "Gastos ao longo do tempo" tem um seletor de granularidade:
-    **por dia**, ou acumulado por **mes**, **trimestre**, **semestre** ou
-    **ano**.
+  - O grafico "Gastos ao longo do tempo" (aba Resumo) e o novo "Gastos por
+    categoria ao longo do tempo" (aba Categorias, barras empilhadas por
+    periodo, uma cor por categoria) tem cada um seu proprio seletor de
+    granularidade: **por dia**, ou acumulado por **mes**, **trimestre**,
+    **semestre** ou **ano**. No grafico por categoria, so as categorias com
+    mais gasto no periodo filtrado ganham cor propria (ate 7); o resto entra
+    em "Outros" pra nao poluir o grafico.
   - Cada transacao tem um **ID** (o id que o Pluggy atribui; se algum dia
     vier vazio, um id proprio e gerado a partir da data + um sufixo
     aleatorio).
