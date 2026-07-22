@@ -76,18 +76,30 @@ pasta de saida:
 npm run report -- --months=12 --out=meus-relatorios
 ```
 
+Pra comecar numa data especifica (em vez de "ultimos N meses"), use `--from`
+— tem prioridade sobre `--months`:
+
+```bash
+npm run report -- --from=2025-01-01
+```
+
 Os arquivos sao gravados em `reports/<data-de-hoje>/`:
 
 - `relatorio-gastos.html` — dashboard com abas: Resumo, Categorias,
   Transacoes e Pendencias de Classificacao.
-  - Tem um **filtro de periodo** (De/Ate) no topo, valido para as 5 tabelas
-    do relatorio (Maiores Gastos, Contas, Categorias, Transacoes e
-    Pendencias). Ele se aplica sozinho quando voce muda uma das datas, mas
-    tambem tem um botao **"Aplicar filtro"** pra forcar a atualizacao (e um
-    "Limpar filtro" pra voltar ao periodo completo).
-  - **Cada cabecalho de coluna funciona como ordenador e filtro**: clique no
-    nome da coluna pra ordenar (crescente/decrescente, alternando a cada
-    clique), digite no campinho abaixo do nome pra filtrar por aquele valor.
+  - Barra de filtros no topo, valida para as 5 tabelas e os graficos:
+    **periodo** (De/Ate), **Categoria**, **Subcategoria** (so mostra as da
+    categoria escolhida), **Valido**, **Conta**, **Status (banco)** e
+    **Tipo** (Gasto/Receita). Tem um botao **"Aplicar filtro"** (alem de
+    aplicar sozinho quando voce muda uma data) e um **"Limpar filtro"** que
+    reseta tudo.
+  - **Cada cabecalho de coluna das tabelas funciona como ordenador e
+    filtro**: clique no nome da coluna pra ordenar (crescente/decrescente,
+    alternando a cada clique), digite no campinho abaixo do nome pra
+    filtrar por aquele valor especifico daquela tabela.
+  - O grafico "Gastos ao longo do tempo" tem um seletor de granularidade:
+    **por dia**, ou acumulado por **mes**, **trimestre**, **semestre** ou
+    **ano**.
   - Cada transacao tem um **ID** (o id que o Pluggy atribui; se algum dia
     vier vazio, um id proprio e gerado a partir da data + um sufixo
     aleatorio).
@@ -110,10 +122,15 @@ Os arquivos sao gravados em `reports/<data-de-hoje>/`:
     inteira (respeitando o filtro de periodo, com as edicoes que voce ja fez
     na tela) num arquivo `.csv` pronto pra abrir no Excel/Google Sheets —
     mais facil de revisar em lote do que clicar linha por linha na pagina.
-  - Essas edicoes, o filtro de periodo e os filtros/ordenacao de coluna
-    valem so nessa pagina aberta — para valerem no proximo `npm run
-    report`, repita a mesma classificacao na planilha `.xlsx` (ou exporte o
-    CSV, ajuste e mande de volta).
+  - Edicoes de Categoria/Subcategoria/Valido **sao salvas automaticamente no
+    navegador** (localStorage) — fechar a aba, dar F5 ou reabrir esse mesmo
+    arquivo depois nao perde o que voce mudou. Um aviso aparece no topo
+    quando alguma edicao salva e restaurada, e tem um link no rodape pra
+    apagar as edicoes salvas. Isso **nao** substitui mandar a planilha de
+    volta: essas edicoes so existem nesse navegador, nesse arquivo — um
+    relatorio novo gerado depois (`npm run report`) nao as ve. Pra elas
+    valerem permanentemente (inclusive em relatorios futuros), exporte o CSV
+    na aba Transacoes e mande de volta, do jeito que ja fizemos antes.
 - `relatorio-gastos.xlsx` — planilha com abas de Resumo, Resumo Mensal,
   Categorias, Maiores Gastos, Contas, a lista completa de Transacoes (com as
   mesmas colunas extras do dashboard, incluindo ID e Valido) e Pendencias de

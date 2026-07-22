@@ -5,6 +5,7 @@ export interface Config {
   clientSecret: string;
   itemIds: string[];
   months: number;
+  dateFrom: string | null;
   outDir: string;
 }
 
@@ -18,11 +19,12 @@ function requireEnv(name: string): string {
   return value;
 }
 
-function parseArgs(argv: string[]): { months?: number; outDir?: string } {
-  const result: { months?: number; outDir?: string } = {};
+function parseArgs(argv: string[]): { months?: number; from?: string; outDir?: string } {
+  const result: { months?: number; from?: string; outDir?: string } = {};
   for (const arg of argv) {
     const [key, value] = arg.replace(/^--/, '').split('=');
     if (key === 'months' && value) result.months = Number(value);
+    if (key === 'from' && value) result.from = value;
     if (key === 'out' && value) result.outDir = value;
   }
   return result;
@@ -47,6 +49,7 @@ export function loadConfig(): Config {
     clientSecret,
     itemIds,
     months: args.months ?? 6,
+    dateFrom: args.from ?? null,
     outDir: args.outDir ?? 'reports',
   };
 }

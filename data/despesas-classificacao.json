@@ -120,8 +120,8 @@
   },
   "rulesFull": {
     "00153 SH BOULEVARD BH": [
-      "compras e lazer",
-      "roupas e acessórios",
+      "COMPRAS E LAZER",
+      "ROUPAS E ACESSORIOS",
       1
     ],
     "00153 SH BOULEVARD BH BELO HORIZONT BR": [
@@ -130,8 +130,8 @@
       9999
     ],
     "100 MALTE GASTRONOMIA": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "100% MALTEBELO HORIZONTBR": [
@@ -140,8 +140,8 @@
       9999
     ],
     "480 - MG BH BOULEVARD": [
-      "compras e lazer",
-      "roupas e acessórios",
+      "COMPRAS E LAZER",
+      "ROUPAS E ACESSORIOS",
       1
     ],
     "480 - MG BH BOULEVARD BELO HORIZONT BR": [
@@ -155,8 +155,8 @@
       9999
     ],
     "99*": [
-      "transporte",
-      "aplicativos de mobilidade",
+      "TRANSPORTE",
+      "APLICATIVOS DE MOBILIDADE",
       5
     ],
     "99* SAO PAULO BR": [
@@ -170,8 +170,8 @@
       9999
     ],
     "A BARBEARIA LTDA": [
-      "saúde e bem-estar",
-      "Cuidados Pessoais (Barbearia)",
+      "SAUDE E BEM ESTAR",
+      "CUIDADOS PESSOAIS (BARBEARIA)",
       12
     ],
     "A BARBEARIA LTDA BELO HORIZONT BR": [
@@ -185,8 +185,8 @@
       9999
     ],
     "AEROTRIO": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "AEROTRIO CAMPINAS BR": [
@@ -200,18 +200,18 @@
       9999
     ],
     "AGUA": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "AIRBNB * HM8SAZY3X2": [
-      "viagem",
-      "hospedagem",
+      "VIAGEM",
+      "HOSPEDAGEM",
       1
     ],
     "ALDINI": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       2
     ],
     "ALDINI BELO HORIZONT BR": [
@@ -220,28 +220,28 @@
       9999
     ],
     "ALEXANDER AMARAL ANDRADE": [
-      "compras e lazer",
-      "eventos e atividades",
+      "COMPRAS E LAZER",
+      "EVENTOS E ATIVIDADES",
       1
     ],
     "ALIMENTAÇÃO AEROPORTO": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "ALIMENTAÇÃO BELEM": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "ALMOÇO LANCHONETE": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "ALMOÇO NA LANCE": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "AMANDADEJESUSBELO HORIZONTBR": [
@@ -250,7 +250,7 @@
       9999
     ],
     "AMAZON BR": [
-      "transporte",
+      "TRANSPORTE",
       "manutenção do carro",
       2
     ],
@@ -270,12 +270,12 @@
       9999
     ],
     "AMAZON MKTPL*BB8F99Q52": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
     "AMAZON MKTPL*BI2SS2FY1": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
@@ -290,13 +290,13 @@
       9999
     ],
     "AMAZON.COM.BR": [
-      "compras e lazer",
+      "COMPRAS E LAZER",
       "livros e materiais",
       2
     ],
     "AMAZONMKTPLC*ADELMOSAN": [
-      "compras e lazer",
-      "coisas para casa",
+      "COMPRAS E LAZER",
+      "COISAS PARA CASA",
       1
     ],
     "AMAZONMKTPLC*ANKER": [
@@ -305,7 +305,7 @@
       9999
     ],
     "AMAZONMKTPLC*BMDSTOREL": [
-      "saúde e bem-estar",
+      "SAUDE E BEM ESTAR",
       "Enrico",
       1
     ],
@@ -320,13 +320,13 @@
       9999
     ],
     "AMAZONMKTPLC*HOMELIVEA": [
-      "compras e lazer",
-      "eletrônicos",
+      "COMPRAS E LAZER",
+      "ELETRONICOS",
       1
     ],
     "AMAZONMKTPLC*JOSEDEMEN": [
-      "compras e lazer",
-      "esportes e equipamentos",
+      "COMPRAS E LAZER",
+      "ESPORTES E EQUIPAMENTOS",
       1
     ],
     "AMAZONMKTPLC*JULIACAROPRESIDENTE PRBR": [
@@ -335,13 +335,13 @@
       9999
     ],
     "AMAZONMKTPLC*LUFIARAEC": [
-      "compras e lazer",
-      "coisas para casa",
+      "COMPRAS E LAZER",
+      "COISAS PARA CASA",
       1
     ],
     "AMAZONMKTPLC*MANDDAONL": [
-      "compras e lazer",
-      "eletrônicos",
+      "COMPRAS E LAZER",
+      "ELETRONICOS",
       1
     ],
     "AMAZONMKTPLC*MANDDAONL JUNDIAI BR": [
@@ -350,7 +350,7 @@
       9999
     ],
     "AMAZONMKTPLC*MARIALUCI": [
-      "saúde e bem-estar",
+      "SAUDE E BEM ESTAR",
       "Enrico",
       1
     ],
@@ -360,17 +360,17 @@
       9999
     ],
     "AMAZONMKTPLC*OFERT": [
-      "saúde e bem-estar",
+      "SAUDE E BEM ESTAR",
       "Enrico",
       2
     ],
     "AMAZONMKTPLC*PLANE": [
-      "saúde e bem-estar",
+      "SAUDE E BEM ESTAR",
       "Enrico",
       4
     ],
     "AMAZONMKTPLC*ROCKSUPLE": [
-      "saúde e bem-estar",
+      "SAUDE E BEM ESTAR",
       "Enrico",
       1
     ],
@@ -380,18 +380,18 @@
       9999
     ],
     "AMERICAN DAY SAVASSI": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "AMIGO #3": [
-      "viagem",
+      "VIAGEM",
       "alimentação em viagem",
       1
     ],
     "ANCAR PARKING ESTACION": [
-      "transporte",
-      "estacionamento e pedágio",
+      "TRANSPORTE",
+      "ESTACIONAMENTO E PEDAGIO",
       2
     ],
     "ANGELITAAPARECIDABELO HORIZONTBR": [
@@ -400,8 +400,8 @@
       9999
     ],
     "ANNA CAROLINA SACRAMENTO RODRIGUES": [
-      "moradia",
-      "aluguel",
+      "MORADIA",
+      "ALUGUEL",
       7
     ],
     "ANTHROPIC* CLAUDE SUBANTHROPIC.COMUS": [
@@ -415,8 +415,8 @@
       9999
     ],
     "APPLE": [
-      "assinaturas",
-      "Apple",
+      "ASSINATURAS",
+      "APPLE",
       10
     ],
     "APPLE.COM/BILL.SAO PAULOBR": [
@@ -430,8 +430,8 @@
       9999
     ],
     "APPLECOMBILL": [
-      "assinaturas",
-      "Apple",
+      "ASSINATURAS",
+      "APPLE",
       2
     ],
     "APPLECOMBILL SAO PAULO BR": [
@@ -445,7 +445,7 @@
       9999
     ],
     "ARAUJO LOJA": [
-      "saúde e bem-estar",
+      "SAUDE E BEM ESTAR",
       "Enrico",
       2
     ],
@@ -470,7 +470,7 @@
       9999
     ],
     "ARAUJO ONLINE": [
-      "saúde e bem-estar",
+      "SAUDE E BEM ESTAR",
       "Enrico",
       1
     ],
@@ -485,23 +485,23 @@
       9999
     ],
     "AREATEC - TECNOLOGIA E SERVICOS LTDA": [
-      "transporte",
-      "estacionamento e pedágio",
+      "TRANSPORTE",
+      "ESTACIONAMENTO E PEDAGIO",
       2
     ],
     "ARMAZEM GONZALEZ": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "ARTHUR ANTONELLI DA COSTA BARBOSA": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       2
     ],
     "ASA*PAULA NUTRICIO": [
-      "saúde e bem-estar",
-      "academia e fitness",
+      "SAUDE E BEM ESTAR",
+      "ACADEMIA E FITNESS",
       1
     ],
     "ASIAEMPORIUMBELO HORIZONTBR": [
@@ -510,18 +510,18 @@
       9999
     ],
     "ASSAI ATACADISTA": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "ASSB COMERCIO VAREJIST": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "ASSEMBLEIA": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       2
     ],
     "ASSEMBLEIABELO HORIZONTBR": [
@@ -530,18 +530,18 @@
       9999
     ],
     "ASSOCIACAO DE PAIS E AMIGOS DOS EXCEPCIONAIS DE SANTA LUZIA": [
-      "compras e lazer",
-      "eventos e atividades",
+      "COMPRAS E LAZER",
+      "EVENTOS E ATIVIDADES",
       1
     ],
     "AUTOPOSTO": [
-      "transporte",
-      "Combustível",
+      "TRANSPORTE",
+      "COMBUSTIVEL",
       1
     ],
     "AZUL LINHAS AEREAS BRAS": [
-      "assinaturas",
-      "Azul",
+      "ASSINATURAS",
+      "AZUL",
       14
     ],
     "AZUL LINHAS AEREAS BRASBAURERI BR": [
@@ -555,13 +555,13 @@
       9999
     ],
     "AZUL WE*WEUGSLGUED": [
-      "viagem",
-      "passagens e transporte",
+      "VIAGEM",
+      "PASSAGENS E TRANSPORTE",
       3
     ],
     "AZULOPWPPK": [
-      "viagem",
-      "passagens e transporte",
+      "VIAGEM",
+      "PASSAGENS E TRANSPORTE",
       3
     ],
     "AZULUR4DJX": [
@@ -580,8 +580,8 @@
       9999
     ],
     "BAGAGGIO 143 SHEHR": [
-      "compras e lazer",
-      "presentes",
+      "COMPRAS E LAZER",
+      "PRESENTES",
       2
     ],
     "BAR DO BOLAOBELO HORIZONTBR": [
@@ -590,18 +590,18 @@
       9999
     ],
     "BAR DO JULIO": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "BAR DO TOTONHO SAO MAT": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "BAR DO VEIO": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       2
     ],
     "BAR DO VEIOBELO HORIZONTBR": [
@@ -610,13 +610,13 @@
       9999
     ],
     "BAR E RESTAURANTE SAB": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "BEM SION": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       2
     ],
     "BEM SION BELO HORIZONT BR": [
@@ -625,23 +625,23 @@
       9999
     ],
     "BENEFÍCIO ALIMENTAÇÃO": [
-      "renda",
+      "RENDA",
       "Benefício Salário",
       9
     ],
     "BENEFÍCIO REFEIÇÃO": [
-      "renda",
+      "RENDA",
       "Benefício Salário",
       9
     ],
     "BESTBUYCOM807116640142": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
     "BF RESTAURANTE": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "BF RESTAURANTECONGONHASBR": [
@@ -650,23 +650,23 @@
       9999
     ],
     "BFH ADM DE ESTACIONA": [
-      "transporte",
-      "estacionamento e pedágio",
+      "TRANSPORTE",
+      "ESTACIONAMENTO E PEDAGIO",
       1
     ],
     "BHZ RESTAURANTE LTDA": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "BIG CITY TOURISM": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
     "BILHETERIA DIGITAL": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       1
     ],
     "BOALI - DIAMOND GERACABELO HORIZONTBR": [
@@ -680,38 +680,38 @@
       9999
     ],
     "BR CONSORCIOS ADMINISTRADORA DE CONSORCIOS LTDA": [
-      "investimentos",
+      "INVESTIMENTOS",
       "Consórcio",
       8
     ],
     "BRADESCO": [
-      "saúde e bem-estar",
+      "SAUDE E BEM ESTAR",
       "Samuel",
       1
     ],
     "BRADESCO SAUDE - OPERADORA DE PLANOS S/A": [
-      "saúde e bem-estar",
+      "SAUDE E BEM ESTAR",
       "Enrico",
       2
     ],
     "BRAGA CAMPOS LEITE SERVICOS MEDICOS LTDA": [
-      "saúde e bem-estar",
+      "SAUDE E BEM ESTAR",
       "Samuel",
       1
     ],
     "BRINKEL BRINQUEDOS E": [
-      "compras e lazer",
-      "presentes",
+      "COMPRAS E LAZER",
+      "PRESENTES",
       2
     ],
     "BURGO": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "BUTECO FIADO LTDA": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "BUTECO FIADO LTDA BELO HORIZONT BR": [
@@ -720,22 +720,22 @@
       9999
     ],
     "CABO FRIO 2": [
-      "viagem",
+      "VIAGEM",
       "restaurante ou delivery",
       1
     ],
     "CAFETERIASAVASSI": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "CAIRU": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "CALVIN KLEIN": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
@@ -765,8 +765,8 @@
       9999
     ],
     "CAPPTA *DUDA E BASTOS": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       3
     ],
     "CAPPTA *DUDA E BASTOS BELO HORIZONT BR": [
@@ -785,8 +785,8 @@
       9999
     ],
     "CARLOS HENRIQUE": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       2
     ],
     "CARLOS HENRIQUE BELO HORIZONT BR": [
@@ -795,8 +795,8 @@
       9999
     ],
     "CARLOS HENRIQUE SAUD D": [
-      "transporte",
-      "estacionamento e pedágio",
+      "TRANSPORTE",
+      "ESTACIONAMENTO E PEDAGIO",
       1
     ],
     "CARLOS HENRIQUE SAUD D BELO HORIZONT BR": [
@@ -805,8 +805,8 @@
       9999
     ],
     "CARREFOUR BHA 416": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       2
     ],
     "CARREFOUR BHA 416 BELO HORIZONT BR": [
@@ -815,8 +815,8 @@
       9999
     ],
     "CARREFOUR BHP 51": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "CARREFOUR BHP 51 BELO HORIZONT BR": [
@@ -825,28 +825,28 @@
       9999
     ],
     "CARTER'S #636": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
     "CARTERS -CT": [
-      "compras e lazer",
-      "roupas e acessórios",
+      "COMPRAS E LAZER",
+      "ROUPAS E ACESSORIOS",
       1
     ],
     "CASA DE CARNE": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       2
     ],
     "CASA DE CARNE ESTE": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       3
     ],
     "CASA DE CARNE ESTER D": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       3
     ],
     "CASA DE CARNE ESTER D BELO HORIZONT BR": [
@@ -860,12 +860,12 @@
       9999
     ],
     "CASA DE CARNE ESTER DE": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "CASA DO ALEMAO": [
-      "viagem",
+      "VIAGEM",
       "restaurante ou delivery",
       1
     ],
@@ -875,8 +875,8 @@
       9999
     ],
     "CASAR *PRE*SENTE": [
-      "compras e lazer",
-      "presentes",
+      "COMPRAS E LAZER",
+      "PRESENTES",
       1
     ],
     "CASAR *PRE*SENTESAO PAULOBR": [
@@ -885,18 +885,18 @@
       9999
     ],
     "CCR AEROPORTO CONFINS": [
-      "viagem",
-      "passagens e transporte",
+      "VIAGEM",
+      "PASSAGENS E TRANSPORTE",
       1
     ],
     "CCS ORLANDO PREMIUM 508": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
     "CEMIG DISTRIBUICAO S.A": [
-      "moradia",
-      "luz",
+      "MORADIA",
+      "LUZ",
       11
     ],
     "CENTAURO CE43": [
@@ -910,8 +910,8 @@
       9999
     ],
     "CENTAURO CE55 MATR": [
-      "compras e lazer",
-      "esportes e equipamentos",
+      "COMPRAS E LAZER",
+      "ESPORTES E EQUIPAMENTOS",
       1
     ],
     "CENTRO DE EXCELENC": [
@@ -920,38 +920,38 @@
       9999
     ],
     "CERVEJARIA GRAO MOGOL": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "CERVEJARIA VERACE": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       2
     ],
     "CFX -E-PASS AIRPORT": [
-      "viagem",
-      "passagens e transporte",
+      "VIAGEM",
+      "PASSAGENS E TRANSPORTE",
       2
     ],
     "CHEFAO CONVENIENCIA": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "CHEZ MICHOU": [
-      "viagem",
+      "VIAGEM",
       "restaurante ou delivery",
       1
     ],
     "CHOPERIAALMANAQUE": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "CHOPP PAMPULH": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "CINEMARK SAVASSIBELO HORIZONTBR": [
@@ -960,13 +960,13 @@
       9999
     ],
     "CITY TORTAS LTDA": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "CLAUDE.AI SUBSCRIPTION": [
-      "assinaturas",
-      "IA - Claude",
+      "ASSINATURAS",
+      "IA_CLAUDE",
       2
     ],
     "CLAUDE.AI SUBSCRIPTION ANTHROPIC.COM US": [
@@ -980,8 +980,8 @@
       9999
     ],
     "COCO BAMBU CONCEITO D": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "COCO BAMBU CONCEITO D BELO HORIZONT BR": [
@@ -990,47 +990,47 @@
       9999
     ],
     "COCO BOM": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "COCOBOM": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "COLHEIRA BARES": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       1
     ],
     "COLIBRI LOJA DE CONVENI": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "COML DAHANA S A": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "COMPRA VERDEMAR": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "CONDOMINIO DO EDIFICIO LUX II": [
-      "moradia",
-      "condomínio",
+      "MORADIA",
+      "CONDOMINIO",
       1
     ],
     "CONECTC*FELIPEGUED": [
-      "transporte",
-      "estacionamento e pedágio",
+      "TRANSPORTE",
+      "ESTACIONAMENTO E PEDAGIO",
       7
     ],
     "CONFIDENCE CORRETORA DE CAMBIO S/A": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
@@ -1040,8 +1040,8 @@
       9999
     ],
     "CONTA VIVO": [
-      "moradia",
-      "internet e telefone",
+      "MORADIA",
+      "INTERNET E TELEFONE",
       10
     ],
     "CONTA VIVO SAO PAULO BR": [
@@ -1055,8 +1055,8 @@
       9999
     ],
     "COYOTE BAR": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "COYOTE BAR BELO HORIZONT BR": [
@@ -1070,18 +1070,18 @@
       9999
     ],
     "COZINHA DE FOGO RESTAUR": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "COZINHADEFOGO": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "CRISTO RESTAURANTE EIR": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "CRISTO RESTAURANTE EIRBELO HORIZONTBR": [
@@ -1090,8 +1090,8 @@
       9999
     ],
     "CRUZEIROEC": [
-      "assinaturas",
-      "Cruzeiro",
+      "ASSINATURAS",
+      "CRUZEIRO",
       9
     ],
     "CRUZEIROEC GOIANIA BR": [
@@ -1100,8 +1100,8 @@
       9999
     ],
     "CT PANIFICADORA LTDA": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "CT PANIFICADORA LTDA BELO HORIZONT BR": [
@@ -1110,12 +1110,12 @@
       9999
     ],
     "CURB NYC TAXI": [
-      "viagem",
-      "passagens e transporte",
+      "VIAGEM",
+      "PASSAGENS E TRANSPORTE",
       1
     ],
     "CVO COMERCIO DE PRODUT": [
-      "viagem",
+      "VIAGEM",
       "supermercado",
       3
     ],
@@ -1125,23 +1125,23 @@
       9999
     ],
     "DANVILLE RESTAURANTE": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "DARK STORE SAVASSI": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "DAVILA": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "DBH EMPREENDIMENTOS": [
-      "compras e lazer",
-      "jogos e entreterimento",
+      "COMPRAS E LAZER",
+      "JOGOS E ENTRETERIMENTO",
       1
     ],
     "DBH EMPREENDIMENTOS BELO HORIZONT BR": [
@@ -1155,13 +1155,13 @@
       9999
     ],
     "DEX": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       1
     ],
     "DIAMOND MALL": [
-      "transporte",
-      "estacionamento e pedágio",
+      "TRANSPORTE",
+      "ESTACIONAMENTO E PEDAGIO",
       2
     ],
     "DIAMOND MALL BELO HORIZONT BR": [
@@ -1175,18 +1175,18 @@
       9999
     ],
     "DICKS SPORTING GOODS": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
     "DIRECAO": [
-      "transporte",
-      "estacionamento e pedágio",
+      "TRANSPORTE",
+      "ESTACIONAMENTO E PEDAGIO",
       1
     ],
     "DL *GOOGLE LINKEDIN CO": [
-      "assinaturas",
-      "Linkedin",
+      "ASSINATURAS",
+      "LINKEDIN",
       2
     ],
     "DL *GOOGLE LINKEDIN COSAO PAULOBR": [
@@ -1195,13 +1195,13 @@
       9999
     ],
     "DL *GOOGLE LINKEDIN JO": [
-      "assinaturas",
-      "Linkedin",
+      "ASSINATURAS",
+      "LINKEDIN",
       1
     ],
     "DL *UBERRIDES": [
-      "transporte",
-      "aplicativos de mobilidade",
+      "TRANSPORTE",
+      "APLICATIVOS DE MOBILIDADE",
       3
     ],
     "DL *UBERRIDES SAO PAULO BR": [
@@ -1215,8 +1215,8 @@
       9999
     ],
     "DL*99 RIDE": [
-      "transporte",
-      "aplicativos de mobilidade",
+      "TRANSPORTE",
+      "APLICATIVOS DE MOBILIDADE",
       1
     ],
     "DL*99 RIDE SAO PAULO BR": [
@@ -1225,7 +1225,7 @@
       9999
     ],
     "DL*GOOGLE DESPEZ": [
-      "assinaturas",
+      "ASSINATURAS",
       "Despezzas",
       1
     ],
@@ -1235,8 +1235,8 @@
       9999
     ],
     "DL*GOOGLE LINKED": [
-      "assinaturas",
-      "Linkedin",
+      "ASSINATURAS",
+      "LINKEDIN",
       9
     ],
     "DL*GOOGLE LINKED SAO PAULO BR": [
@@ -1250,7 +1250,7 @@
       9999
     ],
     "DL*GOOGLE STRAVA": [
-      "assinaturas",
+      "ASSINATURAS",
       "Strava",
       1
     ],
@@ -1260,8 +1260,8 @@
       9999
     ],
     "DM *SPOTIFY": [
-      "assinaturas",
-      "Spotify",
+      "ASSINATURAS",
+      "SPOTIFY",
       4
     ],
     "DM *SPOTIFY STOCKHOLM BR": [
@@ -1275,13 +1275,13 @@
       9999
     ],
     "DM *TEMU": [
-      "compras e lazer",
-      "eletrônicos",
+      "COMPRAS E LAZER",
+      "ELETRONICOS",
       2
     ],
     "DM*SPOTIFY": [
-      "assinaturas",
-      "Spotify",
+      "ASSINATURAS",
+      "SPOTIFY",
       1
     ],
     "DM*SPOTIFY SAO PAULO BR": [
@@ -1295,28 +1295,28 @@
       9999
     ],
     "DM*TEMU": [
-      "compras e lazer",
-      "eletrônicos",
+      "COMPRAS E LAZER",
+      "ELETRONICOS",
       7
     ],
     "DOCE NEVE": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "DOMINO'S 5014": [
-      "viagem",
+      "VIAGEM",
       "alimentação em viagem",
       1
     ],
     "DOMINOS CIDADE NOVA": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "DON ALCIDES": [
-      "saúde e bem-estar",
-      "Cuidados Pessoais (Barbearia)",
+      "SAUDE E BEM ESTAR",
+      "CUIDADOS PESSOAIS (BARBEARIA)",
       1
     ],
     "DON ALCIDES BELO HORIZONT BR": [
@@ -1330,18 +1330,18 @@
       9999
     ],
     "DRAWN TO LIFE": [
-      "viagem",
-      "passagens e transporte",
+      "VIAGEM",
+      "PASSAGENS E TRANSPORTE",
       1
     ],
     "DROG ARAUJO FILIAL 100": [
-      "saúde e bem-estar",
+      "SAUDE E BEM ESTAR",
       "Enrico",
       1
     ],
     "DROG ARAUJO LOJA 36": [
-      "saúde e bem-estar",
-      "farmácia e medicamentos",
+      "SAUDE E BEM ESTAR",
+      "FARMACIA E MEDICAMENTOS",
       2
     ],
     "DROGACLARABELO HORIZONTBR": [
@@ -1350,18 +1350,18 @@
       9999
     ],
     "DROGARIA ARA*ARAU": [
-      "saúde e bem-estar",
+      "SAUDE E BEM ESTAR",
       "Enrico",
       2
     ],
     "DROGARIA ARA-CT": [
-      "saúde e bem-estar",
-      "farmácia e medicamentos",
+      "SAUDE E BEM ESTAR",
+      "FARMACIA E MEDICAMENTOS",
       2
     ],
     "DROGARIA ARAUJO": [
-      "saúde e bem-estar",
-      "farmácia e medicamentos",
+      "SAUDE E BEM ESTAR",
+      "FARMACIA E MEDICAMENTOS",
       15
     ],
     "DROGARIA ARAUJO BELO HORIZONT BR": [
@@ -1370,18 +1370,18 @@
       9999
     ],
     "DROGARIA ARAUJO FILIAL": [
-      "saúde e bem-estar",
+      "SAUDE E BEM ESTAR",
       "Enrico",
       3
     ],
     "DROGARIA ARAUJO LJ 46": [
-      "saúde e bem-estar",
-      "farmácia e medicamentos",
+      "SAUDE E BEM ESTAR",
+      "FARMACIA E MEDICAMENTOS",
       5
     ],
     "DROGARIA ARAUJO LJ 60": [
-      "saúde e bem-estar",
-      "farmácia e medicamentos",
+      "SAUDE E BEM ESTAR",
+      "FARMACIA E MEDICAMENTOS",
       1
     ],
     "DROGARIA ARAUJO LJ 60 BELO HORIZONT BR": [
@@ -1390,53 +1390,53 @@
       9999
     ],
     "DROGARIA ARAUJO MATRIZ": [
-      "saúde e bem-estar",
-      "farmácia e medicamentos",
+      "SAUDE E BEM ESTAR",
+      "FARMACIA E MEDICAMENTOS",
       1
     ],
     "DROGARIA ARAUJO S A": [
-      "saúde e bem-estar",
-      "farmácia e medicamentos",
+      "SAUDE E BEM ESTAR",
+      "FARMACIA E MEDICAMENTOS",
       2
     ],
     "DROGARIA ARAUJO SA FIL": [
-      "saúde e bem-estar",
+      "SAUDE E BEM ESTAR",
       "Enrico",
       1
     ],
     "DROGARIAS PACHECO SA": [
-      "saúde e bem-estar",
+      "SAUDE E BEM ESTAR",
       "Enrico",
       1
     ],
     "DUANE READE #14101": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
     "EC*MELIMAIS": [
-      "assinaturas",
-      "Meli",
+      "ASSINATURAS",
+      "MELI",
       1
     ],
     "EDILSON": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       2
     ],
     "EDILSONMARCIO": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       2
     ],
     "EHS NEGOCIOS LTDA": [
-      "renda",
-      "renda extra",
+      "RENDA",
+      "RENDA EXTRA",
       10
     ],
     "ELASA": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       49
     ],
     "ELASA BELO HORIZONT BR": [
@@ -1450,7 +1450,7 @@
       9999
     ],
     "ELIASMOREIRADE": [
-      "viagem",
+      "VIAGEM",
       "supermercado",
       1
     ],
@@ -1460,13 +1460,13 @@
       9999
     ],
     "ENCARGOS DE ATRASO": [
-      "serviços financeiros e bancários",
-      "taxas de contas bancárias",
+      "SERVICOS FINANCEIROS E BANCARIOS",
+      "TAXAS DE CONTAS BANCARIAS",
       1
     ],
     "ENGENHEIROS CRUZEIRO": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       2
     ],
     "ENGENHEIROS CRUZEIRO BELO HORIZONT BR": [
@@ -1475,8 +1475,8 @@
       9999
     ],
     "ENGENHEIROS CRUZEIRO R": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       2
     ],
     "ENTRADA REND PAGO APLIC AUT APR": [
@@ -1490,13 +1490,13 @@
       9999
     ],
     "ESPETO DO MANOEL 2": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "ESTACIONAMENTO CARPA": [
-      "transporte",
-      "estacionamento e pedágio",
+      "TRANSPORTE",
+      "ESTACIONAMENTO E PEDAGIO",
       1
     ],
     "ESTACIONAMENTO CARPA BELO HORIZONT BR": [
@@ -1510,23 +1510,23 @@
       9999
     ],
     "ESTACIONAMENTO OTONI": [
-      "transporte",
-      "estacionamento e pedágio",
+      "TRANSPORTE",
+      "ESTACIONAMENTO E PEDAGIO",
       1
     ],
     "ESTACIONAMENTO VILLE PA": [
-      "transporte",
-      "estacionamento e pedágio",
+      "TRANSPORTE",
+      "ESTACIONAMENTO E PEDAGIO",
       1
     ],
     "ESTAPAR": [
-      "compras e lazer",
-      "Cruzeiro",
+      "COMPRAS E LAZER",
+      "CRUZEIRO",
       1
     ],
     "ESTORNO ANUIDADE DIFERE": [
-      "serviços financeiros e bancários",
-      "taxas de contas bancárias",
+      "SERVICOS FINANCEIROS E BANCARIOS",
+      "TAXAS DE CONTAS BANCARIAS",
       1
     ],
     "ESTORNO ANUIDADE DIFERENCIADA M RENOVACA": [
@@ -1535,38 +1535,38 @@
       9999
     ],
     "ESTORNO CUSTO DE IOF": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       2
     ],
     "ESTORNO DE ANUIDADE DIF": [
-      "serviços financeiros e bancários",
-      "cartão de crédito",
+      "SERVICOS FINANCEIROS E BANCARIOS",
+      "CARTAO DE CREDITO",
       8
     ],
     "ESTORNO IOF": [
-      "serviços financeiros e bancários",
-      "taxas de contas bancárias",
+      "SERVICOS FINANCEIROS E BANCARIOS",
+      "TAXAS DE CONTAS BANCARIAS",
       1
     ],
     "ESTORNO JUROS DE FINANC": [
-      "serviços financeiros e bancários",
-      "taxas de contas bancárias",
+      "SERVICOS FINANCEIROS E BANCARIOS",
+      "TAXAS DE CONTAS BANCARIAS",
       2
     ],
     "ESTORNO JUROS FINANCIAM": [
-      "serviços financeiros e bancários",
-      "taxas de contas bancárias",
+      "SERVICOS FINANCEIROS E BANCARIOS",
+      "TAXAS DE CONTAS BANCARIAS",
       1
     ],
     "ESTORNO JUROS MORA": [
-      "serviços financeiros e bancários",
-      "taxas de contas bancárias",
+      "SERVICOS FINANCEIROS E BANCARIOS",
+      "TAXAS DE CONTAS BANCARIAS",
       1
     ],
     "ESTORNO MULTA ATRASO": [
-      "serviços financeiros e bancários",
-      "taxas de contas bancárias",
+      "SERVICOS FINANCEIROS E BANCARIOS",
+      "TAXAS DE CONTAS BANCARIAS",
       1
     ],
     "EXPLANABARBELO HORIZONTBR": [
@@ -1575,18 +1575,18 @@
       9999
     ],
     "FAVORITO BEER LTDA": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "FCD ENGENHARIA LTDA": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "FEL EMPREENDIMENTOS C": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "FEL EMPREENDIMENTOS C BELO HORIZONT BR": [
@@ -1595,28 +1595,28 @@
       9999
     ],
     "FERNANDO SILVA MACHADO": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "FILIAL 9 - SAVASSI": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       2
     ],
     "FILTROLAR UTILIDADES D": [
-      "compras e lazer",
-      "presentes",
+      "COMPRAS E LAZER",
+      "PRESENTES",
       1
     ],
     "FISIA NIKE ECOMMER": [
-      "compras e lazer",
-      "esportes e equipamentos",
+      "COMPRAS E LAZER",
+      "ESPORTES E EQUIPAMENTOS",
       5
     ],
     "FLIP PARK": [
-      "transporte",
-      "estacionamento e pedágio",
+      "TRANSPORTE",
+      "ESTACIONAMENTO E PEDAGIO",
       2
     ],
     "FLIP PARK BELO HORIZONT BR": [
@@ -1630,18 +1630,18 @@
       9999
     ],
     "FLORESTA": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "FORNERIA ORIGINAL": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "FRANCETTE": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "FRANCISCOCARLOSBELO HORIZONTBR": [
@@ -1655,18 +1655,18 @@
       9999
     ],
     "GAP OUTLET U-CT 30": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
     "GATAGORDASISTEMAS": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "GENNARO SAVASSI": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "GENNARO SAVASSI BELO HORIZONT BR": [
@@ -1675,18 +1675,18 @@
       9999
     ],
     "GESTAO E OPERACAO DE VIAGENS S.A": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "GOLD LOUNGE": [
-      "viagem",
+      "VIAGEM",
       "alimentação em viagem",
       1
     ],
     "GOMES DINIZ COMERCIO D": [
-      "compras e lazer",
-      "presentes",
+      "COMPRAS E LAZER",
+      "PRESENTES",
       1
     ],
     "GOOGLE ONESAO PAULOBR": [
@@ -1695,13 +1695,13 @@
       9999
     ],
     "GRANADO PHAR-CT AS": [
-      "compras e lazer",
-      "presentes",
+      "COMPRAS E LAZER",
+      "PRESENTES",
       1
     ],
     "GRANADO PHARMACIAS": [
-      "compras e lazer",
-      "presentes",
+      "COMPRAS E LAZER",
+      "PRESENTES",
       1
     ],
     "GRANADO PHARMACIASBELO HORIZONTBR": [
@@ -1710,18 +1710,18 @@
       9999
     ],
     "GUILHERME SEABRA PINTO": [
-      "compras e lazer",
-      "eventos e atividades",
+      "COMPRAS E LAZER",
+      "EVENTOS E ATIVIDADES",
       1
     ],
     "GUUD DELIVERY - IPIRAN": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       2
     ],
     "HEBERTONVILLARDA": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "HEBERTONVILLARDA BELO HORIZONT BR": [
@@ -1730,38 +1730,38 @@
       9999
     ],
     "HENRIQUE FERREIRA VALLE": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       1
     ],
     "HF TREINAMENTO ESPORTIVO LTDA": [
-      "saúde e bem-estar",
-      "academia e fitness",
+      "SAUDE E BEM ESTAR",
+      "ACADEMIA E FITNESS",
       1
     ],
     "HIGHWOODS- 300 S. ORANG": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
     "HN CONFINS 4": [
-      "viagem",
-      "passagens e transporte",
+      "VIAGEM",
+      "PASSAGENS E TRANSPORTE",
       1
     ],
     "HOFBRAUHAUS BELO HORIZO": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "HORTIFRUTI BEM": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       3
     ],
     "HORTIFRUTI DA PRACA": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       1
     ],
     "HORTIFRUTI DA PRACA BELO HORIZONT BR": [
@@ -1775,12 +1775,12 @@
       9999
     ],
     "HORTIFRUTI JCARANGOLA": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "HOSPITAL MATER DEI": [
-      "saúde e bem-estar",
+      "SAUDE E BEM ESTAR",
       "Enrico",
       4
     ],
@@ -1800,38 +1800,38 @@
       9999
     ],
     "HUGO BRUNO FERNANDES V": [
-      "transporte",
+      "TRANSPORTE",
       "manutenção do carro",
       1
     ],
     "HUNTERTRAINING": [
-      "saúde e bem-estar",
-      "academia e fitness",
+      "SAUDE E BEM ESTAR",
+      "ACADEMIA E FITNESS",
       1
     ],
     "IBERICO EMPREENDIMENTO": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "IFD *ZAMP SA": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "IFD*43.930.733 CARLOS E": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       2
     ],
     "IFD*68 LA PIZZERIA LOUR": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "IFD*ARCOS DOURADOS COM": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       2
     ],
     "IFD*ARCOS DOURADOS COMBELO HORIZONTBR": [
@@ -1840,8 +1840,8 @@
       9999
     ],
     "IFD*BRS COMERCIO DE AL": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "IFD*CATAO BURGER LTDABELO HORIZONTBR": [
@@ -1850,8 +1850,8 @@
       9999
     ],
     "IFD*CB HAMBURGUERIA LT": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "IFD*CB HAMBURGUERIA LT BELO HORIZONT BR": [
@@ -1865,18 +1865,18 @@
       9999
     ],
     "IFD*DAKI BELO HORIZONT": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "IFD*DAY ONE BURGUER LT": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "IFD*DINOS ALIMENTOS LTD": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "IFD*EMPREENDIMENTOS PASALVADORBR": [
@@ -1885,8 +1885,8 @@
       9999
     ],
     "IFD*ENGENHEIROS CRUZEI": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "IFD*ENGENHEIROS CRUZEIBELO HORIZONTBR": [
@@ -1895,13 +1895,13 @@
       9999
     ],
     "IFD*ENGENHEIROS CRUZEIR": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "IFD*FREDERICO DE CASTR": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "IFD*FREDERICO DE CASTR NOVA LIMA BR": [
@@ -1910,18 +1910,18 @@
       9999
     ],
     "IFD*GAE COMERCIO DE ALI": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "IFD*GO SALAD DELIVERY S": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "IFD*GROK FOOD DELIVERY": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "IFD*GROK FOOD DELIVERY BELO HORIZONT BR": [
@@ -1935,13 +1935,13 @@
       9999
     ],
     "IFD*IFOOD": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       3
     ],
     "IFD*IFOOD CLUB": [
-      "assinaturas",
-      "Ifood",
+      "ASSINATURAS",
+      "IFOOD",
       6
     ],
     "IFD*IFOOD OSASCO BR": [
@@ -1965,13 +1965,13 @@
       9999
     ],
     "IFD*LAPETELLE COMIDINHA": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "IFD*LIFEBOX BH RESTAURA": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "IFD*LOURDES COMERCIO DBELO HORIZONTBR": [
@@ -1980,8 +1980,8 @@
       9999
     ],
     "IFD*LOURDES COMERCIO DE": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "IFD*MANGABEIRAS EMPREEBELO HORIZONTBR": [
@@ -1990,8 +1990,8 @@
       9999
     ],
     "IFD*ORGANIZACAO BATISTA": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       2
     ],
     "IFD*ORGANIZACAO BATISTBELO HORIZONTBR": [
@@ -2005,8 +2005,8 @@
       9999
     ],
     "IFD*REIS RESTAURANTE E": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       2
     ],
     "IFD*REIS RESTAURANTE EBELO HORIZONTBR": [
@@ -2025,28 +2025,28 @@
       9999
     ],
     "IFD*VARANDA 1389 - LOUR": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "IFOOD": [
-      "assinaturas",
-      "Ifood",
+      "ASSINATURAS",
+      "IFOOD",
       1
     ],
     "IFOOD *IFOOD": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "IFOOD CLUB": [
-      "assinaturas",
-      "Ifood",
+      "ASSINATURAS",
+      "IFOOD",
       4
     ],
     "IKEBANA FLORES": [
-      "compras e lazer",
-      "presentes",
+      "COMPRAS E LAZER",
+      "PRESENTES",
       1
     ],
     "IKEBANA FLORES BELO HORIZONT BR": [
@@ -2055,18 +2055,18 @@
       9999
     ],
     "INT /CEMIG DISTRIBUICA 0": [
-      "moradia",
-      "luz",
+      "MORADIA",
+      "LUZ",
       3
     ],
     "INTER CAFE": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "INTER CAFE LTDA": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       10
     ],
     "INTER CAFE LTDA BELO HORIZONT BR": [
@@ -2080,12 +2080,12 @@
       9999
     ],
     "IOF": [
-      "serviços financeiros e bancários",
-      "taxas de contas bancárias",
+      "SERVICOS FINANCEIROS E BANCARIOS",
+      "TAXAS DE CONTAS BANCARIAS",
       4
     ],
     "IOF COMPRA INTERNACIONA": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       71
     ],
@@ -2095,8 +2095,8 @@
       9999
     ],
     "IOF DE FINANCIAMENTO": [
-      "serviços financeiros e bancários",
-      "taxas de contas bancárias",
+      "SERVICOS FINANCEIROS E BANCARIOS",
+      "TAXAS DE CONTAS BANCARIAS",
       1
     ],
     "IOF INTERNACIONAL - ANTHROPIC* CLAUDE SUBANTHROPIC.COMUS": [
@@ -2110,18 +2110,18 @@
       9999
     ],
     "J E L EMPREENDIMENTOS": [
-      "transporte",
-      "estacionamento e pedágio",
+      "TRANSPORTE",
+      "ESTACIONAMENTO E PEDAGIO",
       2
     ],
     "JERONIMOMINASSHOP": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "JET BLUE AIR27921920307": [
-      "viagem",
-      "passagens e transporte",
+      "VIAGEM",
+      "PASSAGENS E TRANSPORTE",
       1
     ],
     "JETSHRSERRABR": [
@@ -2130,42 +2130,42 @@
       9999
     ],
     "JFK T5 ARTICHOKE": [
-      "viagem",
+      "VIAGEM",
       "alimentação em viagem",
       1
     ],
     "JNX ESTACIONAMENTOS": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "JOAO PEDRO MIRANDA PINA ASSIS 87169479249": [
-      "compras e lazer",
-      "eventos e atividades",
+      "COMPRAS E LAZER",
+      "EVENTOS E ATIVIDADES",
       1
     ],
     "JULIANO ALMEIDA LOUREIRO": [
-      "compras e lazer",
-      "eventos e atividades",
+      "COMPRAS E LAZER",
+      "EVENTOS E ATIVIDADES",
       1
     ],
     "JUROS DE FINANCIAMENTO": [
-      "saúde e bem-estar",
+      "SAUDE E BEM ESTAR",
       "Enrico",
       1
     ],
     "JUROS DE MORA": [
-      "serviços financeiros e bancários",
-      "taxas de contas bancárias",
+      "SERVICOS FINANCEIROS E BANCARIOS",
+      "TAXAS DE CONTAS BANCARIAS",
       1
     ],
     "JUROS FINANCIAMENTO": [
-      "serviços financeiros e bancários",
-      "taxas de contas bancárias",
+      "SERVICOS FINANCEIROS E BANCARIOS",
+      "TAXAS DE CONTAS BANCARIAS",
       1
     ],
     "KIWIFY": [
-      "assinaturas",
+      "ASSINATURAS",
       "kiwify",
       1
     ],
@@ -2180,13 +2180,13 @@
       9999
     ],
     "LEVY@2KIA CENTER": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       2
     ],
     "LINDT SPRUNGLI BRAZIL": [
-      "compras e lazer",
-      "presentes",
+      "COMPRAS E LAZER",
+      "PRESENTES",
       1
     ],
     "LINDT SPRUNGLI BRAZIL BELOHORIZONTE BR": [
@@ -2195,8 +2195,8 @@
       9999
     ],
     "LINGERIE DEL MODA IN": [
-      "compras e lazer",
-      "roupas e acessórios",
+      "COMPRAS E LAZER",
+      "ROUPAS E ACESSORIOS",
       1
     ],
     "LINGERIE DEL MODA IN BELO HORIZONT BR": [
@@ -2205,13 +2205,13 @@
       9999
     ],
     "LM LUCIO MACEDO COMERC": [
-      "transporte",
+      "TRANSPORTE",
       "manutenção do carro",
       1
     ],
     "LOCALIZA": [
-      "empréstimos",
-      "empréstimos pessoais",
+      "EMPRESTIMOS",
+      "EMPRESTIMOS PESSOAIS",
       4
     ],
     "LOCALIZA GESTAOBEL": [
@@ -2220,8 +2220,8 @@
       9999
     ],
     "LOCALIZA RENT A CAR SA": [
-      "renda",
-      "salários e bônus",
+      "RENDA",
+      "SALARIOS E BONUS",
       19
     ],
     "LOJA ELETRICA LLRDBELO HORIZONTBR": [
@@ -2235,8 +2235,8 @@
       9999
     ],
     "LOJALUPOSPORT": [
-      "compras e lazer",
-      "roupas e acessórios",
+      "COMPRAS E LAZER",
+      "ROUPAS E ACESSORIOS",
       1
     ],
     "LOJALUPOSPORT BELO HORIZONT BR": [
@@ -2245,13 +2245,13 @@
       9999
     ],
     "LOPES E TEIXEIRA C": [
-      "compras e lazer",
-      "roupas e acessórios",
+      "COMPRAS E LAZER",
+      "ROUPAS E ACESSORIOS",
       1
     ],
     "LOURDES PARK ESTACIO": [
-      "transporte",
-      "estacionamento e pedágio",
+      "TRANSPORTE",
+      "ESTACIONAMENTO E PEDAGIO",
       1
     ],
     "LOURDES PARK ESTACIO BELO HORIZONT BR": [
@@ -2260,8 +2260,8 @@
       9999
     ],
     "LUCAS FRAGA REIS": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "LUCAS VAZ RODRIGUES 12BELO HORIZONTBR": [
@@ -2270,8 +2270,8 @@
       9999
     ],
     "LULLO COMERCIO VAREJIS": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "LUPOSAVASSIBELO HORIZONTBR": [
@@ -2280,18 +2280,18 @@
       9999
     ],
     "M CARDOSO ENGENHARIA EIRELI": [
-      "moradia",
+      "MORADIA",
       "Compra Imóvel",
       5
     ],
     "MADEIRAMADEIRA": [
-      "moradia",
-      "Mobiliário",
+      "MORADIA",
+      "MOBILIARIO",
       5
     ],
     "MAG RESTAURANTE LTDA": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "MAG RESTAURANTE LTDA BELO HORIZONT BR": [
@@ -2300,7 +2300,7 @@
       9999
     ],
     "MAGALU*MAGALU": [
-      "saúde e bem-estar",
+      "SAUDE E BEM ESTAR",
       "Enrico",
       7
     ],
@@ -2310,13 +2310,13 @@
       9999
     ],
     "MAGALU*MAGAZINELU": [
-      "saúde e bem-estar",
+      "SAUDE E BEM ESTAR",
       "Enrico",
       1
     ],
     "MAGAZINE LUIZA": [
-      "compras e lazer",
-      "presentes",
+      "COMPRAS E LAZER",
+      "PRESENTES",
       10
     ],
     "MALTA COMERCIO DE CALCBELO HORIZONTBR": [
@@ -2325,7 +2325,7 @@
       9999
     ],
     "MANUS AI": [
-      "assinaturas",
+      "ASSINATURAS",
       "IA - Manus",
       3
     ],
@@ -2335,18 +2335,18 @@
       9999
     ],
     "MARCIO CORREIA": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "MARCIO CORREIA BISPO": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       2
     ],
     "MARIAHELENA": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "MARIANACAMARABELO HORIZONTBR": [
@@ -2360,18 +2360,18 @@
       9999
     ],
     "MARINA MARIZ CLNIC": [
-      "saúde e bem-estar",
+      "SAUDE E BEM ESTAR",
       "Enrico",
       1
     ],
     "MARINA MARIZ*MARIN": [
-      "saúde e bem-estar",
+      "SAUDE E BEM ESTAR",
       "Enrico",
       3
     ],
     "MARRMA RESTAURANTE": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       2
     ],
     "MARRMA RESTAURANTE BELO HORIZONT BR": [
@@ -2385,13 +2385,13 @@
       9999
     ],
     "MARSHALLS #0420": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
     "MARU": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "MAURICIO GOUVEIA DE OLBELO HORIZONTBR": [
@@ -2400,8 +2400,8 @@
       9999
     ],
     "MC DONALDS - ARCOS DOUR": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "MC DONALDS - ARCOS DOURADSAO PAULOBR": [
@@ -2410,23 +2410,23 @@
       9999
     ],
     "MCDONALD'S F39147": [
-      "viagem",
+      "VIAGEM",
       "alimentação em viagem",
       1
     ],
     "MCDONALD'S M2190": [
-      "viagem",
+      "VIAGEM",
       "alimentação em viagem",
       1
     ],
     "MCDONALDS": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       2
     ],
     "MCDONALDSECOMMERCE": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "MCDONALDSECOMMERCE BARUERI BR": [
@@ -2435,13 +2435,13 @@
       9999
     ],
     "MCSWIGGAN'S": [
-      "viagem",
+      "VIAGEM",
       "alimentação em viagem",
       1
     ],
     "MDTECH DIGITAL LTDA": [
-      "assinaturas",
-      "iptv box",
+      "ASSINATURAS",
+      "IPTV BOX",
       1
     ],
     "ME GUSTABELO HORIZONTBR": [
@@ -2460,23 +2460,23 @@
       9999
     ],
     "MEP*DO CHEF SANTO AGOS": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       1
     ],
     "MEPAYFINANCIAL": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       1
     ],
     "MERCADOLIVRE*BALAQUI": [
-      "moradia",
-      "Mobiliário",
+      "MORADIA",
+      "MOBILIARIO",
       1
     ],
     "MERCADOLIVRE*COMPELECTR": [
-      "compras e lazer",
-      "eletrônicos",
+      "COMPRAS E LAZER",
+      "ELETRONICOS",
       1
     ],
     "MERCADOLIVRE*ESSENCIALBIRIGUIBR": [
@@ -2515,58 +2515,58 @@
       9999
     ],
     "MERCADOLIVRE*WEBFONESCO": [
-      "moradia",
-      "internet e telefone",
+      "MORADIA",
+      "INTERNET E TELEFONE",
       1
     ],
     "MERCADOPAGO*DPALMAIMPOR": [
-      "compras e lazer",
+      "COMPRAS E LAZER",
       "coisas pra casa",
       1
     ],
     "MERCADOPAGO*LUUKYOUNG": [
-      "compras e lazer",
-      "eletrônicos",
+      "COMPRAS E LAZER",
+      "ELETRONICOS",
       1
     ],
     "MERCADOPAGO*MARCIA": [
-      "compras e lazer",
-      "presentes",
+      "COMPRAS E LAZER",
+      "PRESENTES",
       1
     ],
     "MERCADOPAGO*VENDASMARCO": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "MERCEARIA 130 LOURDES": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "MERITISSIMO RESTAURAN": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "MG BH SAVASSI SH C": [
-      "compras e lazer",
-      "eletrônicos",
+      "COMPRAS E LAZER",
+      "ELETRONICOS",
       3
     ],
     "MICHAEL KORS - 135": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
     "MICROSOFT*MICROSOFT 365": [
-      "assinaturas",
-      "Microsoft",
+      "ASSINATURAS",
+      "MICROSOFT",
       1
     ],
     "MICROSOFT*STORE": [
-      "assinaturas",
-      "Microsoft",
+      "ASSINATURAS",
+      "MICROSOFT",
       2
     ],
     "MICROSOFT*STORE SAO PAULO BR": [
@@ -2580,7 +2580,7 @@
       9999
     ],
     "MILLER S ALE HOUSE 008": [
-      "viagem",
+      "VIAGEM",
       "alimentação em viagem",
       1
     ],
@@ -2590,8 +2590,8 @@
       9999
     ],
     "MINEIRAO - TROPEIRO REA": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       2
     ],
     "MINEIRIM GUTIERREZBELO HORIZONTBR": [
@@ -2605,8 +2605,8 @@
       9999
     ],
     "MINI CAR": [
-      "compras e lazer",
-      "jogos e entreterimento",
+      "COMPRAS E LAZER",
+      "JOGOS E ENTRETERIMENTO",
       1
     ],
     "MINI CAR BELO HORIZONT BR": [
@@ -2615,13 +2615,13 @@
       9999
     ],
     "MINISTERIO DA ECONOMIA": [
-      "renda",
-      "Restituição",
+      "RENDA",
+      "RESTITUICAO",
       1
     ],
     "MINISTERIO DA FAZENDA": [
-      "moradia",
-      "Faxina",
+      "MORADIA",
+      "FAXINA",
       1
     ],
     "MLP*MAGALU EXCELLA": [
@@ -2630,48 +2630,48 @@
       9999
     ],
     "MLP*MAGAZINELUIZA": [
-      "compras e lazer",
-      "presentes",
+      "COMPRAS E LAZER",
+      "PRESENTES",
       1
     ],
     "MMS NEW YORK": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
     "MOBILE PAG TIT BANCO 364": [
-      "moradia",
-      "aluguel",
+      "MORADIA",
+      "ALUGUEL",
       4
     ],
     "MOMENTO SUPER NOSSO": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       2
     ],
     "MOMENTO SUPER NOSSO BE": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       2
     ],
     "MONUMENTAL": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "MP*64197516KENNE": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       1
     ],
     "MP*ALIEXPRESS": [
-      "compras e lazer",
-      "eletrônicos",
+      "COMPRAS E LAZER",
+      "ELETRONICOS",
       1
     ],
     "MP*ENDORFINA": [
-      "saúde e bem-estar",
-      "academia e fitness",
+      "SAUDE E BEM ESTAR",
+      "ACADEMIA E FITNESS",
       1
     ],
     "MP*ENDORFINA SAO PAULO BR": [
@@ -2680,7 +2680,7 @@
       9999
     ],
     "MP*HBOMAXASSIN": [
-      "assinaturas",
+      "ASSINATURAS",
       "HBO",
       5
     ],
@@ -2695,13 +2695,13 @@
       9999
     ],
     "MP*INGRESSODIGITALLTDA": [
-      "compras e lazer",
-      "eventos e atividades",
+      "COMPRAS E LAZER",
+      "EVENTOS E ATIVIDADES",
       1
     ],
     "MP*JAQUEPRESENTES": [
-      "compras e lazer",
-      "coisas para casa",
+      "COMPRAS E LAZER",
+      "COISAS PARA CASA",
       1
     ],
     "MP*JAQUEPRESENTES BELO HORIZONT BR": [
@@ -2710,28 +2710,28 @@
       9999
     ],
     "MP*JOSE": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "MP*LOTERIASONLINEHGW9": [
-      "compras e lazer",
-      "jogos e entreterimento",
+      "COMPRAS E LAZER",
+      "JOGOS E ENTRETERIMENTO",
       1
     ],
     "MP*LOTERIASONLINEP4KG": [
-      "compras e lazer",
-      "jogos e entreterimento",
+      "COMPRAS E LAZER",
+      "JOGOS E ENTRETERIMENTO",
       1
     ],
     "MP*LOTERIASONLINETJGR": [
-      "compras e lazer",
-      "jogos e entreterimento",
+      "COMPRAS E LAZER",
+      "JOGOS E ENTRETERIMENTO",
       1
     ],
     "MP*MELIMAIS": [
-      "assinaturas",
-      "Meli",
+      "ASSINATURAS",
+      "MELI",
       12
     ],
     "MP*MELIMAIS OSASCO BR": [
@@ -2755,28 +2755,28 @@
       9999
     ],
     "MP*VENDASMARCOLI": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "MP*VITINHO": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "MTA*NYCT PAYGO": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
     "MULTA POR ATRASO": [
-      "serviços financeiros e bancários",
-      "taxas de contas bancárias",
+      "SERVICOS FINANCEIROS E BANCARIOS",
+      "TAXAS DE CONTAS BANCARIAS",
       1
     ],
     "MULTIPLAN ADMINISTRADO": [
-      "transporte",
-      "estacionamento e pedágio",
+      "TRANSPORTE",
+      "ESTACIONAMENTO E PEDAGIO",
       5
     ],
     "MULTIPLAN ADMINISTRADO BELO HORIZONT BR": [
@@ -2790,18 +2790,18 @@
       9999
     ],
     "MUNGAI DISTRIBUICAO LTD": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       3
     ],
     "MY PAD -CT": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
     "NCA NOSSA SENHORA DO C": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       1
     ],
     "NCA NOSSA SENHORA DO C BELO HORIZONT BR": [
@@ -2820,13 +2820,13 @@
       9999
     ],
     "NELOGICA SISTEMAS DE SOFTWARE LTDA.": [
-      "assinaturas",
+      "ASSINATURAS",
       "Neologica",
       2
     ],
     "NETFLIX ENTRETENIMENTO": [
-      "assinaturas",
-      "Netflix",
+      "ASSINATURAS",
+      "NETFLIX",
       1
     ],
     "NETFLIX ENTRETENIMENTOBARUERIBR": [
@@ -2835,8 +2835,8 @@
       9999
     ],
     "NETFLIX.COM": [
-      "assinaturas",
-      "Netflix",
+      "ASSINATURAS",
+      "NETFLIX",
       14
     ],
     "NETFLIX.COM SAO PAULO BR": [
@@ -2850,33 +2850,33 @@
       9999
     ],
     "NIKEPOS_US": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       2
     ],
     "NOBRE SABOR BAR E RES": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "NPSUCULENTAS": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "O BURGUES SAVASSI": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "OAKBERRY": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "OAKBERRY ACAI PRADO": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "OAKBERRY ACAI PRADOBELO HORIZONTBR": [
@@ -2885,38 +2885,38 @@
       9999
     ],
     "OAKBERRY CONTORNO": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "OAKBERRY MG": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "OLEGARIO": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "OLHA O PICOLE": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "OLIVE GARDEN ZK 0021614": [
-      "viagem",
+      "VIAGEM",
       "alimentação em viagem",
       1
     ],
     "OMNY VENDING*": [
-      "viagem",
-      "passagens e transporte",
+      "VIAGEM",
+      "PASSAGENS E TRANSPORTE",
       2
     ],
     "ORGANIZACAO PETROMAR LT": [
-      "transporte",
-      "Combustível",
+      "TRANSPORTE",
+      "COMBUSTIVEL",
       1
     ],
     "ORGANIZACAO PETROMAR LTBELO HORIZONT BR": [
@@ -2935,18 +2935,18 @@
       9999
     ],
     "OUTBACK": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       3
     ],
     "PADARIA CACHOEIRINHA": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "PADARIA E CONFEITARIA": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       4
     ],
     "PADARIA E CONFEITARIABELO HORIZONTBR": [
@@ -2955,18 +2955,18 @@
       9999
     ],
     "PADARIA FLORIDA": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "PADARIA LISB-CT": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "PADARIA LISBOA": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       7
     ],
     "PADARIA LISBOA BELO HORIZONT BR": [
@@ -2980,13 +2980,13 @@
       9999
     ],
     "PADARIA PADUA I": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       2
     ],
     "PADARIA PAN MEL": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       6
     ],
     "PADARIA PAO VIVOBELO HORIZONTBR": [
@@ -3005,28 +3005,28 @@
       9999
     ],
     "PAG BOLETO ANNA CAROLINA SACRAMENTO ROD": [
-      "moradia",
-      "aluguel",
+      "MORADIA",
+      "ALUGUEL",
       4
     ],
     "PAG BOLETO CAIXA ECONOMICA FEDERAL - EN": [
-      "moradia",
-      "financiamento de imóvel",
+      "MORADIA",
+      "FINANCIAMENTO DE IMÓVEL",
       1
     ],
     "PAG BOLETO PARTNERBANK INSTITUICAO DE P": [
-      "moradia",
-      "condomínio",
+      "MORADIA",
+      "CONDOMINIO",
       4
     ],
     "PAG BOLETO PJBANK PAGAMENTOS S A": [
-      "moradia",
-      "Mudança",
+      "MORADIA",
+      "MUDANCA",
       1
     ],
     "PAG BOLETO PORTO SEGURO ADMINISTRADORA": [
-      "empréstimos",
-      "empréstimos pessoais",
+      "EMPRESTIMOS",
+      "EMPRESTIMOS PESSOAIS",
       8
     ],
     "PAGAMENTO DE BOLETO ANNA CAROLINA SACRAMENTO RODRIGUES": [
@@ -3185,23 +3185,23 @@
       9999
     ],
     "PAGUE MENOS 1232": [
-      "saúde e bem-estar",
-      "farmácia e medicamentos",
+      "SAUDE E BEM ESTAR",
+      "FARMACIA E MEDICAMENTOS",
       1
     ],
     "PAGUE MENOS@ 12": [
-      "saúde e bem-estar",
+      "SAUDE E BEM ESTAR",
       "Enrico",
       1
     ],
     "PAN E CON VE-CT": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "PAN E CON VECTRA": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "PANIFICADORA CONFEIBELO HORIZONTBR": [
@@ -3210,8 +3210,8 @@
       9999
     ],
     "PANIFICADORA E CONFEI": [
-      "compras e lazer",
-      "eventos e atividades",
+      "COMPRAS E LAZER",
+      "EVENTOS E ATIVIDADES",
       1
     ],
     "PANIFICADORA E CONFEIBELO HORIZONTBR": [
@@ -3220,8 +3220,8 @@
       9999
     ],
     "PANIFICADORA E CONFEIT": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "PANIFICADORA E CONFEIT BELO HORIZONT BR": [
@@ -3235,13 +3235,13 @@
       9999
     ],
     "PANIFICADORA MELLO VIANA": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "PANIFICADORA MELO VIAN": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       4
     ],
     "PANIFICADORA MELO VIAN BELO HORIZONT BR": [
@@ -3255,13 +3255,13 @@
       9999
     ],
     "PAO & COMPANHIA": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "PAO AMP COMPANHIA": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       3
     ],
     "PAO AMP COMPANHIA BELO HORIZONT BR": [
@@ -3275,8 +3275,8 @@
       9999
     ],
     "PAO E COMPANHIA": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "PAO E COMPANHIA MLABELO HORIZONTBR": [
@@ -3290,12 +3290,12 @@
       9999
     ],
     "PARTNERBANK INSTITUICAO DE PAGAMENTO S.A.": [
-      "moradia",
-      "condomínio",
+      "MORADIA",
+      "CONDOMINIO",
       10
     ],
     "PATH TAPP PAYGO CP": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
@@ -3305,17 +3305,17 @@
       9999
     ],
     "PATOLOGIA CLINICA": [
-      "saúde e bem-estar",
+      "SAUDE E BEM ESTAR",
       "Samuel",
       3
     ],
     "PAYPAL *BOOKING HOTEL A": [
-      "viagem",
-      "hospedagem",
+      "VIAGEM",
+      "HOSPEDAGEM",
       2
     ],
     "PAYPAL *VIAGOGO TIX": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       2
     ],
@@ -3330,8 +3330,8 @@
       9999
     ],
     "PAYPAL*PAYPAL *Z2": [
-      "saúde e bem-estar",
-      "academia e fitness",
+      "SAUDE E BEM ESTAR",
+      "ACADEMIA E FITNESS",
       1
     ],
     "PAYPAL*PAYPAL *Z2 SAO PAULO BR": [
@@ -3340,13 +3340,13 @@
       9999
     ],
     "PAYU *ADIDA": [
-      "compras e lazer",
-      "esportes e equipamentos",
+      "COMPRAS E LAZER",
+      "ESPORTES E EQUIPAMENTOS",
       1
     ],
     "PBADMINISTRADORA": [
-      "transporte",
-      "estacionamento e pedágio",
+      "TRANSPORTE",
+      "ESTACIONAMENTO E PEDAGIO",
       3
     ],
     "PBADMINISTRADORA BELO HORIZONT BR": [
@@ -3355,37 +3355,37 @@
       9999
     ],
     "PDV*FRIGO REI": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "PEDRO HENRIQUE OLIVEIRA DE JESUS": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       1
     ],
     "PELLEGRINO": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "PENNAFERNANDEZ": [
-      "moradia",
-      "Mobiliário",
+      "MORADIA",
+      "MOBILIARIO",
       2
     ],
     "PETROLAGOS COMERCIAL D": [
-      "transporte",
-      "Combustível",
+      "TRANSPORTE",
+      "COMBUSTIVEL",
       1
     ],
     "PG *FOCO RADICAL": [
-      "saúde e bem-estar",
-      "academia e fitness",
+      "SAUDE E BEM ESTAR",
+      "ACADEMIA E FITNESS",
       1
     ],
     "PG *SELIA - SERVICOS D": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
@@ -3395,48 +3395,48 @@
       9999
     ],
     "PG *TREINUS HF": [
-      "saúde e bem-estar",
-      "academia e fitness",
+      "SAUDE E BEM ESTAR",
+      "ACADEMIA E FITNESS",
       9
     ],
     "PG *WE PINK": [
-      "compras e lazer",
-      "presentes",
+      "COMPRAS E LAZER",
+      "PRESENTES",
       1
     ],
     "PG *ZE DELIVERY": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       3
     ],
     "PG*CARREFOUR": [
-      "compras e lazer",
-      "eletrônicos",
+      "COMPRAS E LAZER",
+      "ELETRONICOS",
       3
     ],
     "PICCO RESTAURANTE LTDA": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       2
     ],
     "PIRATAS": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "PIRATAS BAR": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       6
     ],
     "PIRATAS BBQ": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "PIRATAS BBQ BEER E DRI": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       17
     ],
     "PIRATAS BBQ BEER E DRI BELO HORIZONT BR": [
@@ -3450,8 +3450,8 @@
       9999
     ],
     "PIRATAS RESTAURANTE": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       2
     ],
     "PIX ENVIADO 37 185 999 MARCO AURELIO CORREIA RAMOS": [
@@ -3750,58 +3750,58 @@
       9999
     ],
     "PIX QRS ANA BARBARA": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "PIX QRS BALADA BILH": [
-      "compras e lazer",
-      "Cruzeiro",
+      "COMPRAS E LAZER",
+      "CRUZEIRO",
       1
     ],
     "PIX QRS CELSO NUNES": [
-      "compras e lazer",
-      "presentes",
+      "COMPRAS E LAZER",
+      "PRESENTES",
       1
     ],
     "PIX QRS CEMIG DISTR": [
-      "moradia",
-      "luz",
+      "MORADIA",
+      "LUZ",
       1
     ],
     "PIX QRS EASYJET MOB": [
-      "transporte",
-      "aplicativos de mobilidade",
+      "TRANSPORTE",
+      "APLICATIVOS DE MOBILIDADE",
       2
     ],
     "PIX QRS JULIA GARCI": [
-      "compras e lazer",
-      "eventos e atividades",
+      "COMPRAS E LAZER",
+      "EVENTOS E ATIVIDADES",
       2
     ],
     "PIX QRS MARIA EDUAR": [
-      "compras e lazer",
-      "eventos e atividades",
+      "COMPRAS E LAZER",
+      "EVENTOS E ATIVIDADES",
       1
     ],
     "PIX QRS OSIRIS NATA": [
-      "transporte",
-      "Combustível",
+      "TRANSPORTE",
+      "COMBUSTIVEL",
       1
     ],
     "PIX QRS RECEITA FED": [
-      "moradia",
-      "Faxina",
+      "MORADIA",
+      "FAXINA",
       4
     ],
     "PIX QRS REINALDO AM": [
-      "compras e lazer",
-      "presentes",
+      "COMPRAS E LAZER",
+      "PRESENTES",
       1
     ],
     "PIX QRS TAUA HOTEL": [
-      "viagem",
-      "hospedagem",
+      "VIAGEM",
+      "HOSPEDAGEM",
       1
     ],
     "PIX RECEBIDO 63 892 826 LOUISE LANZA DE OLIVEIRA": [
@@ -3815,8 +3815,8 @@
       9999
     ],
     "PIX RECEBIDO ARTHUR HENRIQUE SANGLARD": [
-      "compras e lazer",
-      "jogos e entreterimento",
+      "COMPRAS E LAZER",
+      "JOGOS E ENTRETERIMENTO",
       1
     ],
     "PIX RECEBIDO EASYJET MOBILIDADE LTDA": [
@@ -3850,8 +3850,8 @@
       9999
     ],
     "PIX RECEBIDO LINCOLN CARNEIRO GUIMARAE": [
-      "compras e lazer",
-      "presentes",
+      "COMPRAS E LAZER",
+      "PRESENTES",
       1
     ],
     "PIX RECEBIDO LUISA LUGAO GUIMARAES GUEDES": [
@@ -3895,388 +3895,388 @@
       9999
     ],
     "PIX RECEBIDO YURI LUKAS ALENCAR SILVA": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       1
     ],
     "PIX TRANSF ADENILT": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       1
     ],
     "PIX TRANSF AGORA P": [
-      "compras e lazer",
-      "esportes e equipamentos",
+      "COMPRAS E LAZER",
+      "ESPORTES E EQUIPAMENTOS",
       1
     ],
     "PIX TRANSF ALAN DU": [
-      "compras e lazer",
-      "jogos e entreterimento",
+      "COMPRAS E LAZER",
+      "JOGOS E ENTRETERIMENTO",
       1
     ],
     "PIX TRANSF ALEXAND": [
-      "compras e lazer",
-      "eventos e atividades",
+      "COMPRAS E LAZER",
+      "EVENTOS E ATIVIDADES",
       1
     ],
     "PIX TRANSF ALYSSON": [
-      "transporte",
-      "estacionamento e pedágio",
+      "TRANSPORTE",
+      "ESTACIONAMENTO E PEDAGIO",
       1
     ],
     "PIX TRANSF AMELIA": [
-      "compras e lazer",
-      "eventos e atividades",
+      "COMPRAS E LAZER",
+      "EVENTOS E ATIVIDADES",
       1
     ],
     "PIX TRANSF ANA LUI": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       1
     ],
     "PIX TRANSF ANA PAU": [
-      "saúde e bem-estar",
+      "SAUDE E BEM ESTAR",
       "Samuel",
       1
     ],
     "PIX TRANSF ARTHUR": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       2
     ],
     "PIX TRANSF BRAGA C": [
-      "saúde e bem-estar",
+      "SAUDE E BEM ESTAR",
       "Samuel",
       1
     ],
     "PIX TRANSF BRENO R": [
-      "compras e lazer",
-      "jogos e entreterimento",
+      "COMPRAS E LAZER",
+      "JOGOS E ENTRETERIMENTO",
       1
     ],
     "PIX TRANSF BRUNO S": [
-      "transporte",
-      "estacionamento e pedágio",
+      "TRANSPORTE",
+      "ESTACIONAMENTO E PEDAGIO",
       1
     ],
     "PIX TRANSF BRUNO V": [
-      "compras e lazer",
-      "presentes",
+      "COMPRAS E LAZER",
+      "PRESENTES",
       1
     ],
     "PIX TRANSF CAMILA": [
-      "moradia",
-      "Babá",
+      "MORADIA",
+      "BABA",
       2
     ],
     "PIX TRANSF CELIA T": [
-      "saúde e bem-estar",
+      "SAUDE E BEM ESTAR",
       "Samuel",
       3
     ],
     "PIX TRANSF CHARLEN": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "PIX TRANSF CLAUDIA": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       1
     ],
     "PIX TRANSF DANIEL": [
-      "compras e lazer",
-      "eventos e atividades",
+      "COMPRAS E LAZER",
+      "EVENTOS E ATIVIDADES",
       1
     ],
     "PIX TRANSF DANIELE": [
-      "compras e lazer",
-      "presentes",
+      "COMPRAS E LAZER",
+      "PRESENTES",
       1
     ],
     "PIX TRANSF EHS NEG": [
-      "renda",
-      "renda extra",
+      "RENDA",
+      "RENDA EXTRA",
       3
     ],
     "PIX TRANSF FELIPE": [
-      "moradia",
+      "MORADIA",
       "Compra Imóvel",
       1
     ],
     "PIX TRANSF FERNAND": [
-      "empréstimos",
-      "empréstimos pessoais",
+      "EMPRESTIMOS",
+      "EMPRESTIMOS PESSOAIS",
       1
     ],
     "PIX TRANSF GABRIEL": [
-      "compras e lazer",
-      "eventos e atividades",
+      "COMPRAS E LAZER",
+      "EVENTOS E ATIVIDADES",
       1
     ],
     "PIX TRANSF GILBERT": [
-      "compras e lazer",
-      "Cruzeiro",
+      "COMPRAS E LAZER",
+      "CRUZEIRO",
       1
     ],
     "PIX TRANSF GILSON": [
-      "compras e lazer",
-      "jogos e entreterimento",
+      "COMPRAS E LAZER",
+      "JOGOS E ENTRETERIMENTO",
       1
     ],
     "PIX TRANSF GLEBSON": [
-      "outros",
-      "outros",
+      "OUTROS",
+      "OUTROS",
       1
     ],
     "PIX TRANSF GUILHER": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       4
     ],
     "PIX TRANSF GUSTAVO": [
-      "transporte",
-      "estacionamento e pedágio",
+      "TRANSPORTE",
+      "ESTACIONAMENTO E PEDAGIO",
       2
     ],
     "PIX TRANSF HENRIQU": [
-      "compras e lazer",
-      "jogos e entreterimento",
+      "COMPRAS E LAZER",
+      "JOGOS E ENTRETERIMENTO",
       1
     ],
     "PIX TRANSF IGOR SA": [
-      "compras e lazer",
-      "jogos e entreterimento",
+      "COMPRAS E LAZER",
+      "JOGOS E ENTRETERIMENTO",
       1
     ],
     "PIX TRANSF ISABEL": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       1
     ],
     "PIX TRANSF JEFFERS": [
-      "compras e lazer",
-      "presentes",
+      "COMPRAS E LAZER",
+      "PRESENTES",
       1
     ],
     "PIX TRANSF JOSE CR": [
-      "compras e lazer",
-      "jogos e entreterimento",
+      "COMPRAS E LAZER",
+      "JOGOS E ENTRETERIMENTO",
       1
     ],
     "PIX TRANSF JOSUEL": [
-      "outros",
-      "outros",
+      "OUTROS",
+      "OUTROS",
       1
     ],
     "PIX TRANSF JULIANO": [
-      "compras e lazer",
-      "jogos e entreterimento",
+      "COMPRAS E LAZER",
+      "JOGOS E ENTRETERIMENTO",
       1
     ],
     "PIX TRANSF JULIO C": [
-      "empréstimos",
-      "empréstimos pessoais",
+      "EMPRESTIMOS",
+      "EMPRESTIMOS PESSOAIS",
       3
     ],
     "PIX TRANSF JUNIO F": [
-      "compras e lazer",
-      "eventos e atividades",
+      "COMPRAS E LAZER",
+      "EVENTOS E ATIVIDADES",
       1
     ],
     "PIX TRANSF LAIS BA": [
-      "moradia",
-      "Faxina",
+      "MORADIA",
+      "FAXINA",
       11
     ],
     "PIX TRANSF LAURA H": [
-      "moradia",
-      "Mobiliário",
+      "MORADIA",
+      "MOBILIARIO",
       3
     ],
     "PIX TRANSF LEANDRO": [
-      "compras e lazer",
-      "presentes",
+      "COMPRAS E LAZER",
+      "PRESENTES",
       1
     ],
     "PIX TRANSF LETICIA": [
-      "compras e lazer",
-      "Cruzeiro",
+      "COMPRAS E LAZER",
+      "CRUZEIRO",
       1
     ],
     "PIX TRANSF LINCOLN": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       3
     ],
     "PIX TRANSF LUCAS C": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
     "PIX TRANSF LUCAS N": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       3
     ],
     "PIX TRANSF LUIS FE": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       3
     ],
     "PIX TRANSF LUISA L": [
-      "renda",
-      "renda extra",
+      "RENDA",
+      "RENDA EXTRA",
       20
     ],
     "PIX TRANSF LUÍSA L": [
-      "renda",
-      "renda extra",
+      "RENDA",
+      "RENDA EXTRA",
       8
     ],
     "PIX TRANSF MAISA V": [
-      "compras e lazer",
-      "presentes",
+      "COMPRAS E LAZER",
+      "PRESENTES",
       1
     ],
     "PIX TRANSF MARCILI": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "PIX TRANSF MARCO T": [
-      "compras e lazer",
-      "jogos e entreterimento",
+      "COMPRAS E LAZER",
+      "JOGOS E ENTRETERIMENTO",
       1
     ],
     "PIX TRANSF MARIA A": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       1
     ],
     "PIX TRANSF MARIA C": [
-      "compras e lazer",
-      "jogos e entreterimento",
+      "COMPRAS E LAZER",
+      "JOGOS E ENTRETERIMENTO",
       1
     ],
     "PIX TRANSF MARIANN": [
-      "compras e lazer",
-      "jogos e entreterimento",
+      "COMPRAS E LAZER",
+      "JOGOS E ENTRETERIMENTO",
       1
     ],
     "PIX TRANSF MARINA": [
-      "compras e lazer",
-      "presentes",
+      "COMPRAS E LAZER",
+      "PRESENTES",
       1
     ],
     "PIX TRANSF MATHEUS": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       1
     ],
     "PIX TRANSF MICHELL": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "PIX TRANSF NATHALI": [
-      "renda",
-      "renda extra",
+      "RENDA",
+      "RENDA EXTRA",
       1
     ],
     "PIX TRANSF PATRÍCI": [
-      "compras e lazer",
-      "presentes",
+      "COMPRAS E LAZER",
+      "PRESENTES",
       2
     ],
     "PIX TRANSF PEDRO H": [
-      "empréstimos",
-      "empréstimos pessoais",
+      "EMPRESTIMOS",
+      "EMPRESTIMOS PESSOAIS",
       9
     ],
     "PIX TRANSF RAIRAN": [
-      "compras e lazer",
-      "jogos e entreterimento",
+      "COMPRAS E LAZER",
+      "JOGOS E ENTRETERIMENTO",
       1
     ],
     "PIX TRANSF RENATA": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
     "PIX TRANSF RENATO": [
-      "transporte",
-      "estacionamento e pedágio",
+      "TRANSPORTE",
+      "ESTACIONAMENTO E PEDAGIO",
       1
     ],
     "PIX TRANSF RICARDO": [
-      "saúde e bem-estar",
-      "academia e fitness",
+      "SAUDE E BEM ESTAR",
+      "ACADEMIA E FITNESS",
       1
     ],
     "PIX TRANSF RICHARD": [
-      "compras e lazer",
-      "jogos e entreterimento",
+      "COMPRAS E LAZER",
+      "JOGOS E ENTRETERIMENTO",
       1
     ],
     "PIX TRANSF RIVIANE": [
-      "compras e lazer",
-      "eventos e atividades",
+      "COMPRAS E LAZER",
+      "EVENTOS E ATIVIDADES",
       1
     ],
     "PIX TRANSF ROBERT": [
-      "empréstimos",
-      "empréstimos pessoais",
+      "EMPRESTIMOS",
+      "EMPRESTIMOS PESSOAIS",
       9
     ],
     "PIX TRANSF ROBSON": [
-      "empréstimos",
-      "empréstimos pessoais",
+      "EMPRESTIMOS",
+      "EMPRESTIMOS PESSOAIS",
       15
     ],
     "PIX TRANSF ROMULO": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "PIX TRANSF RONAN D": [
-      "compras e lazer",
-      "eventos e atividades",
+      "COMPRAS E LAZER",
+      "EVENTOS E ATIVIDADES",
       1
     ],
     "PIX TRANSF ROZILAI": [
-      "compras e lazer",
-      "eventos e atividades",
+      "COMPRAS E LAZER",
+      "EVENTOS E ATIVIDADES",
       1
     ],
     "PIX TRANSF SERGIO": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "PIX TRANSF UIARA M": [
-      "compras e lazer",
-      "eventos e atividades",
+      "COMPRAS E LAZER",
+      "EVENTOS E ATIVIDADES",
       1
     ],
     "PIX TRANSF VICTOR": [
-      "compras e lazer",
-      "eventos e atividades",
+      "COMPRAS E LAZER",
+      "EVENTOS E ATIVIDADES",
       1
     ],
     "PIX TRANSF WELLING": [
-      "compras e lazer",
-      "eventos e atividades",
+      "COMPRAS E LAZER",
+      "EVENTOS E ATIVIDADES",
       1
     ],
     "PIZZA HUT 26545": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
     "PIZZARIA PONTE FURADA": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "PIZZARIA PONTE FURADABELO HORIZONTBR": [
@@ -4285,23 +4285,23 @@
       9999
     ],
     "PIZZATREMBAO": [
-      "compras e lazer",
+      "COMPRAS E LAZER",
       "Alimentação Trabalho",
       1
     ],
     "PONTE FURADA": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       4
     ],
     "PORTO SEGURO ADMINISTRADORA DE CONSORCIOS LTDA": [
-      "empréstimos",
-      "empréstimos pessoais",
+      "EMPRESTIMOS",
+      "EMPRESTIMOS PESSOAIS",
       20
     ],
     "POSTO CAMILA": [
-      "transporte",
-      "Combustível",
+      "TRANSPORTE",
+      "COMBUSTIVEL",
       3
     ],
     "POSTO CAMILA BELO HORIZONT BR": [
@@ -4310,28 +4310,28 @@
       9999
     ],
     "POSTO CENTER SUL": [
-      "transporte",
-      "Combustível",
+      "TRANSPORTE",
+      "COMBUSTIVEL",
       1
     ],
     "POSTO CHEFAO LTDA": [
-      "transporte",
+      "TRANSPORTE",
       "manutenção do carro",
       1
     ],
     "POSTO CORUJAO": [
-      "transporte",
-      "Combustível",
+      "TRANSPORTE",
+      "COMBUSTIVEL",
       1
     ],
     "POSTO DEL REY": [
-      "transporte",
-      "Combustível",
+      "TRANSPORTE",
+      "COMBUSTIVEL",
       1
     ],
     "POSTO DO PAPAI LTDA": [
-      "transporte",
-      "Combustível",
+      "TRANSPORTE",
+      "COMBUSTIVEL",
       4
     ],
     "POSTO ECO 1BELO HORIZONTBR": [
@@ -4340,23 +4340,23 @@
       9999
     ],
     "POSTO ESTANCIA REAL": [
-      "transporte",
-      "Combustível",
+      "TRANSPORTE",
+      "COMBUSTIVEL",
       1
     ],
     "POSTO HUGO WERNECK": [
-      "transporte",
-      "Combustível",
+      "TRANSPORTE",
+      "COMBUSTIVEL",
       1
     ],
     "POSTO ITATIA-CT TDA": [
-      "transporte",
-      "Combustível",
+      "TRANSPORTE",
+      "COMBUSTIVEL",
       1
     ],
     "POSTO MINEIRAO": [
-      "transporte",
-      "Combustível",
+      "TRANSPORTE",
+      "COMBUSTIVEL",
       3
     ],
     "POSTO MINEIRAOBELO HORIZONTBR": [
@@ -4370,8 +4370,8 @@
       9999
     ],
     "POSTO MUSTANG": [
-      "transporte",
-      "Combustível",
+      "TRANSPORTE",
+      "COMBUSTIVEL",
       1
     ],
     "POSTO MUSTANG BELO HORIZONT BR": [
@@ -4380,12 +4380,12 @@
       9999
     ],
     "POSTO MUTUCA": [
-      "transporte",
+      "TRANSPORTE",
       "manutenção do carro",
       1
     ],
     "POSTO NIQUELINA": [
-      "transporte",
+      "TRANSPORTE",
       "manutenção do carro",
       1
     ],
@@ -4395,8 +4395,8 @@
       9999
     ],
     "POSTO PIO XII": [
-      "transporte",
-      "Combustível",
+      "TRANSPORTE",
+      "COMBUSTIVEL",
       2
     ],
     "POSTO PIO XII BELO HORIZONT BR": [
@@ -4410,18 +4410,18 @@
       9999
     ],
     "POSTO SANTOS DUMONT L": [
-      "transporte",
-      "Combustível",
+      "TRANSPORTE",
+      "COMBUSTIVEL",
       1
     ],
     "POSTO SAO JOSE": [
-      "transporte",
-      "Combustível",
+      "TRANSPORTE",
+      "COMBUSTIVEL",
       1
     ],
     "POSTO SIGMA": [
-      "transporte",
-      "Combustível",
+      "TRANSPORTE",
+      "COMBUSTIVEL",
       1
     ],
     "POSTO SR LTDANOVA LIMABR": [
@@ -4430,8 +4430,8 @@
       9999
     ],
     "POSTO TIC TAC": [
-      "transporte",
-      "Combustível",
+      "TRANSPORTE",
+      "COMBUSTIVEL",
       3
     ],
     "POSTO TIC TACBELO HORIZONTBR": [
@@ -4450,8 +4450,8 @@
       9999
     ],
     "POSTOMARTELTDA": [
-      "transporte",
-      "Combustível",
+      "TRANSPORTE",
+      "COMBUSTIVEL",
       1
     ],
     "POSTOMONTESANTOBELO HORIZONTBR": [
@@ -4460,23 +4460,23 @@
       9999
     ],
     "PPRO *MICROSOFT": [
-      "assinaturas",
-      "Microsoft",
+      "ASSINATURAS",
+      "MICROSOFT",
       1
     ],
     "PRIME VIDEO E COMERCIO": [
-      "assinaturas",
-      "Amazon Prime",
+      "ASSINATURAS",
+      "AMAZON PRIME",
       6
     ],
     "PRO TECH GARMIN": [
-      "viagem",
+      "VIAGEM",
       "alimentação em viagem",
       1
     ],
     "PRUDENT*APOL000736734": [
-      "seguros",
-      "seguro de vida",
+      "SEGUROS",
+      "SEGURO DE VIDA",
       15
     ],
     "PRUDENT*APOL000736734 RIO DE JANEIR BR": [
@@ -4490,8 +4490,8 @@
       9999
     ],
     "PRUDENTIAL D*APOL": [
-      "seguros",
-      "seguro de vida",
+      "SEGUROS",
+      "SEGURO DE VIDA",
       1
     ],
     "PRUDENTIAL D*APOL SAO PAULO BR": [
@@ -4505,28 +4505,28 @@
       9999
     ],
     "PRUDENTIAL DO BRASIL VIDA EM GRUPO S.A.": [
-      "seguros",
-      "seguro de vida",
+      "SEGUROS",
+      "SEGURO DE VIDA",
       1
     ],
     "QUICK EXPRESS": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "QUINTAL SAO BENTO": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       1
     ],
     "R & B SERVICOS, TRANSPORTES E LOGISTICA LTDA": [
-      "transporte",
-      "estacionamento e pedágio",
+      "TRANSPORTE",
+      "ESTACIONAMENTO E PEDAGIO",
       1
     ],
     "RAFAEL BATISTA": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       1
     ],
     "RAIA2935BELO HORIZONTBR": [
@@ -4535,8 +4535,8 @@
       9999
     ],
     "RANCHO DO BOI": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "RAYSSAMARIACONTAGEMBR": [
@@ -4545,13 +4545,13 @@
       9999
     ],
     "RECOMPENSA ALELO": [
-      "renda",
+      "RENDA",
       "Auxílios Salário",
       3
     ],
     "REDE RODO PARK": [
-      "transporte",
-      "estacionamento e pedágio",
+      "TRANSPORTE",
+      "ESTACIONAMENTO E PEDAGIO",
       2
     ],
     "REDE RODO PARK BELO HORIZONT BR": [
@@ -4565,8 +4565,8 @@
       9999
     ],
     "REI DO PASTEL": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "REI DO PASTELBELO HORIZONTBR": [
@@ -4575,28 +4575,28 @@
       9999
     ],
     "REMUNERACAO APLICACAO AUTOMATICA": [
-      "investimentos",
-      "proventos de investimentos",
+      "INVESTIMENTOS",
+      "PROVENTOS DE INVESTIMENTOS",
       3
     ],
     "REMUNERACAO/SALARIO": [
-      "renda",
-      "salários e bônus",
+      "RENDA",
+      "SALARIOS E BONUS",
       14
     ],
     "RENATO LIRIO": [
-      "saúde e bem-estar",
-      "academia e fitness",
+      "SAUDE E BEM ESTAR",
+      "ACADEMIA E FITNESS",
       1
     ],
     "REND PAGO APLIC AUT APR": [
-      "investimentos",
-      "proventos de investimentos",
+      "INVESTIMENTOS",
+      "PROVENTOS DE INVESTIMENTOS",
       22
     ],
     "REND PAGO APLIC AUT MAIS": [
-      "investimentos",
-      "proventos de investimentos",
+      "INVESTIMENTOS",
+      "PROVENTOS DE INVESTIMENTOS",
       34
     ],
     "RENDIMENTOS REND PAGO APLIC AUT MAIS": [
@@ -4605,33 +4605,33 @@
       9999
     ],
     "RENNER": [
-      "compras e lazer",
-      "roupas e acessórios",
+      "COMPRAS E LAZER",
+      "ROUPAS E ACESSORIOS",
       2
     ],
     "RENTALCARS.COM": [
-      "viagem",
-      "passagens e transporte",
+      "VIAGEM",
+      "PASSAGENS E TRANSPORTE",
       1
     ],
     "RESGATE RDB": [
-      "moradia",
-      "Mobiliário",
+      "MORADIA",
+      "MOBILIARIO",
       1
     ],
     "REST.IBISSBELEMHANGAR": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "RESTAURANTE *AMARELINH": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "RESTAURANTE DO VANDECO": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "RESTAURANTE DOM TORO GBELO HORIZONTBR": [
@@ -4640,13 +4640,13 @@
       9999
     ],
     "RESTAURANTE IRMAOS SALE": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "RESTAURANTE MANIA MINE": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       6
     ],
     "RESTAURANTE MANIA MINE BELO HORIZONT BR": [
@@ -4670,8 +4670,8 @@
       9999
     ],
     "RESTAURANTE SANVILLE G": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       10
     ],
     "RESTAURANTE SANVILLE G BELO HORIZONT BR": [
@@ -4690,8 +4690,8 @@
       9999
     ],
     "RESTAURANTEPATIO": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "RIBER PAOBELO HORIZONTBR": [
@@ -4705,8 +4705,8 @@
       9999
     ],
     "RIVIANE MICHELLE F JESUS": [
-      "compras e lazer",
-      "eventos e atividades",
+      "COMPRAS E LAZER",
+      "EVENTOS E ATIVIDADES",
       1
     ],
     "RODO PARK LOCACOES LTDBELO HORIZONTBR": [
@@ -4720,8 +4720,8 @@
       9999
     ],
     "ROMA PLUS": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       1
     ],
     "ROMA PLUS BELO HORIZONT BR": [
@@ -4730,28 +4730,28 @@
       9999
     ],
     "ROSANGELAMARIA": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "ROSS STORE #350": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       2
     ],
     "RRC ALIMENTOS LTDA": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "RUANRODRIGUESDE": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "RUTHMARTINS": [
-      "compras e lazer",
-      "roupas e acessórios",
+      "COMPRAS E LAZER",
+      "ROUPAS E ACESSORIOS",
       1
     ],
     "SABOREAR CAFETERIA E LBELO HORIZONTBR": [
@@ -4760,8 +4760,8 @@
       9999
     ],
     "SACOLÃO": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "SALAO VAGALUMEBELO HORIZONTBR": [
@@ -4775,18 +4775,18 @@
       9999
     ],
     "SANVILLE": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "SANVILLE GRILL": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       2
     ],
     "SANVILLE RESTAURANTE L": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       2
     ],
     "SANVILLE RESTAURANTE L BELO HORIZONT BR": [
@@ -4795,13 +4795,13 @@
       9999
     ],
     "SAO CRISTOVA-CT MBUSTI": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
     "SAO CRISTOVAO COMBUSTI": [
-      "transporte",
-      "Combustível",
+      "TRANSPORTE",
+      "COMBUSTIVEL",
       3
     ],
     "SAO CRISTOVAO COMBUSTI BELO HORIZONT BR": [
@@ -4865,33 +4865,33 @@
       9999
     ],
     "SAVASSI": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "SERVICOSDIGITAIS": [
-      "compras e lazer",
-      "presentes",
+      "COMPRAS E LAZER",
+      "PRESENTES",
       1
     ],
     "SHAKE SHACK - 1148": [
-      "viagem",
+      "VIAGEM",
       "alimentação em viagem",
       1
     ],
     "SHAKE SHACK - 1296": [
-      "viagem",
+      "VIAGEM",
       "alimentação em viagem",
       1
     ],
     "SHELL": [
-      "viagem",
-      "passagens e transporte",
+      "VIAGEM",
+      "PASSAGENS E TRANSPORTE",
       1
     ],
     "SHOPEE": [
-      "compras e lazer",
-      "roupas e acessórios",
+      "COMPRAS E LAZER",
+      "ROUPAS E ACESSORIOS",
       3
     ],
     "SHOPEE *CASACSHOPRIO DE JANEIRBR": [
@@ -4920,8 +4920,8 @@
       9999
     ],
     "SIMPLICIDADE MINEIRA": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "SMARTBARBER CLUBBELO HORIZONTBR": [
@@ -4930,7 +4930,7 @@
       9999
     ],
     "SMC.": [
-      "assinaturas",
+      "ASSINATURAS",
       "HBO",
       2
     ],
@@ -4950,13 +4950,13 @@
       9999
     ],
     "SOL E NEVE SORVETERI": [
-      "viagem",
+      "VIAGEM",
       "restaurante ou delivery",
       1
     ],
     "SORVETACA": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "SORVETERIA ARM LTDABELO HORIZONTBR": [
@@ -4965,8 +4965,8 @@
       9999
     ],
     "SORVETERIA MU": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "SPETIMCHURRASCOEBELO HORIZONTBR": [
@@ -4975,13 +4975,13 @@
       9999
     ],
     "SPOTIFY BRASIL": [
-      "assinaturas",
-      "Spotify",
+      "ASSINATURAS",
+      "SPOTIFY",
       10
     ],
     "SPOTPASSSOLUCOES": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "STA*ROTATIVO PRODBELO HORIZONTBR": [
@@ -4990,58 +4990,58 @@
       9999
     ],
     "STAR 201 BH AIRPORT T": [
-      "viagem",
-      "passagens e transporte",
+      "VIAGEM",
+      "PASSAGENS E TRANSPORTE",
       1
     ],
     "STARBUCKS 69422": [
-      "viagem",
+      "VIAGEM",
       "alimentação em viagem",
       1
     ],
     "STARBUCKS STORE 65421": [
-      "viagem",
+      "VIAGEM",
       "alimentação em viagem",
       1
     ],
     "STARK *ROTATIVO PROD": [
-      "transporte",
-      "estacionamento e pedágio",
+      "TRANSPORTE",
+      "ESTACIONAMENTO E PEDAGIO",
       1
     ],
     "SUMMIT ONE VANDERBILT": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
     "SUP EPA DEZESSEIS": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "SUP VERDRMAR": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "SUPER MAIS": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "SUPER NOSSO": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       11
     ],
     "SUPER NOSSO GRAO MOGOL": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       3
     ],
     "SUPER NOSSO GUTIERREZ": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "SUPER NOSSO GUTIERREZ BELO HORIZONT BR": [
@@ -5050,12 +5050,12 @@
       9999
     ],
     "SUPER NOSSO PRACA DA L": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "SUPERMARKET": [
-      "viagem",
+      "VIAGEM",
       "supermercado",
       1
     ],
@@ -5065,13 +5065,13 @@
       9999
     ],
     "SUPERMERCADO BH": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "SUPERMERCADO E PADARIA": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       51
     ],
     "SUPERMERCADO E PADARIA BELO HORIZONT BR": [
@@ -5085,13 +5085,13 @@
       9999
     ],
     "SUPERMERCADO-CT ADARIA": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "SUPERMERCADOS BH": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       8
     ],
     "SUPERMERCADOS BH BELO HORIZONT BR": [
@@ -5105,28 +5105,28 @@
       9999
     ],
     "SUPERNOSSO": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       3
     ],
     "SURUBIMNOESPETO": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "SYMPLA": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       1
     ],
     "SYMPLA INTERNET SOLUCOES S/A": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       1
     ],
     "TAGITAU*FELIPEGUEDES": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "TAGITAU*FELIPEGUEDESSAO PAULOBR": [
@@ -5135,12 +5135,12 @@
       9999
     ],
     "TARGET 00033548": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       2
     ],
     "TARGET 00033787": [
-      "viagem",
+      "VIAGEM",
       "alimentação em viagem",
       1
     ],
@@ -5150,83 +5150,83 @@
       9999
     ],
     "TC PANIFICADORA LTDA": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "TED 102.0001.FELIPE H S": [
-      "empréstimos",
-      "empréstimos pessoais",
+      "EMPRESTIMOS",
+      "EMPRESTIMOS PESSOAIS",
       2
     ],
     "TED 104.0000CAIXA ECON F": [
-      "renda",
-      "renda extra",
+      "RENDA",
+      "RENDA EXTRA",
       3
     ],
     "TEF CREDITO SALARIO": [
-      "renda",
-      "salários e bônus",
+      "RENDA",
+      "SALARIOS E BONUS",
       1
     ],
     "TEIXEIRA DO PEIXE": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "TELEFONICA BRASIL S.A.": [
-      "moradia",
-      "internet e telefone",
+      "MORADIA",
+      "INTERNET E TELEFONE",
       2
     ],
     "TERMOLAR": [
-      "compras e lazer",
-      "coisas para casa",
+      "COMPRAS E LAZER",
+      "COISAS PARA CASA",
       1
     ],
     "TGIF 2635 -CT": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
     "THAYS MENEZES SOBRINHO DUARTE": [
-      "compras e lazer",
-      "eventos e atividades",
+      "COMPRAS E LAZER",
+      "EVENTOS E ATIVIDADES",
       1
     ],
     "THE LION KING TICKETS": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
     "TICKETSPORTS": [
-      "compras e lazer",
-      "eventos e atividades",
+      "COMPRAS E LAZER",
+      "EVENTOS E ATIVIDADES",
       1
     ],
     "TM *ORLANDO MAGIC": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
     "TNF ORLANDO": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
     "TOMMY HILFIGER": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       2
     ],
     "TOTACIOS BAR": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "TOWER PARK MASSUD": [
-      "transporte",
-      "estacionamento e pedágio",
+      "TRANSPORTE",
+      "ESTACIONAMENTO E PEDAGIO",
       3
     ],
     "TOWER PARK MASSUD BELO HORIZONT BR": [
@@ -5240,22 +5240,22 @@
       9999
     ],
     "TRACK E FIELD SHOP": [
-      "compras e lazer",
-      "esportes e equipamentos",
+      "COMPRAS E LAZER",
+      "ESPORTES E EQUIPAMENTOS",
       1
     ],
     "TRANSAMERICA FIT": [
-      "transporte",
-      "estacionamento e pedágio",
+      "TRANSPORTE",
+      "ESTACIONAMENTO E PEDAGIO",
       1
     ],
     "TRANSFERÊNCIA ENVIADA|ALESSON JUNIOR OLIVEIRA GOMES": [
-      "moradia",
-      "Mobiliário",
+      "MORADIA",
+      "MOBILIARIO",
       1
     ],
     "TRANSFERÊNCIA ENVIADA|FELIPE HENRIQUE SILVA GUEDES": [
-      "moradia",
+      "MORADIA",
       "Compra Imóvel",
       2
     ],
@@ -5265,33 +5265,33 @@
       9999
     ],
     "TRF PAG INSS02305568473": [
-      "renda",
-      "Restituição",
+      "RENDA",
+      "RESTITUICAO",
       1
     ],
     "TST*LOS TACOS NO. 1 HUD": [
-      "viagem",
+      "VIAGEM",
       "alimentação em viagem",
       1
     ],
     "TST*PICCOLA CUCINA UPTO": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
     "TST*VITOS SLICES AND IC": [
-      "viagem",
+      "VIAGEM",
       "alimentação em viagem",
       1
     ],
     "TUPINAMBAS 1001 FE": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "UBER * PENDING": [
-      "transporte",
-      "aplicativos de mobilidade",
+      "TRANSPORTE",
+      "APLICATIVOS DE MOBILIDADE",
       9
     ],
     "UBER * PENDING SAO PAULO BR": [
@@ -5300,13 +5300,13 @@
       9999
     ],
     "UBER *TRIP": [
-      "viagem",
-      "passagens e transporte",
+      "VIAGEM",
+      "PASSAGENS E TRANSPORTE",
       7
     ],
     "UBER *TRIP HELP.UBER.CO": [
-      "transporte",
-      "aplicativos de mobilidade",
+      "TRANSPORTE",
+      "APLICATIVOS DE MOBILIDADE",
       1
     ],
     "UBER *TRIP HELP.UBER.COSAO PAULO BR": [
@@ -5315,13 +5315,13 @@
       9999
     ],
     "UBER* TRIP": [
-      "transporte",
-      "aplicativos de mobilidade",
+      "TRANSPORTE",
+      "APLICATIVOS DE MOBILIDADE",
       9
     ],
     "VACA LOKA": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "VACA LOKA BELO HORIZONT BR": [
@@ -5330,12 +5330,12 @@
       9999
     ],
     "VALE ALIMENTAÇÃO": [
-      "renda",
+      "RENDA",
       "Benefício Salário",
       1
     ],
     "VALE REFEIÇÃO": [
-      "renda",
+      "RENDA",
       "Benefício Salário",
       1
     ],
@@ -5355,28 +5355,28 @@
       9999
     ],
     "VASCOLIS BBQ": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "VERDEMAR": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       19
     ],
     "VERDINHO": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "VICTORIA'S SECRET #1493": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
     "VICTORY BUSINESS": [
-      "viagem",
-      "hospedagem",
+      "VIAGEM",
+      "HOSPEDAGEM",
       1
     ],
     "VIDA DE HOMEMBELO HORIZONTBR": [
@@ -5385,8 +5385,8 @@
       9999
     ],
     "VILAMALOCA": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       3
     ],
     "VILAMALOCABELO HORIZONTBR": [
@@ -5400,8 +5400,8 @@
       9999
     ],
     "VINDI *DDFORNERIAORIG": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "VINDI *INVESTIDOR": [
@@ -5415,12 +5415,12 @@
       9999
     ],
     "VIVO": [
-      "moradia",
-      "internet e telefone",
+      "MORADIA",
+      "INTERNET E TELEFONE",
       18
     ],
     "VIVO TRAVEL": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
@@ -5430,28 +5430,28 @@
       9999
     ],
     "VORR": [
-      "compras e lazer",
-      "roupas e acessórios",
+      "COMPRAS E LAZER",
+      "ROUPAS E ACESSORIOS",
       4
     ],
     "WAL-MART #5420": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
     "WALGREENS #15023": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
     "WELLHUB GYMPASS BR GYMP": [
-      "saúde e bem-estar",
-      "academia e fitness",
+      "SAUDE E BEM ESTAR",
+      "ACADEMIA E FITNESS",
       1
     ],
     "WELLHUB GYMPASS BR WELL": [
-      "saúde e bem-estar",
-      "academia e fitness",
+      "SAUDE E BEM ESTAR",
+      "ACADEMIA E FITNESS",
       1
     ],
     "WELLHUB GYMPASS BR WELLSAO PAULO BR": [
@@ -5460,8 +5460,8 @@
       9999
     ],
     "WELLHUB LUISA LUGAO": [
-      "saúde e bem-estar",
-      "academia e fitness",
+      "SAUDE E BEM ESTAR",
+      "ACADEMIA E FITNESS",
       1
     ],
     "WELLHUB LUISA LUGAO SAO PAULO BR": [
@@ -5470,33 +5470,33 @@
       9999
     ],
     "WENDY'S # 12868": [
-      "viagem",
+      "VIAGEM",
       "alimentação em viagem",
       1
     ],
     "WESLEY NASCENTE DA SILV": [
-      "compras e lazer",
-      "eventos e atividades",
+      "COMPRAS E LAZER",
+      "EVENTOS E ATIVIDADES",
       1
     ],
     "WM SUPERCENTER #1220": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       2
     ],
     "WM SUPERCENTER #5420": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
     "XICO DA CARNE": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "YOGOBERRY BH SHOP": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "YOGOBERRY BH SHOP BELO HORIZONT BR": [
@@ -5510,23 +5510,23 @@
       9999
     ],
     "ZARA BRASIL": [
-      "compras e lazer",
-      "roupas e acessórios",
+      "COMPRAS E LAZER",
+      "ROUPAS E ACESSORIOS",
       1
     ],
     "ZARA.COM BRASIL": [
-      "compras e lazer",
-      "roupas e acessórios",
+      "COMPRAS E LAZER",
+      "ROUPAS E ACESSORIOS",
       1
     ],
     "ZIG *MINAS ARENA GE": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       1
     ],
     "ZIG *MINEIRAO ANCHO": [
-      "compras e lazer",
-      "Cruzeiro",
+      "COMPRAS E LAZER",
+      "CRUZEIRO",
       1
     ],
     "ZIG *MINEIRAO ANCHOBELO HORIZONTBR": [
@@ -5535,23 +5535,23 @@
       9999
     ],
     "ZIG *MITRA": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "ZIG*FAZENDA CERVEJEIRA": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       2
     ],
     "ZIG*MINEIRAO 2025 CA": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       1
     ],
     "ZIG*MINEIRAO CAMPEON": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       1
     ],
     "ZP *CORRERIA TREIN": [
@@ -5560,8 +5560,8 @@
       9999
     ],
     "ZP*HARD SOLUCOES E SER": [
-      "compras e lazer",
-      "festas e encontros",
+      "COMPRAS E LAZER",
+      "FESTAS E ENCONTROS",
       2
     ]
   },
@@ -5572,8 +5572,8 @@
       9999
     ],
     "AIRBNB": [
-      "viagem",
-      "hospedagem",
+      "VIAGEM",
+      "HOSPEDAGEM",
       1
     ],
     "AMAZON BR": [
@@ -5582,7 +5582,7 @@
       9999
     ],
     "AMAZON MKTPL": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       2
     ],
@@ -5597,13 +5597,13 @@
       9999
     ],
     "ASA": [
-      "saúde e bem-estar",
-      "academia e fitness",
+      "SAUDE E BEM ESTAR",
+      "ACADEMIA E FITNESS",
       1
     ],
     "AZUL WE": [
-      "viagem",
-      "passagens e transporte",
+      "VIAGEM",
+      "PASSAGENS E TRANSPORTE",
       3
     ],
     "B1P": [
@@ -5637,13 +5637,13 @@
       9999
     ],
     "CONECTC": [
-      "transporte",
-      "estacionamento e pedágio",
+      "TRANSPORTE",
+      "ESTACIONAMENTO E PEDAGIO",
       7
     ],
     "DL": [
-      "assinaturas",
-      "Linkedin",
+      "ASSINATURAS",
+      "LINKEDIN",
       13
     ],
     "DM": [
@@ -5652,13 +5652,13 @@
       9999
     ],
     "DROGARIA ARA": [
-      "saúde e bem-estar",
+      "SAUDE E BEM ESTAR",
       "Enrico",
       2
     ],
     "EC": [
-      "assinaturas",
-      "Meli",
+      "ASSINATURAS",
+      "MELI",
       1
     ],
     "IFD": [
@@ -5667,8 +5667,8 @@
       9999
     ],
     "IFOOD": [
-      "compras e lazer",
-      "Restaurante ou Delivery",
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       1
     ],
     "IOF INTERNACIONAL - ANTHROPIC": [
@@ -5682,7 +5682,7 @@
       9999
     ],
     "MARINA MARIZ": [
-      "saúde e bem-estar",
+      "SAUDE E BEM ESTAR",
       "Enrico",
       3
     ],
@@ -5697,8 +5697,8 @@
       9999
     ],
     "MICROSOFT": [
-      "assinaturas",
-      "Microsoft",
+      "ASSINATURAS",
+      "MICROSOFT",
       3
     ],
     "MLP": [
@@ -5707,13 +5707,13 @@
       9999
     ],
     "MTA": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
     "OMNY VENDING": [
-      "viagem",
-      "passagens e transporte",
+      "VIAGEM",
+      "PASSAGENS E TRANSPORTE",
       2
     ],
     "PAYPAL": [
@@ -5722,13 +5722,13 @@
       9999
     ],
     "PAYU": [
-      "compras e lazer",
-      "esportes e equipamentos",
+      "COMPRAS E LAZER",
+      "ESPORTES E EQUIPAMENTOS",
       1
     ],
     "PDV": [
-      "alimentação",
-      "supermercado",
+      "ALIMENTAÇÃO",
+      "SUPERMERCADO",
       1
     ],
     "PG": [
@@ -5737,8 +5737,8 @@
       9999
     ],
     "PPRO": [
-      "assinaturas",
-      "Microsoft",
+      "ASSINATURAS",
+      "MICROSOFT",
       1
     ],
     "PRUDENT": [
@@ -5752,8 +5752,8 @@
       9999
     ],
     "RESTAURANTE": [
-      "alimentação",
-      "Alimentação Trabalho",
+      "ALIMENTAÇÃO",
+      "ALIMENTACAO TRABALHO",
       1
     ],
     "SHOPEE": [
@@ -5767,8 +5767,8 @@
       9999
     ],
     "STARK": [
-      "transporte",
-      "estacionamento e pedágio",
+      "TRANSPORTE",
+      "ESTACIONAMENTO E PEDAGIO",
       1
     ],
     "TAGITAU": [
@@ -5777,12 +5777,12 @@
       9999
     ],
     "TM": [
-      "viagem",
+      "VIAGEM",
       "passeios e lazer",
       1
     ],
     "TST": [
-      "viagem",
+      "VIAGEM",
       "alimentação em viagem",
       2
     ],

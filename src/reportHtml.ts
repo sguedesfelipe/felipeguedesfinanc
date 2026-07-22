@@ -140,7 +140,52 @@ function clientScript(): string {
   const MONTH_NAMES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
   const monthLabel = (m) => { const [y, mm] = m.split('-'); return MONTH_NAMES[Number(mm) - 1] + '/' + y.slice(2); };
 
-  // --- filtro de periodo, valido para as 5 tabelas ---
+  // --- edicoes salvas neste navegador (categoria/subcategoria/valido/pendente
+  // sobrevivem a um F5 ou a fechar e reabrir esta mesma pagina; nao viajam
+  // pra um relatorio novo gerado depois — pra isso, exporte o CSV e mande) ---
+  const STORAGE_KEY = 'pluggy-relatorio-edicoes';
+  function loadSavedEdits() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    } catch (e) {
+      return {};
+    }
+  }
+  // Cache em memoria do blob salvo, pra "cls-input" (que dispara a cada
+  // tecla digitada) nao precisar reler+reparsear o localStorage inteiro a
+  // cada letra — so escreve de volta o que mudou.
+  const savedEditsCache = loadSavedEdits();
+  function saveEdit(t) {
+    savedEditsCache[t.transactionId] = { categoria: t.categoria, subcategoria: t.subcategoria, valido: t.valido, pendente: t.pendente };
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(savedEditsCache));
+    } catch (e) {
+      // localStorage indisponivel (ex.: aba anonima) — edicao so vale nesta sessao
+    }
+  }
+  function restoreSavedEdits() {
+    let n = 0;
+    for (const t of state) {
+      const edit = savedEditsCache[t.transactionId];
+      if (!edit) continue;
+      Object.assign(t, edit);
+      n += 1;
+    }
+    return n;
+  }
+  const savedEditsCount = restoreSavedEdits();
+  const savedNotice = document.getElementById('saved-edits-notice');
+  if (savedEditsCount > 0) {
+    savedNotice.textContent = savedEditsCount + ' edicao(oes) salva(s) neste navegador foram restauradas.';
+    savedNotice.style.display = 'inline';
+  }
+  document.getElementById('clear-saved-edits').addEventListener('click', () => {
+    if (!confirm('Isso apaga as edicoes salvas neste navegador (nao desfaz o que ja foi exportado ou mandado). Continuar?')) return;
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  });
+
+  // --- filtro de periodo + dimensoes, valido para as 5 tabelas e os graficos ---
   const allDates = state.map((t) => t.dateISO).sort();
   const minDate = allDates[0];
   const maxDate = allDates[allDates.length - 1];
@@ -151,10 +196,72 @@ function clientScript(): string {
   fromInput.value = minDate;
   toInput.value = maxDate;
 
+  const categoriaFilter = document.getElementById('filter-categoria');
+  const subcategoriaFilter = document.getElementById('filter-subcategoria');
+  const validoFilter = document.getElementById('filter-valido');
+  const contaFilter = document.getElementById('filter-conta');
+  const statusFilter = document.getElementById('filter-status');
+  const tipoFilter = document.getElementById('filter-tipo');
+
+  function distinctValues(getter) {
+    return [...new Set(state.map(getter).filter((v) => v))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+  }
+  function fillSelect(select, values) {
+    for (const v of values) {
+      const opt = document.createElement('option');
+      opt.value = v;
+      opt.textContent = v;
+      select.appendChild(opt);
+    }
+  }
+  fillSelect(categoriaFilter, distinctValues((t) => t.categoria));
+  fillSelect(subcategoriaFilter, distinctValues((t) => t.subcategoria));
+  fillSelect(contaFilter, distinctValues((t) => t.account));
+  fillSelect(statusFilter, distinctValues((t) => t.statusBanco));
+
+  // Filtros de dimensao "simples" (um <select>, sem opcoes dependentes de
+  // outro filtro) — Subcategoria fica de fora porque suas opcoes dependem da
+  // Categoria escolhida.
+  const SIMPLE_DIMENSION_FILTERS = [validoFilter, contaFilter, statusFilter, tipoFilter];
+
+  function resetSubcategoriaOptions(cat) {
+    subcategoriaFilter.innerHTML = '<option value="">Todas</option>';
+    const subs = cat
+      ? distinctValues((t) => (t.categoria === cat ? t.subcategoria : ''))
+      : distinctValues((t) => t.subcategoria);
+    fillSelect(subcategoriaFilter, subs);
+    return subs;
+  }
+
+  categoriaFilter.addEventListener('change', () => {
+    const currentSub = subcategoriaFilter.value;
+    const subs = resetSubcategoriaOptions(categoriaFilter.value);
+    subcategoriaFilter.value = subs.includes(currentSub) ? currentSub : '';
+    renderAll();
+  });
+  [subcategoriaFilter, ...SIMPLE_DIMENSION_FILTERS].forEach((el) => el.addEventListener('change', renderAll));
+
   function getFiltered() {
     const from = fromInput.value || minDate;
     const to = toInput.value || maxDate;
-    return state.filter((t) => t.dateISO >= from && t.dateISO <= to);
+    const cat = categoriaFilter.value;
+    const sub = subcategoriaFilter.value;
+    const validoSel = validoFilter.value;
+    const conta = contaFilter.value;
+    const status = statusFilter.value;
+    const tipo = tipoFilter.value;
+    return state.filter((t) => {
+      if (t.dateISO < from || t.dateISO > to) return false;
+      if (cat && t.categoria !== cat) return false;
+      if (sub && t.subcategoria !== sub) return false;
+      if (validoSel === 'sim' && !t.valido) return false;
+      if (validoSel === 'nao' && t.valido) return false;
+      if (conta && t.account !== conta) return false;
+      if (status && t.statusBanco !== status) return false;
+      if (tipo === 'gasto' && !t.isExpense) return false;
+      if (tipo === 'receita' && t.isExpense) return false;
+      return true;
+    });
   }
 
   function findTransaction(id) {
@@ -188,15 +295,40 @@ function clientScript(): string {
     };
   }
 
-  function computeMonthly(filtered) {
+  // --- serie temporal do grafico "Gastos ao longo do tempo": agrupa por dia,
+  // mes, trimestre, semestre ou ano, conforme o seletor de granularidade ---
+  function bucketKey(t, granularity) {
+    const [y, m] = t.dateISO.split('-');
+    switch (granularity) {
+      case 'dia': return t.dateISO;
+      case 'trimestre': return y + '-T' + Math.ceil(Number(m) / 3);
+      case 'semestre': return y + '-S' + Math.ceil(Number(m) / 6);
+      case 'ano': return y;
+      default: return t.month;
+    }
+  }
+  function bucketLabel(key, granularity) {
+    if (granularity === 'dia') {
+      const [y, m, d] = key.split('-');
+      return d + '/' + m + '/' + y.slice(2);
+    }
+    if (granularity === 'trimestre' || granularity === 'semestre') {
+      const [y, suffix] = key.split('-');
+      return suffix + '/' + y.slice(2);
+    }
+    if (granularity === 'ano') return key;
+    return monthLabel(key);
+  }
+  function computeTimeSeries(filtered, granularity) {
     const map = new Map();
     for (const t of filtered) {
       if (!t.valido) continue;
-      const m = map.get(t.month) || { month: t.month, expenses: 0, income: 0 };
-      if (t.isExpense) m.expenses += t.amount; else m.income += t.amount;
-      map.set(t.month, m);
+      const key = bucketKey(t, granularity);
+      const bucket = map.get(key) || { key, expenses: 0, income: 0 };
+      if (t.isExpense) bucket.expenses += t.amount; else bucket.income += t.amount;
+      map.set(key, bucket);
     }
-    return [...map.values()].sort((a, b) => a.month.localeCompare(b.month));
+    return [...map.values()].sort((a, b) => a.key.localeCompare(b.key));
   }
 
   function computeCategorias(filtered) {
@@ -247,22 +379,28 @@ function clientScript(): string {
     pendEl.classList.toggle('net-negative', totals.pendentes > 0);
     document.getElementById('pend-tab-count').textContent = totals.pendentes;
 
-    const months = computeMonthly(filtered);
-    const max = Math.max(1, ...months.map((m) => m.expenses));
+    renderTimeSeriesChart(filtered);
+    renderCategoriasChart(filtered);
+  }
+
+  const granularitySelect = document.getElementById('chart-granularity');
+  function renderTimeSeriesChart(filtered) {
+    const granularity = granularitySelect.value;
+    const buckets = computeTimeSeries(filtered, granularity);
+    const max = Math.max(1, ...buckets.map((b) => b.expenses));
     document.getElementById('monthly-chart').innerHTML =
       '<div class="bar-chart">' +
-      months
+      buckets
         .map(
-          (m) =>
+          (b) =>
             '<div class="bar-col"><div class="bar-track"><div class="bar-fill" style="height:' +
-            Math.round((m.expenses / max) * 100) +
-            '%" title="' + monthLabel(m.month) + ': ' + brl(m.expenses) + '"></div></div><div class="bar-label">' + monthLabel(m.month) + '</div></div>'
+            Math.round((b.expenses / max) * 100) +
+            '%" title="' + bucketLabel(b.key, granularity) + ': ' + brl(b.expenses) + '"></div></div><div class="bar-label">' + bucketLabel(b.key, granularity) + '</div></div>'
         )
         .join('') +
       '</div>';
-
-    renderCategoriasChart(filtered);
   }
+  granularitySelect.addEventListener('change', () => renderTimeSeriesChart(getFiltered()));
 
   function renderCategoriasChart(filtered) {
     const categorias = computeCategorias(filtered);
@@ -377,6 +515,10 @@ function clientScript(): string {
     return String(av ?? '').localeCompare(String(bv ?? ''), 'pt-BR');
   }
 
+  // O clique pra ordenar fica so no <span class="th-label">, nunca no <input>
+  // de filtro — antes o data-sort-key ficava no <th> inteiro, e clicar dentro
+  // do campo de filtro (que e filho do <th>) contava como clique no cabecalho
+  // e reordenava a coluna em vez de deixar digitar o filtro.
   function buildHeaderHtml(tableId, columns) {
     const state = tableStates[tableId];
     return (
@@ -384,11 +526,15 @@ function clientScript(): string {
       columns
         .map((c) => {
           const arrow = state.sortKey === c.key ? (state.sortDir === 1 ? ' ▲' : ' ▼') : '';
-          const sortAttr = c.noSort ? '' : ' data-sort-key="' + c.key + '" data-table="' + tableId + '"';
+          const labelHtml = c.noSort
+            ? esc(c.label)
+            : '<span class="th-label" data-sort-key="' + c.key + '" data-table="' + tableId + '">' + esc(c.label) + arrow + '</span>';
+          const currentFilter = state.filters[c.key] || '';
           const filterHtml = c.noFilter
             ? ''
-            : '<br><input type="text" class="col-filter" data-table="' + tableId + '" data-filter-key="' + c.key + '" placeholder="filtrar...">';
-          return '<th' + sortAttr + (c.noSort ? '' : ' class="sortable"') + '>' + esc(c.label) + arrow + filterHtml + '</th>';
+            : '<br><input type="text" class="col-filter" data-table="' + tableId + '" data-filter-key="' + c.key +
+              '" placeholder="filtrar..." value="' + esc(currentFilter) + '">';
+          return '<th>' + labelHtml + filterHtml + '</th>';
         })
         .join('') +
       '</tr>'
@@ -430,11 +576,11 @@ function clientScript(): string {
   Object.keys(TABLE_DEFS).forEach(initTable);
 
   document.addEventListener('click', (ev) => {
-    const th = ev.target.closest('th[data-sort-key]');
-    if (th) {
-      const tableId = th.dataset.table;
+    const label = ev.target.closest('.th-label');
+    if (label) {
+      const tableId = label.dataset.table;
       const state = tableStates[tableId];
-      const key = th.dataset.sortKey;
+      const key = label.dataset.sortKey;
       if (state.sortKey === key) state.sortDir *= -1;
       else { state.sortKey = key; state.sortDir = 1; }
       document.querySelector('#' + tableId + ' thead').innerHTML = buildHeaderHtml(tableId, TABLE_DEFS[tableId].columns);
@@ -447,6 +593,7 @@ function clientScript(): string {
       const t = findTransaction(btn.dataset.id);
       if (!t) return;
       t.pendente = false;
+      saveEdit(t);
       renderTable('pendencias-table');
       renderTable('transacoes-table');
       renderResumo(getFiltered());
@@ -464,6 +611,7 @@ function clientScript(): string {
       const t = findTransaction(el.dataset.id);
       if (!t) return;
       t[el.dataset.field] = el.value;
+      saveEdit(t);
       document.querySelectorAll('input.cls-input[data-id="' + el.dataset.id + '"][data-field="' + el.dataset.field + '"]').forEach((other) => {
         if (other !== el) other.value = el.value;
       });
@@ -478,6 +626,7 @@ function clientScript(): string {
     const t = findTransaction(el.dataset.id);
     if (!t) return;
     t.valido = el.checked;
+    saveEdit(t);
     document.querySelectorAll('.valido-input[data-id="' + el.dataset.id + '"]').forEach((other) => {
       if (other !== el) other.checked = el.checked;
     });
@@ -533,6 +682,9 @@ function clientScript(): string {
   document.getElementById('filter-clear').addEventListener('click', () => {
     fromInput.value = minDate;
     toInput.value = maxDate;
+    categoriaFilter.value = '';
+    resetSubcategoriaOptions('');
+    SIMPLE_DIMENSION_FILTERS.forEach((el) => (el.value = ''));
     renderAll();
   });
 
@@ -668,6 +820,18 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
   .kpi-value.net-positive { color: var(--good); }
   .kpi-value.net-negative { color: var(--warn); }
 
+  .chart-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+  .chart-header h2 { margin: 0; }
+  .chart-header select {
+    font: inherit;
+    font-size: 13px;
+    padding: 5px 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--page);
+    color: var(--text-primary);
+  }
+
   .bar-chart {
     display: flex;
     align-items: flex-end;
@@ -675,11 +839,12 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
     height: 200px;
     border-bottom: 1px solid var(--baseline);
     padding-top: 8px;
+    overflow-x: auto;
   }
-  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; gap: 6px; }
+  .bar-col { flex: 1 1 28px; min-width: 28px; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; gap: 6px; }
   .bar-track { width: 100%; height: 100%; display: flex; align-items: flex-end; }
   .bar-fill { width: 100%; background: var(--series-1); border-radius: 4px 4px 0 0; min-height: 2px; }
-  .bar-label { font-size: 11px; color: var(--text-muted); }
+  .bar-label { font-size: 10px; color: var(--text-muted); white-space: nowrap; }
 
   .hbar-chart { display: flex; flex-direction: column; gap: 10px; }
   .hbar-row { display: grid; grid-template-columns: 200px 1fr 110px; align-items: center; gap: 10px; }
@@ -692,8 +857,8 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
   table.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
   table.data-table th, table.data-table td { padding: 8px 10px; border-bottom: 1px solid var(--grid); text-align: left; white-space: nowrap; }
   table.data-table th { color: var(--text-secondary); font-weight: 600; font-size: 12px; position: sticky; top: 0; background: var(--surface-1); vertical-align: top; }
-  table.data-table th.sortable { cursor: pointer; user-select: none; }
-  table.data-table th.sortable:hover { color: var(--text-primary); }
+  .th-label { cursor: pointer; user-select: none; display: inline-block; }
+  .th-label:hover { color: var(--text-primary); }
   table.data-table td.num, table.data-table th.num { text-align: right; font-variant-numeric: tabular-nums; }
 
   input.col-filter {
@@ -761,6 +926,17 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
   .btn-export:hover { opacity: 0.9; }
 
   footer { color: var(--text-muted); font-size: 12px; margin-top: 40px; }
+  .link-btn {
+    font: inherit;
+    font-size: 12px;
+    color: var(--series-1);
+    background: none;
+    border: none;
+    padding: 0;
+    margin-left: 4px;
+    text-decoration: underline;
+    cursor: pointer;
+  }
 </style>
 </head>
 <body class="viz-root">
@@ -771,9 +947,16 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
     <div class="filter-bar">
       <label>De <input type="date" id="filter-from"></label>
       <label>Ate <input type="date" id="filter-to"></label>
+      <label>Categoria <select id="filter-categoria"><option value="">Todas</option></select></label>
+      <label>Subcategoria <select id="filter-subcategoria"><option value="">Todas</option></select></label>
+      <label>Valido <select id="filter-valido"><option value="">Todos</option><option value="sim">Sim</option><option value="nao">Nao</option></select></label>
+      <label>Conta <select id="filter-conta"><option value="">Todas</option></select></label>
+      <label>Status (banco) <select id="filter-status"><option value="">Todos</option></select></label>
+      <label>Tipo <select id="filter-tipo"><option value="">Todos</option><option value="gasto">Gasto</option><option value="receita">Receita</option></select></label>
       <button type="button" id="filter-apply" class="btn-export">Aplicar filtro</button>
       <button type="button" id="filter-clear">Limpar filtro</button>
-      <span class="filter-hint">O periodo selecionado vale para todas as abas.</span>
+      <span class="filter-hint">Vale para todas as abas e graficos.</span>
+      <span class="filter-hint" id="saved-edits-notice" style="display:none;"></span>
     </div>
 
     <div class="tab-bar">
@@ -808,7 +991,16 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
       </section>
 
       <section class="card" style="margin-top:24px;">
-        <h2>Gastos por mes</h2>
+        <div class="chart-header">
+          <h2>Gastos ao longo do tempo</h2>
+          <select id="chart-granularity">
+            <option value="dia">Por dia</option>
+            <option value="mes" selected>Acumulado por mes</option>
+            <option value="trimestre">Acumulado por trimestre</option>
+            <option value="semestre">Acumulado por semestre</option>
+            <option value="ano">Acumulado por ano</option>
+          </select>
+        </div>
         <div id="monthly-chart"></div>
       </section>
 
@@ -875,9 +1067,12 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
       </section>
     </div>
 
-    <footer id="datalists">
-      Relatorio gerado localmente a partir da API do Pluggy. As edicoes de classificacao e o filtro de periodo feitos aqui ficam so nesta pagina aberta no navegador —
-      para valerem no proximo relatorio, repita a mesma classificacao na planilha (.xlsx) gerada junto com este arquivo.
+    <div id="datalists"></div>
+    <footer>
+      Relatorio gerado localmente a partir da API do Pluggy. Edicoes de classificacao/valido feitas aqui sao salvas
+      automaticamente neste navegador (sobrevivem a fechar e reabrir a pagina) — mas nao viajam sozinhas pra um
+      relatorio novo gerado depois. Pra isso, use "Exportar CSV" na aba Transacoes e mande o arquivo de volta.
+      <button type="button" id="clear-saved-edits" class="link-btn">Limpar edicoes salvas neste navegador</button>
     </footer>
   </div>
   <script>

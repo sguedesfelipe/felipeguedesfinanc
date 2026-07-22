@@ -16,8 +16,16 @@ async function main() {
   const config = loadConfig();
 
   const dateTo = new Date();
-  const dateFrom = new Date(dateTo);
-  dateFrom.setMonth(dateFrom.getMonth() - config.months);
+  let dateFrom: Date;
+  if (config.dateFrom) {
+    dateFrom = new Date(config.dateFrom);
+    if (Number.isNaN(dateFrom.getTime())) {
+      throw new Error(`--from="${config.dateFrom}" nao e uma data valida. Use o formato YYYY-MM-DD.`);
+    }
+  } else {
+    dateFrom = new Date(dateTo);
+    dateFrom.setMonth(dateFrom.getMonth() - config.months);
+  }
 
   console.log(`Buscando dados no Pluggy para ${config.itemIds.length} item(s) desde ${isoDate(dateFrom)}...`);
 
