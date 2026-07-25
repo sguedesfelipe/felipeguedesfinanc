@@ -94,13 +94,15 @@ adicionadas manualmente (ex.: extrato do proprio banco), o Pluggy nao as tem.
 Os arquivos sao gravados em `reports/<data-de-hoje>/`:
 
 - `relatorio-gastos.html` — dashboard com abas: Resumo, Categorias,
-  Transacoes e Pendencias de Classificacao.
-  - Barra de filtros no topo, valida para as 5 tabelas e os graficos:
+  Subcategorias, Transacoes e Pendencias de Classificacao.
+  - Barra de filtros no topo, valida para todas as abas e graficos:
     **periodo** (De/Ate), **Categoria**, **Subcategoria** (so mostra as da
     categoria escolhida), **Valido**, **Conta**, **Status (banco)** e
     **Tipo** (Gasto/Receita). Tem um botao **"Aplicar filtro"** (alem de
-    aplicar sozinho quando voce muda uma data) e um **"Limpar filtro"** que
-    reseta tudo.
+    aplicar sozinho quando voce muda uma data) e um **"Limpar todos os
+    filtros"** que reseta literalmente tudo — periodo, dimensoes, a selecao
+    de barras do grafico e os filtros/ordenacao de cada coluna em cada
+    tabela — nao so a aba que esta aberta no momento.
   - **Cada cabecalho de coluna das tabelas funciona como ordenador e
     filtro**: clique no nome da coluna pra ordenar (crescente/decrescente,
     alternando a cada clique), digite no campinho abaixo do nome pra
@@ -117,16 +119,17 @@ Os arquivos sao gravados em `reports/<data-de-hoje>/`:
     trocar de aba sozinho — confira o resultado quando quiser em
     "Transacoes". Um link "limpar selecao" aparece ao lado do grafico
     quando ha alguma selecao ativa.
-  - A aba Categorias tem uma tabela **"Gastos por categoria ao longo do
-    tempo"** (categoria x periodo, com seletor de granularidade proprio) em
-    vez de grafico — com ate 15 categorias de escalas bem diferentes, uma
-    barra proporcional escondia as menores; a tabela mostra o valor exato de
-    cada uma, com um leve realce proporcional ao peso daquela categoria
-    naquele periodo. Clicar numa celula filtra por categoria + periodo;
-    clicar no nome da categoria filtra so por categoria (sem trocar de
-    aba). Abaixo dela ficam duas tabelas simples, uma de **Gastos por
-    categoria** e outra de **Receita por categoria** (total recebido e
-    quantidade, por categoria).
+  - As abas **Categorias** e **Subcategorias** seguem o mesmo formato: uma
+    tabela **"...ao longo do tempo"** (categoria/subcategoria x periodo, com
+    seletor de granularidade proprio) em vez de grafico — com varias
+    categorias/subcategorias de escalas bem diferentes, uma barra
+    proporcional escondia as menores; a tabela mostra o valor exato de cada
+    uma, com um leve realce proporcional ao peso daquela linha naquele
+    periodo. Clicar numa celula filtra por categoria/subcategoria + periodo;
+    clicar no nome da linha filtra so por aquela categoria/subcategoria (sem
+    trocar de aba). Abaixo ficam duas tabelas simples: **Gastos por
+    categoria/subcategoria** e **Receita por categoria/subcategoria** (total
+    e quantidade).
   - Cada transacao tem um **ID** (o id que o Pluggy atribui; se algum dia
     vier vazio, um id proprio e gerado a partir da data + um sufixo
     aleatorio).

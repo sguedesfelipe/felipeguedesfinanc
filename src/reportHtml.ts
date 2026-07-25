@@ -355,13 +355,19 @@ function clientScript(): string {
     document.querySelectorAll('.tab-btn').forEach((btn) => btn.classList.toggle('active', btn.dataset.tab === tabName));
     document.querySelectorAll('.tab-panel').forEach((p) => p.classList.toggle('active', p.id === 'tab-' + tabName));
   }
-  // Usado pela tabela de categoria-por-periodo: so ajusta os filtros
-  // (categoria/periodo), sem trocar de aba — o usuario confere quando quiser.
-  function drillToFilters({ categoria, from, to }) {
+  // Usado pelas tabelas de categoria/subcategoria-por-periodo: so ajusta os
+  // filtros (categoria OU subcategoria, e/ou periodo), sem trocar de aba —
+  // o usuario confere quando quiser.
+  function drillToFilters({ categoria, subcategoria, from, to }) {
     if (categoria !== undefined) {
       categoriaFilter.value = categoria;
       resetSubcategoriaOptions(categoria);
       subcategoriaFilter.value = '';
+    }
+    if (subcategoria !== undefined) {
+      categoriaFilter.value = '';
+      resetSubcategoriaOptions('');
+      subcategoriaFilter.value = subcategoria;
     }
     if (from !== undefined) fromInput.value = from < minDate ? minDate : from;
     if (to !== undefined) toInput.value = to > maxDate ? maxDate : to;
@@ -483,11 +489,11 @@ function clientScript(): string {
     return [...map.values()].sort((a, b) => a.key.localeCompare(b.key));
   }
 
-  function computeCategorias(filtered, isExpense) {
+  function computeByDimension(filtered, dimensionField, isExpense) {
     const map = new Map();
     for (const t of filtered) {
       if (!t.valido || t.isExpense !== isExpense) continue;
-      const key = t.categoria || '(sem categoria)';
+      const key = t[dimensionField] || '(sem categoria)';
       const entry = map.get(key) || { category: key, total: 0, count: 0 };
       entry.total += t.amount;
       entry.count += 1;
@@ -537,6 +543,7 @@ function clientScript(): string {
 
     renderTimeSeriesChart(base);
     renderCategoriaPeriodoTable(filtered);
+    renderSubcategoriaPeriodoTable(filtered);
   }
 
   const granularitySelect = document.getElementById('chart-granularity');
@@ -578,73 +585,84 @@ function clientScript(): string {
     renderAll();
   });
 
-  // --- "Gastos por categoria ao longo do tempo": tabela categoria x periodo
-  // em vez de grafico — com ate 15 categorias de escalas bem diferentes
-  // (aluguel vs. assinatura, por exemplo), uma barra ou linha proporcional
-  // escondia as categorias menores. A tabela mostra o valor exato de cada
-  // uma, com um leve realce (mais forte quanto maior o valor NA PROPRIA
-  // LINHA, pra nao competir entre categorias de escalas diferentes) so como
-  // pista visual. Clicar numa celula ou no nome da categoria filtra. ---
-  function computeCategoriaPeriodTable(filtered, granularity) {
-    const cellMap = new Map(); // bucketKey -> Map(categoria -> valor)
-    const categoryTotals = new Map();
+  // --- "Gastos por categoria/subcategoria ao longo do tempo": tabela
+  // dimensao x periodo em vez de grafico — com ate 15 categorias (ou mais
+  // subcategorias) de escalas bem diferentes (aluguel vs. assinatura, por
+  // exemplo), uma barra ou linha proporcional escondia as menores. A
+  // tabela mostra o valor exato de cada uma, com um leve realce (mais forte
+  // quanto maior o valor NA PROPRIA LINHA, pra nao competir entre linhas de
+  // escalas diferentes) so como pista visual. Clicar numa celula ou no nome
+  // da linha filtra (a mesma funcao serve pra categoria e subcategoria). ---
+  function computeDimensionPeriodTable(filtered, granularity, dimensionField) {
+    const cellMap = new Map(); // bucketKey -> Map(valor da dimensao -> total)
+    const totals = new Map();
     const bucketSet = new Set();
     for (const t of filtered) {
       if (!t.valido || !t.isExpense) continue;
-      const cat = t.categoria || '(sem categoria)';
+      const dim = t[dimensionField] || '(sem categoria)';
       const key = bucketKey(t, granularity);
       bucketSet.add(key);
-      const byCat = cellMap.get(key) || new Map();
-      byCat.set(cat, (byCat.get(cat) || 0) + t.amount);
-      cellMap.set(key, byCat);
-      categoryTotals.set(cat, (categoryTotals.get(cat) || 0) + t.amount);
+      const byDim = cellMap.get(key) || new Map();
+      byDim.set(dim, (byDim.get(dim) || 0) + t.amount);
+      cellMap.set(key, byDim);
+      totals.set(dim, (totals.get(dim) || 0) + t.amount);
     }
     const buckets = [...bucketSet].sort();
-    const categories = [...categoryTotals.entries()].sort((a, b) => b[1] - a[1]).map(([cat]) => cat);
-    return { buckets, categories, cellMap, categoryTotals };
+    const dims = [...totals.entries()].sort((a, b) => b[1] - a[1]).map(([d]) => d);
+    return { buckets, dims, cellMap, totals };
   }
 
-  const categoriaGranularitySelect = document.getElementById('categoria-chart-granularity');
-  function renderCategoriaPeriodoTable(filtered) {
-    const granularity = categoriaGranularitySelect.value;
-    const { buckets, categories, cellMap, categoryTotals } = computeCategoriaPeriodTable(filtered, granularity);
+  function renderDimensionPeriodoTable(tableId, granularitySelectEl, filtered, dimensionField, columnLabel) {
+    const granularity = granularitySelectEl.value;
+    const { buckets, dims, cellMap, totals } = computeDimensionPeriodTable(filtered, granularity, dimensionField);
 
-    const headerHtml = '<tr><th>Categoria</th>' +
+    const headerHtml = '<tr><th>' + columnLabel + '</th>' +
       buckets.map((key) => '<th class="num">' + bucketLabel(key, granularity) + '</th>').join('') +
       '<th class="num">Total</th></tr>';
 
-    const bodyHtml = categories
-      .map((cat) => {
-        const rowValues = buckets.map((key) => (cellMap.get(key) || new Map()).get(cat) || 0);
+    const bodyHtml = dims
+      .map((dim) => {
+        const rowValues = buckets.map((key) => (cellMap.get(key) || new Map()).get(dim) || 0);
         const rowMax = Math.max(1, ...rowValues);
         const cells = rowValues
           .map((v, i) => {
             if (v <= 0) return '<td class="num"></td>';
             const intensity = 0.06 + Math.min(1, v / rowMax) * 0.28;
-            return '<td class="num periodo-cell" data-category="' + esc(cat) + '" data-bucket-key="' + buckets[i] + '" data-granularity="' + granularity +
-              '" style="background:rgba(42,120,214,' + intensity.toFixed(2) + ')" title="Clique para ver as transacoes">' + brl(v) + '</td>';
+            return '<td class="num periodo-cell" data-dim-field="' + dimensionField + '" data-dim-value="' + esc(dim) + '" data-bucket-key="' + buckets[i] +
+              '" data-granularity="' + granularity + '" style="background:rgba(42,120,214,' + intensity.toFixed(2) + ')" title="Clique para filtrar">' + brl(v) + '</td>';
           })
           .join('');
-        return '<tr><td class="periodo-cat-label clickable" data-category="' + esc(cat) + '" title="Clique para ver as transacoes de ' + esc(cat) + '">' +
-          esc(cat) + '</td>' + cells + '<td class="num periodo-total">' + brl(categoryTotals.get(cat)) + '</td></tr>';
+        return '<tr><td class="periodo-cat-label clickable" data-dim-field="' + dimensionField + '" data-dim-value="' + esc(dim) + '" title="Clique para filtrar por ' + esc(dim) + '">' +
+          esc(dim) + '</td>' + cells + '<td class="num periodo-total">' + brl(totals.get(dim)) + '</td></tr>';
       })
       .join('');
 
-    const table = document.getElementById('categorias-periodo-table');
+    const table = document.getElementById(tableId);
     table.querySelector('thead').innerHTML = headerHtml;
     table.querySelector('tbody').innerHTML = bodyHtml;
   }
+
+  const categoriaGranularitySelect = document.getElementById('categoria-chart-granularity');
+  const subcategoriaGranularitySelect = document.getElementById('subcategoria-chart-granularity');
+  function renderCategoriaPeriodoTable(filtered) {
+    renderDimensionPeriodoTable('categorias-periodo-table', categoriaGranularitySelect, filtered, 'categoria', 'Categoria');
+  }
+  function renderSubcategoriaPeriodoTable(filtered) {
+    renderDimensionPeriodoTable('subcategorias-periodo-table', subcategoriaGranularitySelect, filtered, 'subcategoria', 'Subcategoria');
+  }
   categoriaGranularitySelect.addEventListener('change', () => renderCategoriaPeriodoTable(getFiltered()));
+  subcategoriaGranularitySelect.addEventListener('change', () => renderSubcategoriaPeriodoTable(getFiltered()));
 
   // --- tabelas genericas: cabecalho clicavel pra ordenar + filtro por coluna ---
   const TX_COLUMNS = [
-    { key: 'transactionId', label: 'ID', value: (t) => t.transactionId },
     { key: 'dateISO', label: 'Data', value: (t) => t.dateISO, render: (t) => t.dateLabel },
     { key: 'dataConsideradaISO', label: 'DataConsiderada', value: (t) => t.dataConsideradaISO, render: (t) => t.dataConsideradaLabel },
-    { key: 'account', label: 'Conta', value: (t) => t.account },
     { key: 'description', label: 'Descricao', value: (t) => t.description },
     { key: 'categoria', label: 'Categoria', value: (t) => t.categoria, render: (t) => classificationInput(t, 'categoria') },
     { key: 'subcategoria', label: 'Subcategoria', value: (t) => t.subcategoria, render: (t) => classificationInput(t, 'subcategoria') },
+    { key: 'amount', label: 'Valor', value: (t) => t.amount, type: 'currency' },
+    { key: 'transactionId', label: 'ID', value: (t) => t.transactionId },
+    { key: 'account', label: 'Conta', value: (t) => t.account },
     { key: 'pendente', label: 'Pendente', value: (t) => (t.pendente ? 'Sim' : 'Nao'), render: (t) => (t.pendente ? '<span class="badge-pend">pendente</span>' : '') },
     { key: 'valido', label: 'Valido?', value: (t) => (t.valido ? 'Sim' : 'Nao'), render: (t) => validoCheckbox(t) },
     { key: 'motivoInvalido', label: 'Motivo (invalido)', value: (t) => t.motivoInvalido },
@@ -684,7 +702,6 @@ function clientScript(): string {
     { key: 'createdAtLabel', label: 'Criado no Pluggy em', value: (t) => t.createdAtLabel },
     { key: 'updatedAtLabel', label: 'Atualizado no Pluggy em', value: (t) => t.updatedAtLabel },
     { key: 'isExpense', label: 'Tipo', value: (t) => (t.isExpense ? 'Gasto' : 'Receita') },
-    { key: 'amount', label: 'Valor', value: (t) => t.amount, type: 'currency' },
   ];
   // Move colunas pra logo depois de "Descricao" numa copia de TX_COLUMNS,
   // preservando a ordem/definicao original de cada coluna.
@@ -717,6 +734,16 @@ function clientScript(): string {
     { key: 'total', label: 'Total recebido', value: (c) => c.total, type: 'currency' },
     { key: 'count', label: 'Qtde.', value: (c) => c.count, type: 'number' },
   ];
+  const SUBCAT_COLUMNS = [
+    { key: 'category', label: 'Subcategoria', value: (c) => c.category },
+    { key: 'total', label: 'Total gasto', value: (c) => c.total, type: 'currency' },
+    { key: 'count', label: 'Qtde.', value: (c) => c.count, type: 'number' },
+  ];
+  const RECEITA_SUBCAT_COLUMNS = [
+    { key: 'category', label: 'Subcategoria', value: (c) => c.category },
+    { key: 'total', label: 'Total recebido', value: (c) => c.total, type: 'currency' },
+    { key: 'count', label: 'Qtde.', value: (c) => c.count, type: 'number' },
+  ];
   const MERCHANT_COLUMNS = [
     { key: 'description', label: 'Descricao', value: (m) => m.description },
     { key: 'count', label: 'Qtde.', value: (m) => m.count, type: 'number' },
@@ -732,8 +759,10 @@ function clientScript(): string {
   const TABLE_DEFS = {
     'transacoes-table': { columns: TX_COLUMNS, rows: () => getFiltered(), rowId: (t) => t.id },
     'pendencias-table': { columns: PEND_COLUMNS, rows: () => getFiltered().filter((t) => t.pendente && t.valido), rowId: (t) => t.id },
-    'categorias-table': { columns: CAT_COLUMNS, rows: () => computeCategorias(getFiltered(), true) },
-    'categorias-receita-table': { columns: RECEITA_CAT_COLUMNS, rows: () => computeCategorias(getFiltered(), false) },
+    'categorias-table': { columns: CAT_COLUMNS, rows: () => computeByDimension(getFiltered(), 'categoria', true) },
+    'categorias-receita-table': { columns: RECEITA_CAT_COLUMNS, rows: () => computeByDimension(getFiltered(), 'categoria', false) },
+    'subcategorias-table': { columns: SUBCAT_COLUMNS, rows: () => computeByDimension(getFiltered(), 'subcategoria', true) },
+    'subcategorias-receita-table': { columns: RECEITA_SUBCAT_COLUMNS, rows: () => computeByDimension(getFiltered(), 'subcategoria', false) },
     'merchants-table': { columns: MERCHANT_COLUMNS, rows: () => computeMerchants(getFiltered()) },
     'accounts-table': { columns: ACCOUNT_COLUMNS, rows: () => computeAccounts(getFiltered()) },
   };
@@ -860,16 +889,16 @@ function clientScript(): string {
       return;
     }
 
-    const periodoCatLabel = ev.target.closest('.periodo-cat-label[data-category]');
+    const periodoCatLabel = ev.target.closest('.periodo-cat-label[data-dim-value]');
     if (periodoCatLabel) {
-      drillToFilters({ categoria: periodoCatLabel.dataset.category });
+      drillToFilters({ [periodoCatLabel.dataset.dimField]: periodoCatLabel.dataset.dimValue });
       return;
     }
 
     const periodoCell = ev.target.closest('.periodo-cell[data-bucket-key]');
     if (periodoCell) {
       const range = bucketDateRange(periodoCell.dataset.bucketKey, periodoCell.dataset.granularity);
-      drillToFilters({ categoria: periodoCell.dataset.category, from: range.from, to: range.to });
+      drillToFilters({ [periodoCell.dataset.dimField]: periodoCell.dataset.dimValue, from: range.from, to: range.to });
     }
   });
 
@@ -890,7 +919,10 @@ function clientScript(): string {
       });
       renderTable('categorias-table');
       renderTable('categorias-receita-table');
+      renderTable('subcategorias-table');
+      renderTable('subcategorias-receita-table');
       renderCategoriaPeriodoTable(getFiltered());
+      renderSubcategoriaPeriodoTable(getFiltered());
     }
   });
 
@@ -930,6 +962,8 @@ function clientScript(): string {
     renderResumo(getBaseFiltered());
     renderTable('categorias-table');
     renderTable('categorias-receita-table');
+    renderTable('subcategorias-table');
+    renderTable('subcategorias-receita-table');
     renderTable('merchants-table');
     renderTable('accounts-table');
     renderTable('pendencias-table');
@@ -976,6 +1010,9 @@ function clientScript(): string {
   document.getElementById('filter-apply').addEventListener('click', renderAll);
   fromInput.addEventListener('change', renderAll);
   toInput.addEventListener('change', renderAll);
+  // Limpa tudo que filtra o relatorio: periodo, dimensoes do topo, selecao
+  // de barras do grafico e os filtros/ordenacao de cada coluna em cada
+  // tabela — vale pra todas as abas, nao so a que esta aberta agora.
   document.getElementById('filter-clear').addEventListener('click', () => {
     fromInput.value = minDate;
     toInput.value = maxDate;
@@ -983,6 +1020,7 @@ function clientScript(): string {
     resetSubcategoriaOptions('');
     SIMPLE_DIMENSION_FILTERS.forEach((el) => (el.value = ''));
     barSelection = null;
+    Object.keys(TABLE_DEFS).forEach(initTable);
     renderAll();
   });
 
@@ -1285,14 +1323,15 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
       <label>Status (banco) <select id="filter-status"><option value="">Todos</option></select></label>
       <label>Tipo <select id="filter-tipo"><option value="">Todos</option><option value="gasto">Gasto</option><option value="receita">Receita</option></select></label>
       <button type="button" id="filter-apply" class="btn-export">Aplicar filtro</button>
-      <button type="button" id="filter-clear">Limpar filtro</button>
-      <span class="filter-hint">Vale para todas as abas e graficos.</span>
+      <button type="button" id="filter-clear">Limpar todos os filtros</button>
+      <span class="filter-hint">Limpa periodo, dimensoes, selecao de barras e filtros de coluna — vale para todas as abas.</span>
       <span class="filter-hint" id="saved-edits-notice" style="display:none;"></span>
     </div>
 
     <div class="tab-bar">
       <button class="tab-btn active" data-tab="resumo">Resumo</button>
       <button class="tab-btn" data-tab="categorias">Categorias</button>
+      <button class="tab-btn" data-tab="subcategorias">Subcategorias</button>
       <button class="tab-btn" data-tab="transacoes">Transacoes</button>
       <button class="tab-btn" data-tab="pendencias">Pendencias de Classificacao (<span id="pend-tab-count">0</span>)</button>
     </div>
@@ -1393,6 +1432,46 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
         <h2>Receita por categoria</h2>
         <div class="table-scroll">
           <table class="data-table" id="categorias-receita-table">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <div id="tab-subcategorias" class="tab-panel">
+      <section class="card">
+        <div class="chart-header">
+          <h2>Gastos por subcategoria ao longo do tempo</h2>
+          <select id="subcategoria-chart-granularity">
+            <option value="dia">Por dia</option>
+            <option value="mes" selected>Acumulado por mes</option>
+            <option value="trimestre">Acumulado por trimestre</option>
+            <option value="semestre">Acumulado por semestre</option>
+            <option value="ano">Acumulado por ano</option>
+          </select>
+        </div>
+        <p class="subtitle" style="margin:0 0 12px;">Clique numa celula ou no nome da subcategoria para filtrar por aquele recorte (confira o resultado na aba Transacoes quando quiser).</p>
+        <div class="table-scroll">
+          <table class="data-table" id="subcategorias-periodo-table">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="card">
+        <h2>Gastos por subcategoria</h2>
+        <div class="table-scroll">
+          <table class="data-table" id="subcategorias-table">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="card">
+        <h2>Receita por subcategoria</h2>
+        <div class="table-scroll">
+          <table class="data-table" id="subcategorias-receita-table">
             <thead></thead>
             <tbody></tbody>
           </table>
