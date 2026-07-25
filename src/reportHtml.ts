@@ -296,7 +296,7 @@ function clientScript(): string {
   });
   [subcategoriaFilter, ...SIMPLE_DIMENSION_FILTERS].forEach((el) => el.addEventListener('change', renderAll));
 
-  function getFiltered() {
+  function getBaseFiltered() {
     const from = fromInput.value || minDate;
     const to = toInput.value || maxDate;
     const cat = categoriaFilter.value;
@@ -319,18 +319,44 @@ function clientScript(): string {
     });
   }
 
+  // --- selecao de barras no grafico "Gastos ao longo do tempo": clicar
+  // seleciona um periodo, Ctrl+clique adiciona/remove outros — sem tirar as
+  // demais barras do grafico (isso e so um filtro extra, por cima do resto),
+  // e sem trocar de aba sozinho. Vale pra todas as abas/tabelas ate ser
+  // limpa, exatamente como os outros filtros do topo. ---
+  let barSelection = null; // { granularity, keys: Set<string> } | null
+  function applyBarSelection(rows) {
+    if (!barSelection) return rows;
+    return rows.filter((t) => barSelection.keys.has(bucketKey(t, barSelection.granularity)));
+  }
+  function getFiltered() {
+    return applyBarSelection(getBaseFiltered());
+  }
+  function toggleBarSelection(key, granularity, multi) {
+    if (!barSelection || barSelection.granularity !== granularity) {
+      barSelection = { granularity, keys: new Set([key]) };
+    } else if (multi) {
+      if (barSelection.keys.has(key)) barSelection.keys.delete(key);
+      else barSelection.keys.add(key);
+      if (barSelection.keys.size === 0) barSelection = null;
+    } else if (barSelection.keys.size === 1 && barSelection.keys.has(key)) {
+      barSelection = null; // clique de novo na unica selecionada desmarca
+    } else {
+      barSelection = { granularity, keys: new Set([key]) };
+    }
+    renderAll();
+  }
+
   function findTransaction(id) {
     return state.find((t) => t.id === Number(id));
   }
 
-  // --- graficos clicaveis: clicar numa barra/celula filtra o dashboard
-  // inteiro (periodo e/ou categoria) e pula direto pra aba Transacoes com o
-  // resultado. Um so lugar aplica o filtro pra bar-chart, hbar-chart e a
-  // tabela de categoria-por-periodo usarem igual. ---
   function activateTab(tabName) {
     document.querySelectorAll('.tab-btn').forEach((btn) => btn.classList.toggle('active', btn.dataset.tab === tabName));
     document.querySelectorAll('.tab-panel').forEach((p) => p.classList.toggle('active', p.id === 'tab-' + tabName));
   }
+  // Usado pela tabela de categoria-por-periodo: so ajusta os filtros
+  // (categoria/periodo), sem trocar de aba — o usuario confere quando quiser.
   function drillToFilters({ categoria, from, to }) {
     if (categoria !== undefined) {
       categoriaFilter.value = categoria;
@@ -340,7 +366,6 @@ function clientScript(): string {
     if (from !== undefined) fromInput.value = from < minDate ? minDate : from;
     if (to !== undefined) toInput.value = to > maxDate ? maxDate : to;
     renderAll();
-    activateTab('transacoes');
   }
 
   function datalistOptions(id, values) {
@@ -383,7 +408,7 @@ function clientScript(): string {
     if (!changed) return;
     renderTable('pendencias-table');
     renderTable('transacoes-table');
-    renderResumo(getFiltered());
+    renderResumo(getBaseFiltered());
     updatePendSelectedCount();
   }
 
@@ -458,10 +483,10 @@ function clientScript(): string {
     return [...map.values()].sort((a, b) => a.key.localeCompare(b.key));
   }
 
-  function computeCategorias(filtered) {
+  function computeCategorias(filtered, isExpense) {
     const map = new Map();
     for (const t of filtered) {
-      if (!t.valido || !t.isExpense) continue;
+      if (!t.valido || t.isExpense !== isExpense) continue;
       const key = t.categoria || '(sem categoria)';
       const entry = map.get(key) || { category: key, total: 0, count: 0 };
       entry.total += t.amount;
@@ -493,7 +518,11 @@ function clientScript(): string {
   }
 
   // --- aba Resumo: KPIs + grafico mensal (as 5 tabelas ficam em renderTable) ---
-  function renderResumo(filtered) {
+  // Recebe o filtro "base" (sem a selecao de barras) pra o grafico sempre
+  // mostrar todos os periodos; os KPIs e a tabela de categoria-por-periodo
+  // aplicam a selecao por cima, igual as outras abas/tabelas.
+  function renderResumo(base) {
+    const filtered = applyBarSelection(base);
     const totals = computeTotals(filtered);
     document.getElementById('kpi-expenses').textContent = brl(totals.expenses);
     document.getElementById('kpi-income').textContent = brl(totals.income);
@@ -506,51 +535,48 @@ function clientScript(): string {
     pendEl.classList.toggle('net-negative', totals.pendentes > 0);
     document.getElementById('pend-tab-count').textContent = totals.pendentes;
 
-    renderTimeSeriesChart(filtered);
-    renderCategoriasChart(filtered);
+    renderTimeSeriesChart(base);
     renderCategoriaPeriodoTable(filtered);
   }
 
   const granularitySelect = document.getElementById('chart-granularity');
-  function renderTimeSeriesChart(filtered) {
+  function updateBarSelectionInfo() {
+    const el = document.getElementById('bar-selection-info');
+    if (!barSelection || barSelection.granularity !== granularitySelect.value || barSelection.keys.size === 0) {
+      el.innerHTML = '';
+      return;
+    }
+    el.innerHTML = barSelection.keys.size + ' periodo(s) selecionado(s) · <button type="button" id="clear-bar-selection" class="link-btn">limpar selecao</button>';
+  }
+  function renderTimeSeriesChart(base) {
     const granularity = granularitySelect.value;
-    const buckets = computeTimeSeries(filtered, granularity);
+    const buckets = computeTimeSeries(base, granularity);
     const max = Math.max(1, ...buckets.map((b) => b.expenses));
     // Com poucas colunas da pra escrever o valor sempre visivel em cima da
     // barra; com muitas (ex.: "por dia" num periodo longo) os rotulos se
     // sobrepoem, entao volta a depender so do hover (title).
     const showValues = buckets.length <= 40;
+    const hasSelection = barSelection && barSelection.granularity === granularity;
     document.getElementById('monthly-chart').innerHTML =
       '<div class="bar-chart">' +
       buckets
         .map((b) => {
           const label = bucketLabel(b.key, granularity);
+          const isSelected = hasSelection && barSelection.keys.has(b.key);
+          const fillClass = 'bar-fill' + (isSelected ? ' is-selected' : hasSelection ? ' is-dimmed' : '');
           const valueHtml = showValues ? '<span class="bar-value">' + brlCompact(b.expenses) + '</span>' : '';
           return '<div class="bar-col clickable" data-bucket-key="' + b.key + '" data-granularity="' + granularity +
-            '" title="' + label + ': ' + brl(b.expenses) + ' — clique para ver as transacoes desse periodo"><div class="bar-track"><div class="bar-fill" style="height:' +
+            '" title="' + label + ': ' + brl(b.expenses) + ' — clique para selecionar, Ctrl+clique pra selecionar varios"><div class="bar-track"><div class="' + fillClass + '" style="height:' +
             Math.round((b.expenses / max) * 100) + '%">' + valueHtml + '</div></div><div class="bar-label">' + label + '</div></div>';
         })
         .join('') +
       '</div>';
+    updateBarSelectionInfo();
   }
-  granularitySelect.addEventListener('change', () => renderTimeSeriesChart(getFiltered()));
-
-  function renderCategoriasChart(filtered) {
-    const categorias = computeCategorias(filtered);
-    const catMax = Math.max(1, ...categorias.map((c) => c.total));
-    document.getElementById('categorias-chart').innerHTML =
-      '<div class="hbar-chart">' +
-      categorias
-        .map(
-          (c) =>
-            '<div class="hbar-row clickable" data-category="' + esc(c.category) + '" title="Clique para ver as transacoes de ' + esc(c.category) +
-            '"><div class="hbar-label">' + esc(c.category) + '</div><div class="hbar-track"><div class="hbar-fill" style="width:' +
-            Math.max(2, Math.round((c.total / catMax) * 100)) + '%"></div></div><div class="hbar-value">' +
-            brl(c.total) + '</div></div>'
-        )
-        .join('') +
-      '</div>';
-  }
+  granularitySelect.addEventListener('change', () => {
+    barSelection = null; // buckets de outra granularidade nao tem a ver com a selecao anterior
+    renderAll();
+  });
 
   // --- "Gastos por categoria ao longo do tempo": tabela categoria x periodo
   // em vez de grafico — com ate 15 categorias de escalas bem diferentes
@@ -686,6 +712,11 @@ function clientScript(): string {
     { key: 'total', label: 'Total gasto', value: (c) => c.total, type: 'currency' },
     { key: 'count', label: 'Qtde.', value: (c) => c.count, type: 'number' },
   ];
+  const RECEITA_CAT_COLUMNS = [
+    { key: 'category', label: 'Categoria', value: (c) => c.category },
+    { key: 'total', label: 'Total recebido', value: (c) => c.total, type: 'currency' },
+    { key: 'count', label: 'Qtde.', value: (c) => c.count, type: 'number' },
+  ];
   const MERCHANT_COLUMNS = [
     { key: 'description', label: 'Descricao', value: (m) => m.description },
     { key: 'count', label: 'Qtde.', value: (m) => m.count, type: 'number' },
@@ -701,7 +732,8 @@ function clientScript(): string {
   const TABLE_DEFS = {
     'transacoes-table': { columns: TX_COLUMNS, rows: () => getFiltered(), rowId: (t) => t.id },
     'pendencias-table': { columns: PEND_COLUMNS, rows: () => getFiltered().filter((t) => t.pendente && t.valido), rowId: (t) => t.id },
-    'categorias-table': { columns: CAT_COLUMNS, rows: () => computeCategorias(getFiltered()) },
+    'categorias-table': { columns: CAT_COLUMNS, rows: () => computeCategorias(getFiltered(), true) },
+    'categorias-receita-table': { columns: RECEITA_CAT_COLUMNS, rows: () => computeCategorias(getFiltered(), false) },
     'merchants-table': { columns: MERCHANT_COLUMNS, rows: () => computeMerchants(getFiltered()) },
     'accounts-table': { columns: ACCOUNT_COLUMNS, rows: () => computeAccounts(getFiltered()) },
   };
@@ -815,16 +847,16 @@ function clientScript(): string {
       return;
     }
 
-    const barCol = ev.target.closest('.bar-col[data-bucket-key]');
-    if (barCol) {
-      const range = bucketDateRange(barCol.dataset.bucketKey, barCol.dataset.granularity);
-      drillToFilters({ from: range.from, to: range.to });
+    const clearSel = ev.target.closest('#clear-bar-selection');
+    if (clearSel) {
+      barSelection = null;
+      renderAll();
       return;
     }
 
-    const hbarRow = ev.target.closest('.hbar-row[data-category]');
-    if (hbarRow) {
-      drillToFilters({ categoria: hbarRow.dataset.category });
+    const barCol = ev.target.closest('.bar-col[data-bucket-key]');
+    if (barCol) {
+      toggleBarSelection(barCol.dataset.bucketKey, barCol.dataset.granularity, ev.ctrlKey || ev.metaKey);
       return;
     }
 
@@ -857,7 +889,7 @@ function clientScript(): string {
         if (other !== el) other.value = el.value;
       });
       renderTable('categorias-table');
-      renderCategoriasChart(getFiltered());
+      renderTable('categorias-receita-table');
       renderCategoriaPeriodoTable(getFiltered());
     }
   });
@@ -895,8 +927,9 @@ function clientScript(): string {
     document.querySelectorAll('.valido-input[data-id="' + el.dataset.id + '"]').forEach((other) => {
       if (other !== el) other.checked = el.checked;
     });
-    renderResumo(getFiltered());
+    renderResumo(getBaseFiltered());
     renderTable('categorias-table');
+    renderTable('categorias-receita-table');
     renderTable('merchants-table');
     renderTable('accounts-table');
     renderTable('pendencias-table');
@@ -936,8 +969,7 @@ function clientScript(): string {
   document.getElementById('export-transacoes').addEventListener('click', exportTransacoesCsv);
 
   function renderAll() {
-    const filtered = getFiltered();
-    renderResumo(filtered);
+    renderResumo(getBaseFiltered());
     Object.keys(TABLE_DEFS).forEach((tableId) => renderTable(tableId));
   }
 
@@ -950,6 +982,7 @@ function clientScript(): string {
     categoriaFilter.value = '';
     resetSubcategoriaOptions('');
     SIMPLE_DIMENSION_FILTERS.forEach((el) => (el.value = ''));
+    barSelection = null;
     renderAll();
   });
 
@@ -1117,20 +1150,15 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
     white-space: nowrap;
     font-variant-numeric: tabular-nums;
   }
+  .bar-fill.is-selected { box-shadow: 0 0 0 2px var(--text-primary) inset; }
+  .bar-fill.is-dimmed { opacity: 0.35; }
+  #bar-selection-info { font-size: 12px; color: var(--text-secondary); white-space: nowrap; }
 
-  .hbar-chart { display: flex; flex-direction: column; gap: 10px; }
-  .hbar-row { display: grid; grid-template-columns: 200px 1fr 110px; align-items: center; gap: 10px; border-radius: 6px; }
-  .hbar-label { font-size: 13px; color: var(--text-secondary); text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .hbar-track { background: var(--series-1-soft); border-radius: 4px; height: 14px; }
-  .hbar-fill { background: var(--series-1); height: 100%; border-radius: 4px; min-width: 4px; }
-  .hbar-value { font-size: 13px; color: var(--text-primary); font-variant-numeric: tabular-nums; }
-
-  /* Barras e linhas de grafico clicaveis levam a aba Transacoes ja filtrada
-     pelo periodo/categoria clicado — o cursor e o realce no hover sao a
-     unica pista visual disso, entao ficam num lugar so. */
-  .bar-col.clickable, .hbar-row.clickable { cursor: pointer; }
-  .bar-col.clickable:hover .bar-fill, .hbar-row.clickable:hover .hbar-fill { filter: brightness(1.15); }
-  .hbar-row.clickable:hover .hbar-label { color: var(--text-primary); }
+  /* Barras e celulas clicaveis filtram o dashboard (periodo/categoria) sem
+     trocar de aba sozinho — o cursor e o realce no hover sao a unica pista
+     visual disso, entao ficam num lugar so. */
+  .bar-col.clickable { cursor: pointer; }
+  .bar-col.clickable:hover .bar-fill { filter: brightness(1.15); }
 
   .periodo-cat-label.clickable { cursor: pointer; }
   .periodo-cat-label.clickable:hover { color: var(--series-1); text-decoration: underline; }
@@ -1296,14 +1324,18 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
       <section class="card" style="margin-top:24px;">
         <div class="chart-header">
           <h2>Gastos ao longo do tempo</h2>
-          <select id="chart-granularity">
-            <option value="dia">Por dia</option>
-            <option value="mes" selected>Acumulado por mes</option>
-            <option value="trimestre">Acumulado por trimestre</option>
-            <option value="semestre">Acumulado por semestre</option>
-            <option value="ano">Acumulado por ano</option>
-          </select>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <span id="bar-selection-info"></span>
+            <select id="chart-granularity">
+              <option value="dia">Por dia</option>
+              <option value="mes" selected>Acumulado por mes</option>
+              <option value="trimestre">Acumulado por trimestre</option>
+              <option value="semestre">Acumulado por semestre</option>
+              <option value="ano">Acumulado por ano</option>
+            </select>
+          </div>
         </div>
+        <p class="subtitle" style="margin:0 0 4px;">Clique numa barra pra selecionar aquele periodo (Ctrl+clique pra selecionar varios) — filtra o resto do relatorio sem esconder as outras barras.</p>
         <div id="monthly-chart"></div>
       </section>
 
@@ -1330,10 +1362,6 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
 
     <div id="tab-categorias" class="tab-panel">
       <section class="card">
-        <h2>Gastos por categoria</h2>
-        <div id="categorias-chart"></div>
-      </section>
-      <section class="card">
         <div class="chart-header">
           <h2>Gastos por categoria ao longo do tempo</h2>
           <select id="categoria-chart-granularity">
@@ -1344,7 +1372,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
             <option value="ano">Acumulado por ano</option>
           </select>
         </div>
-        <p class="subtitle" style="margin:0 0 12px;">Clique numa celula ou no nome da categoria para ver so as transacoes daquele recorte na aba Transacoes.</p>
+        <p class="subtitle" style="margin:0 0 12px;">Clique numa celula ou no nome da categoria para filtrar por aquele recorte (confira o resultado na aba Transacoes quando quiser).</p>
         <div class="table-scroll">
           <table class="data-table" id="categorias-periodo-table">
             <thead></thead>
@@ -1353,8 +1381,18 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
         </div>
       </section>
       <section class="card">
+        <h2>Gastos por categoria</h2>
         <div class="table-scroll">
           <table class="data-table" id="categorias-table">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="card">
+        <h2>Receita por categoria</h2>
+        <div class="table-scroll">
+          <table class="data-table" id="categorias-receita-table">
             <thead></thead>
             <tbody></tbody>
           </table>

@@ -109,18 +109,24 @@ Os arquivos sao gravados em `reports/<data-de-hoje>/`:
     granularidade: **por dia**, ou acumulado por **mes**, **trimestre**,
     **semestre** ou **ano** — e mostra o valor de cada barra direto no
     grafico (sem precisar passar o mouse, quando ha espaco pra isso).
-  - **Os graficos sao clicaveis**: clicar numa barra do "Gastos ao longo do
-    tempo" filtra o periodo pra aquele intervalo; clicar numa barra de
-    "Gastos por categoria" filtra por aquela categoria — os dois pulam
-    direto pra aba Transacoes ja com o filtro aplicado.
+  - **O grafico "Gastos ao longo do tempo" e selecionavel**: clique numa
+    barra pra selecionar aquele periodo — as outras barras continuam
+    visiveis (so ficam esmaecidas), a clicada fica destacada. Ctrl+clique
+    adiciona/remove outras barras da selecao. A selecao filtra o resto do
+    relatorio (KPIs, tabelas, outras abas) igual aos filtros do topo, sem
+    trocar de aba sozinho — confira o resultado quando quiser em
+    "Transacoes". Um link "limpar selecao" aparece ao lado do grafico
+    quando ha alguma selecao ativa.
   - A aba Categorias tem uma tabela **"Gastos por categoria ao longo do
-    tempo"** (categoria x periodo, com o mesmo seletor de granularidade) em
+    tempo"** (categoria x periodo, com seletor de granularidade proprio) em
     vez de grafico — com ate 15 categorias de escalas bem diferentes, uma
     barra proporcional escondia as menores; a tabela mostra o valor exato de
     cada uma, com um leve realce proporcional ao peso daquela categoria
     naquele periodo. Clicar numa celula filtra por categoria + periodo;
-    clicar no nome da categoria filtra so por categoria — ambos tambem pulam
-    pra aba Transacoes.
+    clicar no nome da categoria filtra so por categoria (sem trocar de
+    aba). Abaixo dela ficam duas tabelas simples, uma de **Gastos por
+    categoria** e outra de **Receita por categoria** (total recebido e
+    quantidade, por categoria).
   - Cada transacao tem um **ID** (o id que o Pluggy atribui; se algum dia
     vier vazio, um id proprio e gerado a partir da data + um sufixo
     aleatorio).
