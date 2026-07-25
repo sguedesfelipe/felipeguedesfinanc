@@ -105,13 +105,22 @@ Os arquivos sao gravados em `reports/<data-de-hoje>/`:
     filtro**: clique no nome da coluna pra ordenar (crescente/decrescente,
     alternando a cada clique), digite no campinho abaixo do nome pra
     filtrar por aquele valor especifico daquela tabela.
-  - O grafico "Gastos ao longo do tempo" (aba Resumo) e o novo "Gastos por
-    categoria ao longo do tempo" (aba Categorias, barras empilhadas por
-    periodo, uma cor por categoria) tem cada um seu proprio seletor de
+  - O grafico "Gastos ao longo do tempo" (aba Resumo) tem um seletor de
     granularidade: **por dia**, ou acumulado por **mes**, **trimestre**,
-    **semestre** ou **ano**. No grafico por categoria, so as categorias com
-    mais gasto no periodo filtrado ganham cor propria (ate 7); o resto entra
-    em "Outros" pra nao poluir o grafico.
+    **semestre** ou **ano** — e mostra o valor de cada barra direto no
+    grafico (sem precisar passar o mouse, quando ha espaco pra isso).
+  - **Os graficos sao clicaveis**: clicar numa barra do "Gastos ao longo do
+    tempo" filtra o periodo pra aquele intervalo; clicar numa barra de
+    "Gastos por categoria" filtra por aquela categoria — os dois pulam
+    direto pra aba Transacoes ja com o filtro aplicado.
+  - A aba Categorias tem uma tabela **"Gastos por categoria ao longo do
+    tempo"** (categoria x periodo, com o mesmo seletor de granularidade) em
+    vez de grafico — com ate 15 categorias de escalas bem diferentes, uma
+    barra proporcional escondia as menores; a tabela mostra o valor exato de
+    cada uma, com um leve realce proporcional ao peso daquela categoria
+    naquele periodo. Clicar numa celula filtra por categoria + periodo;
+    clicar no nome da categoria filtra so por categoria — ambos tambem pulam
+    pra aba Transacoes.
   - Cada transacao tem um **ID** (o id que o Pluggy atribui; se algum dia
     vier vazio, um id proprio e gerado a partir da data + um sufixo
     aleatorio).

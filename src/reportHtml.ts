@@ -144,6 +144,13 @@ function clientScript(): string {
   const DATA = REPORT_DATA;
   const state = DATA.transactions;
   const brl = (v) => (v ?? 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  // Rotulo compacto pra caber sempre visivel em cima de cada barra sem
+  // colidir com a barra vizinha (brl() por extenso e largo demais pra isso).
+  const brlCompact = (v) => {
+    const n = v ?? 0;
+    if (Math.abs(n) >= 1000) return (n / 1000).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + 'mil';
+    return Math.round(n).toLocaleString('pt-BR');
+  };
   const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const MONTH_NAMES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
   const monthLabel = (m) => { const [y, mm] = m.split('-'); return MONTH_NAMES[Number(mm) - 1] + '/' + y.slice(2); };
@@ -316,6 +323,26 @@ function clientScript(): string {
     return state.find((t) => t.id === Number(id));
   }
 
+  // --- graficos clicaveis: clicar numa barra/celula filtra o dashboard
+  // inteiro (periodo e/ou categoria) e pula direto pra aba Transacoes com o
+  // resultado. Um so lugar aplica o filtro pra bar-chart, hbar-chart e a
+  // tabela de categoria-por-periodo usarem igual. ---
+  function activateTab(tabName) {
+    document.querySelectorAll('.tab-btn').forEach((btn) => btn.classList.toggle('active', btn.dataset.tab === tabName));
+    document.querySelectorAll('.tab-panel').forEach((p) => p.classList.toggle('active', p.id === 'tab-' + tabName));
+  }
+  function drillToFilters({ categoria, from, to }) {
+    if (categoria !== undefined) {
+      categoriaFilter.value = categoria;
+      resetSubcategoriaOptions(categoria);
+      subcategoriaFilter.value = '';
+    }
+    if (from !== undefined) fromInput.value = from < minDate ? minDate : from;
+    if (to !== undefined) toInput.value = to > maxDate ? maxDate : to;
+    renderAll();
+    activateTab('transacoes');
+  }
+
   function datalistOptions(id, values) {
     return '<datalist id="' + id + '">' + values.map((v) => '<option value="' + esc(v) + '"></option>').join('') + '</datalist>';
   }
@@ -396,6 +423,29 @@ function clientScript(): string {
     if (granularity === 'ano') return key;
     return monthLabel(key);
   }
+  function pad2(n) { return String(n).padStart(2, '0'); }
+  function lastDayOfMonth(y, m) { return new Date(Number(y), Number(m), 0).getDate(); }
+
+  // Inverso de bucketKey: devolve o intervalo de datas (De/Ate) que um
+  // "balde" do grafico cobre, pra poder aplicar o filtro de periodo quando o
+  // usuario clica numa barra.
+  function bucketDateRange(key, granularity) {
+    if (granularity === 'dia') return { from: key, to: key };
+    if (granularity === 'ano') return { from: key + '-01-01', to: key + '-12-31' };
+    if (granularity === 'trimestre' || granularity === 'semestre') {
+      const [y, suffix] = key.split('-');
+      const n = Number(suffix.slice(1));
+      const span = granularity === 'trimestre' ? 3 : 6;
+      const startMonth = (n - 1) * span + 1;
+      const endMonth = startMonth + span - 1;
+      return {
+        from: y + '-' + pad2(startMonth) + '-01',
+        to: y + '-' + pad2(endMonth) + '-' + pad2(lastDayOfMonth(y, endMonth)),
+      };
+    }
+    const [y, m] = key.split('-'); // mes: key = 'YYYY-MM'
+    return { from: key + '-01', to: key + '-' + pad2(lastDayOfMonth(y, m)) };
+  }
   function computeTimeSeries(filtered, granularity) {
     const map = new Map();
     for (const t of filtered) {
@@ -458,7 +508,7 @@ function clientScript(): string {
 
     renderTimeSeriesChart(filtered);
     renderCategoriasChart(filtered);
-    renderCategoriaTimeSeriesChart(filtered);
+    renderCategoriaPeriodoTable(filtered);
   }
 
   const granularitySelect = document.getElementById('chart-granularity');
@@ -466,15 +516,20 @@ function clientScript(): string {
     const granularity = granularitySelect.value;
     const buckets = computeTimeSeries(filtered, granularity);
     const max = Math.max(1, ...buckets.map((b) => b.expenses));
+    // Com poucas colunas da pra escrever o valor sempre visivel em cima da
+    // barra; com muitas (ex.: "por dia" num periodo longo) os rotulos se
+    // sobrepoem, entao volta a depender so do hover (title).
+    const showValues = buckets.length <= 40;
     document.getElementById('monthly-chart').innerHTML =
       '<div class="bar-chart">' +
       buckets
-        .map(
-          (b) =>
-            '<div class="bar-col"><div class="bar-track"><div class="bar-fill" style="height:' +
-            Math.round((b.expenses / max) * 100) +
-            '%" title="' + bucketLabel(b.key, granularity) + ': ' + brl(b.expenses) + '"></div></div><div class="bar-label">' + bucketLabel(b.key, granularity) + '</div></div>'
-        )
+        .map((b) => {
+          const label = bucketLabel(b.key, granularity);
+          const valueHtml = showValues ? '<span class="bar-value">' + brlCompact(b.expenses) + '</span>' : '';
+          return '<div class="bar-col clickable" data-bucket-key="' + b.key + '" data-granularity="' + granularity +
+            '" title="' + label + ': ' + brl(b.expenses) + ' — clique para ver as transacoes desse periodo"><div class="bar-track"><div class="bar-fill" style="height:' +
+            Math.round((b.expenses / max) * 100) + '%">' + valueHtml + '</div></div><div class="bar-label">' + label + '</div></div>';
+        })
         .join('') +
       '</div>';
   }
@@ -488,91 +543,72 @@ function clientScript(): string {
       categorias
         .map(
           (c) =>
-            '<div class="hbar-row"><div class="hbar-label">' + esc(c.category) + '</div><div class="hbar-track"><div class="hbar-fill" style="width:' +
-            Math.max(2, Math.round((c.total / catMax) * 100)) + '%" title="' + esc(c.category) + ': ' + brl(c.total) + '"></div></div><div class="hbar-value">' +
+            '<div class="hbar-row clickable" data-category="' + esc(c.category) + '" title="Clique para ver as transacoes de ' + esc(c.category) +
+            '"><div class="hbar-label">' + esc(c.category) + '</div><div class="hbar-track"><div class="hbar-fill" style="width:' +
+            Math.max(2, Math.round((c.total / catMax) * 100)) + '%"></div></div><div class="hbar-value">' +
             brl(c.total) + '</div></div>'
         )
         .join('') +
       '</div>';
   }
 
-  // --- grafico "Gastos por categoria ao longo do tempo": uma barra
-  // empilhada por periodo, uma cor por categoria. So as categorias com mais
-  // gasto no periodo filtrado ganham cor propria (limite de 7, a mesma
-  // ordem categorica validada do resto do relatorio); o restante cai em
-  // "Outros" pra nao estourar o numero de cores distinguiveis num grafico. ---
-  const CATEGORY_SERIES_COLORS = [
-    'var(--series-1)', 'var(--series-2)', 'var(--series-3)', 'var(--series-4)',
-    'var(--series-5)', 'var(--series-6)', 'var(--series-7)',
-  ];
-  const OUTROS_COLOR = 'var(--baseline)';
-
-  function computeCategoriaTimeSeries(filtered, granularity) {
-    const totalsByCategory = new Map();
-    const bucketMap = new Map();
+  // --- "Gastos por categoria ao longo do tempo": tabela categoria x periodo
+  // em vez de grafico — com ate 15 categorias de escalas bem diferentes
+  // (aluguel vs. assinatura, por exemplo), uma barra ou linha proporcional
+  // escondia as categorias menores. A tabela mostra o valor exato de cada
+  // uma, com um leve realce (mais forte quanto maior o valor NA PROPRIA
+  // LINHA, pra nao competir entre categorias de escalas diferentes) so como
+  // pista visual. Clicar numa celula ou no nome da categoria filtra. ---
+  function computeCategoriaPeriodTable(filtered, granularity) {
+    const cellMap = new Map(); // bucketKey -> Map(categoria -> valor)
+    const categoryTotals = new Map();
+    const bucketSet = new Set();
     for (const t of filtered) {
       if (!t.valido || !t.isExpense) continue;
       const cat = t.categoria || '(sem categoria)';
-      totalsByCategory.set(cat, (totalsByCategory.get(cat) || 0) + t.amount);
       const key = bucketKey(t, granularity);
-      const byCat = bucketMap.get(key) || new Map();
+      bucketSet.add(key);
+      const byCat = cellMap.get(key) || new Map();
       byCat.set(cat, (byCat.get(cat) || 0) + t.amount);
-      bucketMap.set(key, byCat);
+      cellMap.set(key, byCat);
+      categoryTotals.set(cat, (categoryTotals.get(cat) || 0) + t.amount);
     }
-
-    const topCategories = [...totalsByCategory.entries()]
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, CATEGORY_SERIES_COLORS.length)
-      .map(([cat]) => cat);
-    const hasOutros = totalsByCategory.size > topCategories.length;
-    const series = hasOutros ? topCategories.concat(['Outros']) : topCategories;
-    const colors = topCategories.map((_, i) => CATEGORY_SERIES_COLORS[i]);
-    if (hasOutros) colors.push(OUTROS_COLOR);
-
-    const buckets = [...bucketMap.keys()].sort().map((key) => {
-      const byCat = bucketMap.get(key);
-      const values = topCategories.map((cat) => byCat.get(cat) || 0);
-      if (hasOutros) {
-        let outros = 0;
-        byCat.forEach((v, cat) => { if (!topCategories.includes(cat)) outros += v; });
-        values.push(outros);
-      }
-      return { key, values, total: values.reduce((a, b) => a + b, 0) };
-    });
-
-    return { series, colors, buckets };
+    const buckets = [...bucketSet].sort();
+    const categories = [...categoryTotals.entries()].sort((a, b) => b[1] - a[1]).map(([cat]) => cat);
+    return { buckets, categories, cellMap, categoryTotals };
   }
 
   const categoriaGranularitySelect = document.getElementById('categoria-chart-granularity');
-  function renderCategoriaTimeSeriesChart(filtered) {
+  function renderCategoriaPeriodoTable(filtered) {
     const granularity = categoriaGranularitySelect.value;
-    const { series, colors, buckets } = computeCategoriaTimeSeries(filtered, granularity);
-    const max = Math.max(1, ...buckets.map((b) => b.total));
+    const { buckets, categories, cellMap, categoryTotals } = computeCategoriaPeriodTable(filtered, granularity);
 
-    document.getElementById('categorias-timeseries-chart').innerHTML =
-      '<div class="stack-chart">' +
-      buckets
-        .map((b) => {
-          const segs = b.values
-            .map((v, i) => {
-              if (v <= 0) return '';
-              const pct = Math.max(0.6, (v / max) * 100);
-              return '<div class="stack-seg" style="height:' + pct + '%;background:' + colors[i] +
-                '" title="' + esc(series[i]) + ' — ' + bucketLabel(b.key, granularity) + ': ' + brl(v) + '"></div>';
-            })
-            .join('');
-          return '<div class="stack-col"><div class="stack-track">' + segs + '</div><div class="stack-label">' +
-            bucketLabel(b.key, granularity) + '</div></div>';
-        })
-        .join('') +
-      '</div>';
+    const headerHtml = '<tr><th>Categoria</th>' +
+      buckets.map((key) => '<th class="num">' + bucketLabel(key, granularity) + '</th>').join('') +
+      '<th class="num">Total</th></tr>';
 
-    document.getElementById('categorias-timeseries-legend').innerHTML = series
-      .map((cat, i) => '<div class="stack-legend-item"><span class="stack-legend-swatch" style="background:' +
-        colors[i] + '"></span>' + esc(cat) + '</div>')
+    const bodyHtml = categories
+      .map((cat) => {
+        const rowValues = buckets.map((key) => (cellMap.get(key) || new Map()).get(cat) || 0);
+        const rowMax = Math.max(1, ...rowValues);
+        const cells = rowValues
+          .map((v, i) => {
+            if (v <= 0) return '<td class="num"></td>';
+            const intensity = 0.06 + Math.min(1, v / rowMax) * 0.28;
+            return '<td class="num periodo-cell" data-category="' + esc(cat) + '" data-bucket-key="' + buckets[i] + '" data-granularity="' + granularity +
+              '" style="background:rgba(42,120,214,' + intensity.toFixed(2) + ')" title="Clique para ver as transacoes">' + brl(v) + '</td>';
+          })
+          .join('');
+        return '<tr><td class="periodo-cat-label clickable" data-category="' + esc(cat) + '" title="Clique para ver as transacoes de ' + esc(cat) + '">' +
+          esc(cat) + '</td>' + cells + '<td class="num periodo-total">' + brl(categoryTotals.get(cat)) + '</td></tr>';
+      })
       .join('');
+
+    const table = document.getElementById('categorias-periodo-table');
+    table.querySelector('thead').innerHTML = headerHtml;
+    table.querySelector('tbody').innerHTML = bodyHtml;
   }
-  categoriaGranularitySelect.addEventListener('change', () => renderCategoriaTimeSeriesChart(getFiltered()));
+  categoriaGranularitySelect.addEventListener('change', () => renderCategoriaPeriodoTable(getFiltered()));
 
   // --- tabelas genericas: cabecalho clicavel pra ordenar + filtro por coluna ---
   const TX_COLUMNS = [
@@ -776,6 +812,32 @@ function clientScript(): string {
     const bulkBtn = ev.target.closest('#pend-bulk-revisado');
     if (bulkBtn) {
       markReviewed([...selectedPendentes]);
+      return;
+    }
+
+    const barCol = ev.target.closest('.bar-col[data-bucket-key]');
+    if (barCol) {
+      const range = bucketDateRange(barCol.dataset.bucketKey, barCol.dataset.granularity);
+      drillToFilters({ from: range.from, to: range.to });
+      return;
+    }
+
+    const hbarRow = ev.target.closest('.hbar-row[data-category]');
+    if (hbarRow) {
+      drillToFilters({ categoria: hbarRow.dataset.category });
+      return;
+    }
+
+    const periodoCatLabel = ev.target.closest('.periodo-cat-label[data-category]');
+    if (periodoCatLabel) {
+      drillToFilters({ categoria: periodoCatLabel.dataset.category });
+      return;
+    }
+
+    const periodoCell = ev.target.closest('.periodo-cell[data-bucket-key]');
+    if (periodoCell) {
+      const range = bucketDateRange(periodoCell.dataset.bucketKey, periodoCell.dataset.granularity);
+      drillToFilters({ categoria: periodoCell.dataset.category, from: range.from, to: range.to });
     }
   });
 
@@ -796,7 +858,7 @@ function clientScript(): string {
       });
       renderTable('categorias-table');
       renderCategoriasChart(getFiltered());
-      renderCategoriaTimeSeriesChart(getFiltered());
+      renderCategoriaPeriodoTable(getFiltered());
     }
   });
 
@@ -891,12 +953,7 @@ function clientScript(): string {
     renderAll();
   });
 
-  document.querySelectorAll('.tab-btn').forEach((b) =>
-    b.addEventListener('click', () => {
-      document.querySelectorAll('.tab-btn').forEach((btn) => btn.classList.toggle('active', btn === b));
-      document.querySelectorAll('.tab-panel').forEach((p) => p.classList.toggle('active', p.id === 'tab-' + b.dataset.tab));
-    })
-  );
+  document.querySelectorAll('.tab-btn').forEach((b) => b.addEventListener('click', () => activateTab(b.dataset.tab)));
 
   updatePendSelectedCount();
   renderAll();
@@ -924,12 +981,6 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
     --border:         rgba(11,11,11,0.10);
     --series-1:       #2a78d6;
     --series-1-soft:  #cde2fb;
-    --series-2:       #eb6834;
-    --series-3:       #1baf7a;
-    --series-4:       #eda100;
-    --series-5:       #e87ba4;
-    --series-6:       #008300;
-    --series-7:       #4a3aa7;
     --good:           #006300;
     --warn:           #9a5b00;
   }
@@ -946,12 +997,6 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
       --border:         rgba(255,255,255,0.10);
       --series-1:       #3987e5;
       --series-1-soft:  #184f95;
-      --series-2:       #d95926;
-      --series-3:       #199e70;
-      --series-4:       #c98500;
-      --series-5:       #d55181;
-      --series-6:       #008300;
-      --series-7:       #9085e9;
       --good:           #0ca30c;
       --warn:           #e0a030;
     }
@@ -1054,37 +1099,44 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
     gap: 10px;
     height: 200px;
     border-bottom: 1px solid var(--baseline);
-    padding-top: 8px;
+    padding-top: 24px;
     overflow-x: auto;
+    overflow-y: hidden;
   }
   .bar-col { flex: 1 1 28px; min-width: 28px; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; gap: 6px; }
   .bar-track { width: 100%; height: 100%; display: flex; align-items: flex-end; }
-  .bar-fill { width: 100%; background: var(--series-1); border-radius: 4px 4px 0 0; min-height: 2px; }
+  .bar-fill { position: relative; width: 100%; background: var(--series-1); border-radius: 4px 4px 0 0; min-height: 2px; }
   .bar-label { font-size: 10px; color: var(--text-muted); white-space: nowrap; }
+  .bar-value {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 9px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
 
   .hbar-chart { display: flex; flex-direction: column; gap: 10px; }
-  .hbar-row { display: grid; grid-template-columns: 200px 1fr 110px; align-items: center; gap: 10px; }
+  .hbar-row { display: grid; grid-template-columns: 200px 1fr 110px; align-items: center; gap: 10px; border-radius: 6px; }
   .hbar-label { font-size: 13px; color: var(--text-secondary); text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .hbar-track { background: var(--series-1-soft); border-radius: 4px; height: 14px; }
   .hbar-fill { background: var(--series-1); height: 100%; border-radius: 4px; min-width: 4px; }
   .hbar-value { font-size: 13px; color: var(--text-primary); font-variant-numeric: tabular-nums; }
 
-  .stack-chart {
-    display: flex;
-    align-items: flex-end;
-    gap: 10px;
-    height: 220px;
-    border-bottom: 1px solid var(--baseline);
-    padding-top: 8px;
-    overflow-x: auto;
-  }
-  .stack-col { flex: 1 1 28px; min-width: 28px; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; gap: 6px; }
-  .stack-track { width: 100%; height: 100%; display: flex; flex-direction: column-reverse; gap: 2px; }
-  .stack-seg { width: 100%; min-height: 2px; border-radius: 2px; }
-  .stack-label { font-size: 10px; color: var(--text-muted); white-space: nowrap; }
-  .stack-legend { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 14px; font-size: 12px; color: var(--text-secondary); }
-  .stack-legend-item { display: flex; align-items: center; gap: 6px; }
-  .stack-legend-swatch { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+  /* Barras e linhas de grafico clicaveis levam a aba Transacoes ja filtrada
+     pelo periodo/categoria clicado — o cursor e o realce no hover sao a
+     unica pista visual disso, entao ficam num lugar so. */
+  .bar-col.clickable, .hbar-row.clickable { cursor: pointer; }
+  .bar-col.clickable:hover .bar-fill, .hbar-row.clickable:hover .hbar-fill { filter: brightness(1.15); }
+  .hbar-row.clickable:hover .hbar-label { color: var(--text-primary); }
+
+  .periodo-cat-label.clickable { cursor: pointer; }
+  .periodo-cat-label.clickable:hover { color: var(--series-1); text-decoration: underline; }
+  td.periodo-cell { cursor: pointer; }
+  td.periodo-cell:hover { outline: 1px solid var(--series-1); outline-offset: -1px; }
+  td.periodo-total { font-weight: 600; }
 
   .table-scroll { overflow-x: auto; max-height: 70vh; }
   table.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -1292,8 +1344,13 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
             <option value="ano">Acumulado por ano</option>
           </select>
         </div>
-        <div id="categorias-timeseries-chart"></div>
-        <div id="categorias-timeseries-legend" class="stack-legend"></div>
+        <p class="subtitle" style="margin:0 0 12px;">Clique numa celula ou no nome da categoria para ver so as transacoes daquele recorte na aba Transacoes.</p>
+        <div class="table-scroll">
+          <table class="data-table" id="categorias-periodo-table">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </section>
       <section class="card">
         <div class="table-scroll">
