@@ -8,7 +8,6 @@ interface ClientTransaction {
   dateLabel: string;
   dataConsideradaISO: string;
   dataConsideradaLabel: string;
-  month: string;
   installmentNumber: number | null;
   installmentGroupKey: string;
   accountId: string;
@@ -59,10 +58,6 @@ interface ClientTransaction {
   amount: number;
 }
 
-function monthKey(date: Date): string {
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-}
-
 function toClientTransactions(report: Report): ClientTransaction[] {
   return report.transactions.map((t, id) => ({
     id,
@@ -71,7 +66,6 @@ function toClientTransactions(report: Report): ClientTransaction[] {
     dateLabel: t.date.toLocaleDateString('pt-BR'),
     dataConsideradaISO: t.dataConsiderada.toISOString().slice(0, 10),
     dataConsideradaLabel: t.dataConsiderada.toLocaleDateString('pt-BR'),
-    month: monthKey(t.date),
     installmentNumber: t.installmentNumber,
     installmentGroupKey: t.installmentGroupKey,
     accountId: t.accountId,
@@ -241,7 +235,11 @@ function clientScript(): string {
   });
 
   // --- filtro de periodo + dimensoes, valido para as 5 tabelas e os graficos ---
-  const allDates = state.map((t) => t.dateISO).sort();
+  // Usa DataConsiderada (a data real da compra, ja projetada por parcela),
+  // nunca a "Data" crua — pra cartao de credito "Data" e a data da fatura,
+  // que atrasaria/adiantaria a contabilizacao de quando o gasto de fato
+  // aconteceu.
+  const allDates = state.map((t) => t.dataConsideradaISO).sort();
   const minDate = allDates[0];
   const maxDate = allDates[allDates.length - 1];
   const fromInput = document.getElementById('filter-from');
@@ -306,7 +304,7 @@ function clientScript(): string {
     const status = statusFilter.value;
     const tipo = tipoFilter.value;
     return state.filter((t) => {
-      if (t.dateISO < from || t.dateISO > to) return false;
+      if (t.dataConsideradaISO < from || t.dataConsideradaISO > to) return false;
       if (cat && t.categoria !== cat) return false;
       if (sub && t.subcategoria !== sub) return false;
       if (validoSel === 'sim' && !t.valido) return false;
@@ -431,15 +429,16 @@ function clientScript(): string {
   }
 
   // --- serie temporal do grafico "Gastos ao longo do tempo": agrupa por dia,
-  // mes, trimestre, semestre ou ano, conforme o seletor de granularidade ---
+  // mes, trimestre, semestre ou ano, conforme o seletor de granularidade.
+  // Sempre usa DataConsiderada (nunca "Data") pra agrupar. ---
   function bucketKey(t, granularity) {
-    const [y, m] = t.dateISO.split('-');
+    const [y, m] = t.dataConsideradaISO.split('-');
     switch (granularity) {
-      case 'dia': return t.dateISO;
+      case 'dia': return t.dataConsideradaISO;
       case 'trimestre': return y + '-T' + Math.ceil(Number(m) / 3);
       case 'semestre': return y + '-S' + Math.ceil(Number(m) / 6);
       case 'ano': return y;
-      default: return t.month;
+      default: return y + '-' + m;
     }
   }
   function bucketLabel(key, granularity) {

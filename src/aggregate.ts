@@ -343,7 +343,7 @@ export function buildReport(data: AccountTransactions[]): Report {
   for (const t of transactions) {
     if (!t.valido) continue;
 
-    const mKey = monthKey(t.date);
+    const mKey = monthKey(t.dataConsiderada);
     const monthEntry = monthlyMap.get(mKey) ?? { month: mKey, expenses: 0, income: 0 };
     if (t.isExpense) {
       monthEntry.expenses += t.amount;

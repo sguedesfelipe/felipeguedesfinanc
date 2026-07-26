@@ -140,7 +140,11 @@ Os arquivos sao gravados em `reports/<data-de-hoje>/`:
     tem uma coluna **DataConsiderada**: a data real da compra e, em compras
     parceladas, avancada um mes por parcela (parcela 3 de uma compra feita em
     maio cai em julho) — e a data certa pra analisar quando o gasto realmente
-    aconteceu, em vez de quando ele apareceu na fatura.
+    aconteceu, em vez de quando ele apareceu na fatura. **Todo filtro de
+    periodo, grafico e tabela agregada (Resumo, Categorias, Subcategorias,
+    Resumo Mensal na planilha) usa a DataConsiderada pra agrupar/filtrar por
+    data — nunca a "Data" crua**, que pra compras parceladas no cartao
+    reflete a fatura, nao quando o gasto de fato aconteceu.
   - **Todas as parcelas de uma mesma compra sempre tem a mesma
     Categoria/Subcategoria.** So a primeira parcela (a de menor numero que
     apareceu no periodo buscado) e editavel; as demais ficam com um cadeado
