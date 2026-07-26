@@ -554,29 +554,37 @@ function clientScript(): string {
     }
     el.innerHTML = barSelection.keys.size + ' periodo(s) selecionado(s) · <button type="button" id="clear-bar-selection" class="link-btn">limpar selecao</button>';
   }
-  function renderTimeSeriesChart(base) {
-    const granularity = granularitySelect.value;
-    const buckets = computeTimeSeries(base, granularity);
-    const max = Math.max(1, ...buckets.map((b) => b.expenses));
+  // Desenha uma das duas barras (gastos/receitas) do periodo — mesmos
+  // buckets e mesma selecao de barras pras duas, so muda o valor plotado e
+  // a cor, pra dar pra comparar visualmente e clicar em qualquer uma delas.
+  function renderBarChart(containerId, buckets, granularity, valueOf, colorClass) {
+    const max = Math.max(1, ...buckets.map(valueOf));
     // Com poucas colunas da pra escrever o valor sempre visivel em cima da
     // barra; com muitas (ex.: "por dia" num periodo longo) os rotulos se
     // sobrepoem, entao volta a depender so do hover (title).
     const showValues = buckets.length <= 40;
     const hasSelection = barSelection && barSelection.granularity === granularity;
-    document.getElementById('monthly-chart').innerHTML =
+    document.getElementById(containerId).innerHTML =
       '<div class="bar-chart">' +
       buckets
         .map((b) => {
+          const v = valueOf(b);
           const label = bucketLabel(b.key, granularity);
           const isSelected = hasSelection && barSelection.keys.has(b.key);
-          const fillClass = 'bar-fill' + (isSelected ? ' is-selected' : hasSelection ? ' is-dimmed' : '');
-          const valueHtml = showValues ? '<span class="bar-value">' + brlCompact(b.expenses) + '</span>' : '';
+          const fillClass = 'bar-fill' + colorClass + (isSelected ? ' is-selected' : hasSelection ? ' is-dimmed' : '');
+          const valueHtml = showValues ? '<span class="bar-value">' + brlCompact(v) + '</span>' : '';
           return '<div class="bar-col clickable" data-bucket-key="' + b.key + '" data-granularity="' + granularity +
-            '" title="' + label + ': ' + brl(b.expenses) + ' — clique para selecionar, Ctrl+clique pra selecionar varios"><div class="bar-track"><div class="' + fillClass + '" style="height:' +
-            Math.round((b.expenses / max) * 100) + '%">' + valueHtml + '</div></div><div class="bar-label">' + label + '</div></div>';
+            '" title="' + label + ': ' + brl(v) + ' — clique para selecionar, Ctrl+clique pra selecionar varios"><div class="bar-track"><div class="' + fillClass + '" style="height:' +
+            Math.round((v / max) * 100) + '%">' + valueHtml + '</div></div><div class="bar-label">' + label + '</div></div>';
         })
         .join('') +
       '</div>';
+  }
+  function renderTimeSeriesChart(base) {
+    const granularity = granularitySelect.value;
+    const buckets = computeTimeSeries(base, granularity);
+    renderBarChart('monthly-chart', buckets, granularity, (b) => b.expenses, '');
+    renderBarChart('monthly-income-chart', buckets, granularity, (b) => b.income, ' income');
     updateBarSelectionInfo();
   }
   granularitySelect.addEventListener('change', () => {
@@ -592,12 +600,12 @@ function clientScript(): string {
   // quanto maior o valor NA PROPRIA LINHA, pra nao competir entre linhas de
   // escalas diferentes) so como pista visual. Clicar numa celula ou no nome
   // da linha filtra (a mesma funcao serve pra categoria e subcategoria). ---
-  function computeDimensionPeriodTable(filtered, granularity, dimensionField) {
+  function computeDimensionPeriodTable(filtered, granularity, dimensionField, isExpense) {
     const cellMap = new Map(); // bucketKey -> Map(valor da dimensao -> total)
     const totals = new Map();
     const bucketSet = new Set();
     for (const t of filtered) {
-      if (!t.valido || !t.isExpense) continue;
+      if (!t.valido || t.isExpense !== isExpense) continue;
       const dim = t[dimensionField] || '(sem categoria)';
       const key = bucketKey(t, granularity);
       bucketSet.add(key);
@@ -631,9 +639,9 @@ function clientScript(): string {
     });
   }
 
-  function renderDimensionPeriodoTable(tableId, granularitySelectEl, filtered, dimensionField, columnLabel) {
+  function renderDimensionPeriodoTable(tableId, granularitySelectEl, filtered, dimensionField, columnLabel, isExpense) {
     const granularity = granularitySelectEl.value;
-    const { buckets, dims: unsortedDims, cellMap, totals } = computeDimensionPeriodTable(filtered, granularity, dimensionField);
+    const { buckets, dims: unsortedDims, cellMap, totals } = computeDimensionPeriodTable(filtered, granularity, dimensionField, isExpense);
     const sortState = getPeriodoSort(tableId);
     const dims = sortPeriodoDims(unsortedDims, cellMap, totals, sortState);
 
@@ -681,10 +689,12 @@ function clientScript(): string {
   const categoriaGranularitySelect = document.getElementById('categoria-chart-granularity');
   const subcategoriaGranularitySelect = document.getElementById('subcategoria-chart-granularity');
   function renderCategoriaPeriodoTable(filtered) {
-    renderDimensionPeriodoTable('categorias-periodo-table', categoriaGranularitySelect, filtered, 'categoria', 'Categoria');
+    renderDimensionPeriodoTable('categorias-periodo-table', categoriaGranularitySelect, filtered, 'categoria', 'Categoria', true);
+    renderDimensionPeriodoTable('categorias-receita-periodo-table', categoriaGranularitySelect, filtered, 'categoria', 'Categoria', false);
   }
   function renderSubcategoriaPeriodoTable(filtered) {
-    renderDimensionPeriodoTable('subcategorias-periodo-table', subcategoriaGranularitySelect, filtered, 'subcategoria', 'Subcategoria');
+    renderDimensionPeriodoTable('subcategorias-periodo-table', subcategoriaGranularitySelect, filtered, 'subcategoria', 'Subcategoria', true);
+    renderDimensionPeriodoTable('subcategorias-receita-periodo-table', subcategoriaGranularitySelect, filtered, 'subcategoria', 'Subcategoria', false);
   }
   categoriaGranularitySelect.addEventListener('change', () => renderCategoriaPeriodoTable(getFiltered()));
   subcategoriaGranularitySelect.addEventListener('change', () => renderSubcategoriaPeriodoTable(getFiltered()));
@@ -932,7 +942,7 @@ function clientScript(): string {
       const sortState = getPeriodoSort(tableId);
       if (sortState.key === key) sortState.dir *= -1;
       else { sortState.key = key; sortState.dir = 1; }
-      if (tableId === 'categorias-periodo-table') renderCategoriaPeriodoTable(getFiltered());
+      if (tableId.startsWith('categorias-')) renderCategoriaPeriodoTable(getFiltered());
       else renderSubcategoriaPeriodoTable(getFiltered());
       return;
     }
@@ -1069,7 +1079,10 @@ function clientScript(): string {
     SIMPLE_DIMENSION_FILTERS.forEach((el) => (el.value = ''));
     barSelection = null;
     Object.keys(TABLE_DEFS).forEach(initTable);
-    ['categorias-periodo-table', 'subcategorias-periodo-table'].forEach((tableId) => {
+    [
+      'categorias-periodo-table', 'categorias-receita-periodo-table',
+      'subcategorias-periodo-table', 'subcategorias-receita-periodo-table',
+    ].forEach((tableId) => {
       periodoTableSort[tableId] = { key: null, dir: 1 };
     });
     renderAll();
@@ -1241,6 +1254,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
   }
   .bar-fill.is-selected { box-shadow: 0 0 0 2px var(--text-primary) inset; }
   .bar-fill.is-dimmed { opacity: 0.35; }
+  .bar-fill.income { background: var(--good); }
   #bar-selection-info { font-size: 12px; color: var(--text-secondary); white-space: nowrap; }
 
   /* Barras e celulas clicaveis filtram o dashboard (periodo/categoria) sem
@@ -1433,6 +1447,11 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
       </section>
 
       <section class="card">
+        <h2>Receitas ao longo do tempo</h2>
+        <div id="monthly-income-chart"></div>
+      </section>
+
+      <section class="card">
         <h2>Maiores gastos (por descricao)</h2>
         <div class="table-scroll">
           <table class="data-table" id="merchants-table">
@@ -1474,6 +1493,16 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
         </div>
       </section>
       <section class="card">
+        <h2>Receita por categoria ao longo do tempo</h2>
+        <p class="subtitle" style="margin:0 0 12px;">Mesma logica da tabela acima, mas somando as receitas.</p>
+        <div class="table-scroll">
+          <table class="data-table" id="categorias-receita-periodo-table">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="card">
         <h2>Gastos por categoria</h2>
         <div class="table-scroll">
           <table class="data-table" id="categorias-table">
@@ -1508,6 +1537,16 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
         <p class="subtitle" style="margin:0 0 12px;">Clique numa celula ou no nome da subcategoria para filtrar por aquele recorte (confira o resultado na aba Transacoes quando quiser).</p>
         <div class="table-scroll">
           <table class="data-table" id="subcategorias-periodo-table">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="card">
+        <h2>Receita por subcategoria ao longo do tempo</h2>
+        <p class="subtitle" style="margin:0 0 12px;">Mesma logica da tabela acima, mas somando as receitas.</p>
+        <div class="table-scroll">
+          <table class="data-table" id="subcategorias-receita-periodo-table">
             <thead></thead>
             <tbody></tbody>
           </table>
