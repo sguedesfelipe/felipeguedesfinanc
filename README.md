@@ -127,9 +127,12 @@ Os arquivos sao gravados em `reports/<data-de-hoje>/`:
     uma, com um leve realce proporcional ao peso daquela linha naquele
     periodo. Clicar numa celula filtra por categoria/subcategoria + periodo;
     clicar no nome da linha filtra so por aquela categoria/subcategoria (sem
-    trocar de aba). Abaixo ficam duas tabelas simples: **Gastos por
-    categoria/subcategoria** e **Receita por categoria/subcategoria** (total
-    e quantidade).
+    trocar de aba). Tem uma linha **"Total"** no rodape (subtotal de cada
+    coluna/periodo) e uma coluna **"Total"** no fim (subtotal de cada linha),
+    e qualquer cabecalho de coluna (nome, periodo ou Total) funciona como
+    ordenador — clique pra ordenar do maior pro menor ou vice-versa. Abaixo
+    ficam duas tabelas simples: **Gastos por categoria/subcategoria** e
+    **Receita por categoria/subcategoria** (total e quantidade).
   - Cada transacao tem um **ID** (o id que o Pluggy atribui; se algum dia
     vier vazio, um id proprio e gerado a partir da data + um sufixo
     aleatorio).

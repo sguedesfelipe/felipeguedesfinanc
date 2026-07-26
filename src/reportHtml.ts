@@ -612,13 +612,39 @@ function clientScript(): string {
     return { buckets, dims, cellMap, totals };
   }
 
+  // Estado de ordenacao de cada tabela dimensao x periodo (independente do
+  // sistema de ordenacao das tabelas genericas, que dependem de TABLE_DEFS —
+  // essas duas sao renderizadas por conta propria). key pode ser 'dim'
+  // (nome da categoria/subcategoria), 'total', ou a chave de um periodo.
+  const periodoTableSort = {};
+  function getPeriodoSort(tableId) {
+    if (!periodoTableSort[tableId]) periodoTableSort[tableId] = { key: null, dir: 1 };
+    return periodoTableSort[tableId];
+  }
+  function sortPeriodoDims(dims, cellMap, totals, sortState) {
+    if (!sortState.key) return dims; // ordem default: total decrescente (ja vem assim de computeDimensionPeriodTable)
+    const valueFor = (dim) =>
+      sortState.key === 'dim' ? dim : sortState.key === 'total' ? totals.get(dim) || 0 : (cellMap.get(sortState.key) || new Map()).get(dim) || 0;
+    return [...dims].sort((a, b) => {
+      const av = valueFor(a);
+      const bv = valueFor(b);
+      return sortState.key === 'dim' ? sortState.dir * String(av).localeCompare(String(bv), 'pt-BR') : sortState.dir * (av - bv);
+    });
+  }
+
   function renderDimensionPeriodoTable(tableId, granularitySelectEl, filtered, dimensionField, columnLabel) {
     const granularity = granularitySelectEl.value;
-    const { buckets, dims, cellMap, totals } = computeDimensionPeriodTable(filtered, granularity, dimensionField);
+    const { buckets, dims: unsortedDims, cellMap, totals } = computeDimensionPeriodTable(filtered, granularity, dimensionField);
+    const sortState = getPeriodoSort(tableId);
+    const dims = sortPeriodoDims(unsortedDims, cellMap, totals, sortState);
 
-    const headerHtml = '<tr><th>' + columnLabel + '</th>' +
-      buckets.map((key) => '<th class="num">' + bucketLabel(key, granularity) + '</th>').join('') +
-      '<th class="num">Total</th></tr>';
+    function thLabel(key, label) {
+      const arrow = sortState.key === key ? (sortState.dir === 1 ? ' ▲' : ' ▼') : '';
+      return '<span class="periodo-th-label" data-table-id="' + tableId + '" data-sort-key="' + key + '">' + label + arrow + '</span>';
+    }
+    const headerHtml = '<tr><th>' + thLabel('dim', columnLabel) + '</th>' +
+      buckets.map((key) => '<th class="num">' + thLabel(key, bucketLabel(key, granularity)) + '</th>').join('') +
+      '<th class="num">' + thLabel('total', 'Total') + '</th></tr>';
 
     const bodyHtml = dims
       .map((dim) => {
@@ -637,9 +663,20 @@ function clientScript(): string {
       })
       .join('');
 
+    // Subtotal por coluna (uma linha "Total" no rodape) + o total geral no
+    // canto — soma sempre todas as dimensoes, independente da ordenacao.
+    const columnTotals = buckets.map((key) => {
+      const byDim = cellMap.get(key) || new Map();
+      return unsortedDims.reduce((sum, dim) => sum + (byDim.get(dim) || 0), 0);
+    });
+    const grandTotal = columnTotals.reduce((a, b) => a + b, 0);
+    const footerHtml = '<tr class="periodo-total-row"><td>Total</td>' +
+      columnTotals.map((v) => '<td class="num">' + (v > 0 ? brl(v) : '') + '</td>').join('') +
+      '<td class="num">' + brl(grandTotal) + '</td></tr>';
+
     const table = document.getElementById(tableId);
     table.querySelector('thead').innerHTML = headerHtml;
-    table.querySelector('tbody').innerHTML = bodyHtml;
+    table.querySelector('tbody').innerHTML = bodyHtml + footerHtml;
   }
 
   const categoriaGranularitySelect = document.getElementById('categoria-chart-granularity');
@@ -889,6 +926,18 @@ function clientScript(): string {
       return;
     }
 
+    const periodoTh = ev.target.closest('.periodo-th-label');
+    if (periodoTh) {
+      const tableId = periodoTh.dataset.tableId;
+      const key = periodoTh.dataset.sortKey;
+      const sortState = getPeriodoSort(tableId);
+      if (sortState.key === key) sortState.dir *= -1;
+      else { sortState.key = key; sortState.dir = 1; }
+      if (tableId === 'categorias-periodo-table') renderCategoriaPeriodoTable(getFiltered());
+      else renderSubcategoriaPeriodoTable(getFiltered());
+      return;
+    }
+
     const periodoCatLabel = ev.target.closest('.periodo-cat-label[data-dim-value]');
     if (periodoCatLabel) {
       drillToFilters({ [periodoCatLabel.dataset.dimField]: periodoCatLabel.dataset.dimValue });
@@ -1021,6 +1070,9 @@ function clientScript(): string {
     SIMPLE_DIMENSION_FILTERS.forEach((el) => (el.value = ''));
     barSelection = null;
     Object.keys(TABLE_DEFS).forEach(initTable);
+    ['categorias-periodo-table', 'subcategorias-periodo-table'].forEach((tableId) => {
+      periodoTableSort[tableId] = { key: null, dir: 1 };
+    });
     renderAll();
   });
 
@@ -1203,6 +1255,9 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
   td.periodo-cell { cursor: pointer; }
   td.periodo-cell:hover { outline: 1px solid var(--series-1); outline-offset: -1px; }
   td.periodo-total { font-weight: 600; }
+  .periodo-th-label { cursor: pointer; user-select: none; display: inline-block; }
+  .periodo-th-label:hover { color: var(--text-primary); }
+  tr.periodo-total-row td { font-weight: 600; border-top: 2px solid var(--baseline); }
 
   .table-scroll { overflow-x: auto; max-height: 70vh; }
   table.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
