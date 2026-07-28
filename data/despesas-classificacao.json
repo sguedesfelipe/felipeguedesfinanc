@@ -27,7 +27,7 @@
       "kiwify"
     ],
     "COMPRAS E LAZER": [
-      "Alimentação Trabalho",
+      "ALIMENTACAO TRABALHO",
       "COISAS PARA CASA",
       "CRUZEIRO",
       "ELETRONICOS",
@@ -130,7 +130,7 @@
     "TED RECEBIDA FELIPE HENRIQUE SILVA GUEDES": "Classificado como invalido pelo usuario na revisao manual.",
     "TED RECEBIDA TED 104.0000CAIXA ECON F": "Classificado como invalido pelo usuario na revisao manual."
   },
-  "revisadoAte": "2026-07-22",
+  "revisadoAte": "2026-07-25",
   "rulesFull": {
     "00153 SH BOULEVARD BH": [
       "COMPRAS E LAZER",
@@ -532,6 +532,11 @@
       "ENRICO_SAMUEL",
       9999
     ],
+    "ARAUJO ONLINEBELO": [
+      "SAUDE E BEM ESTAR",
+      "ENRICO_SAMUEL",
+      9999
+    ],
     "ARAUJO ONLINEBELO HORIZONTBR": [
       "SAUDE E BEM ESTAR",
       "ENRICO_SAMUEL",
@@ -797,6 +802,11 @@
       "PRESENTES",
       9999
     ],
+    "BUCANEIRO CRUZEIROBELO HORIZONTBR": [
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
+      9999
+    ],
     "BURGO": [
       "ALIMENTACAO",
       "ALIMENTACAO TRABALHO",
@@ -873,6 +883,11 @@
       9999
     ],
     "CAPPTA *DUDA E BASTOSBELO HORIZONTBR": [
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
+      9999
+    ],
+    "CAPPTA *EM 2 BAR E RESBELO HORIZONTBR": [
       "COMPRAS E LAZER",
       "RESTAURANTE OU DELIVERY",
       9999
@@ -978,6 +993,11 @@
       1
     ],
     "CASA DE CARNE ESTER DE BELO HORIZONT BR": [
+      "ALIMENTACAO",
+      "SUPERMERCADO",
+      9999
+    ],
+    "CASA DE CARNES ESTER DBELO HORIZONTBR": [
       "ALIMENTACAO",
       "SUPERMERCADO",
       9999
@@ -1931,6 +1951,11 @@
       "ALIMENTACAO",
       "ALIMENTACAO TRABALHO",
       1
+    ],
+    "FLORESTABELO HORIZONTBR": [
+      "COMPRAS E LAZER",
+      "ALIMENTACAO TRABALHO",
+      9999
     ],
     "FORNERIA ORIGINAL": [
       "COMPRAS E LAZER",
@@ -3332,6 +3357,11 @@
       "MUDANCA",
       9999
     ],
+    "MP*SJNCPRODUCEVESO PAULOBR": [
+      "GASTOS LUISA",
+      "GASTOS LUISA",
+      9999
+    ],
     "MP*VENDASMARCOLI": [
       "COMPRAS E LAZER",
       "RESTAURANTE OU DELIVERY",
@@ -3466,6 +3496,11 @@
       "COMPRAS E LAZER",
       "RESTAURANTE OU DELIVERY",
       1
+    ],
+    "NUTRIBOM EXPRESSBELO HORIZONTBR": [
+      "ALIMENTACAO",
+      "SUPERMERCADO",
+      9999
     ],
     "O BURGUES SAVASSI": [
       "COMPRAS E LAZER",
@@ -3728,8 +3763,8 @@
       9999
     ],
     "PAGAMENTO DE BOLETO ECOMMERCE OBJETIVO PERFORMANCE PARA ECOMMERCE LTDA": [
-      "GASTOS LUISA",
-      "GASTOS LUISA",
+      "EMPRESTIMOS",
+      "EMPRESTIMOS PESSOAIS",
       9999
     ],
     "PAGAMENTO DE BOLETO PARTNERBANK": [
@@ -4031,6 +4066,11 @@
       "SAUDE E BEM ESTAR",
       "Samuel",
       3
+    ],
+    "PAULINHO PIPOCABELO HORIZONTBR": [
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
+      9999
     ],
     "PAYPAL *BOOKING HOTEL A": [
       "VIAGEM",
@@ -4485,6 +4525,11 @@
     "PIX ENVIADO LUÍSA LUGÃO GUIMARÃES GUEDES": [
       "SAUDE E BEM ESTAR",
       "ENRICO_SAMUEL",
+      9999
+    ],
+    "PIX ENVIADO MALU PRODUTOS METALURGICOS LTDA": [
+      "MORADIA",
+      "MUDANCA",
       9999
     ],
     "PIX ENVIADO MARIA APARECIDA DE ANDRADE": [
