@@ -10,6 +10,7 @@
       "AZUL",
       "CRUZEIRO",
       "Despezzas",
+      "GOOGLE ONE",
       "HBO",
       "IA_CLAUDE",
       "IA_GEMINI",
@@ -130,7 +131,7 @@
     "TED RECEBIDA FELIPE HENRIQUE SILVA GUEDES": "Classificado como invalido pelo usuario na revisao manual.",
     "TED RECEBIDA TED 104.0000CAIXA ECON F": "Classificado como invalido pelo usuario na revisao manual."
   },
-  "revisadoAte": "2026-07-25",
+  "revisadoAte": "2026-08-03",
   "rulesFull": {
     "00153 SH BOULEVARD BH": [
       "COMPRAS E LAZER",
@@ -165,6 +166,11 @@
     "54831742RONAMLEOBELO HORIZONTBR": [
       "ALIMENTACAO",
       "ALIMENTACAO TRABALHO",
+      9999
+    ],
+    "60700743SIONEBELO HORIZONTBR": [
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       9999
     ],
     "99*": [
@@ -1402,6 +1408,11 @@
       "ESTACIONAMENTO E PEDAGIO",
       9999
     ],
+    "DL *GOOGLE GOOGLE ONESAO PAULOBR": [
+      "ASSINATURAS",
+      "GOOGLE ONE",
+      9999
+    ],
     "DL *GOOGLE LINKEDIN CO": [
       "ASSINATURAS",
       "LINKEDIN",
@@ -1597,6 +1608,11 @@
       "FARMACIA E MEDICAMENTOS",
       9999
     ],
+    "DROGA CLARABELO HORIZONTBR": [
+      "SAUDE E BEM ESTAR",
+      "FARMACIA E MEDICAMENTOS",
+      9999
+    ],
     "DROGACLARABELO HORIZONTBR": [
       "ALIMENTACAO",
       "ALIMENTACAO TRABALHO",
@@ -1750,6 +1766,11 @@
     "EMPADAS FUTEBOL CLUBEBELO HORIZONTBR": [
       "COMPRAS E LAZER",
       "CRUZEIRO",
+      9999
+    ],
+    "EMPORIO DOIS AMORESBELO HORIZONTBR": [
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       9999
     ],
     "ENCARGOS DE ATRASO": [
@@ -3007,6 +3028,11 @@
       "MUDANCA",
       9999
     ],
+    "MERCADOLIVRE*CALUMAXGUARULHOSBR": [
+      "COMPRAS E LAZER",
+      "PRESENTES",
+      9999
+    ],
     "MERCADOLIVRE*COMPELECTR": [
       "COMPRAS E LAZER",
       "ELETRONICOS",
@@ -4167,6 +4193,11 @@
       "APLICATIVOS DE MOBILIDADE",
       9999
     ],
+    "PG *QLIC SERVICOS TECNSAO PAULOBR": [
+      "TRANSPORTE",
+      "APLICATIVOS DE MOBILIDADE",
+      9999
+    ],
     "PG *SELIA - SERVICOS D": [
       "VIAGEM",
       "PASSEIOS E LAZER",
@@ -4525,6 +4556,11 @@
     "PIX ENVIADO LUÍSA LUGÃO GUIMARÃES GUEDES": [
       "SAUDE E BEM ESTAR",
       "ENRICO_SAMUEL",
+      9999
+    ],
+    "PIX ENVIADO M CARDOSO ENGENHARIA LTDA": [
+      "MORADIA",
+      "CONDOMINIO",
       9999
     ],
     "PIX ENVIADO MALU PRODUTOS METALURGICOS LTDA": [
@@ -4890,6 +4926,11 @@
     "PIX RECEBIDO MARIA CLARA GUEDES LUCAS DINIZ": [
       "COMPRAS E LAZER",
       "PRESENTES",
+      9999
+    ],
+    "PIX RECEBIDO MARIA HELENA P B DE MELO": [
+      "COMPRAS E LAZER",
+      "RESTAURANTE OU DELIVERY",
       9999
     ],
     "PIX RECEBIDO MATHEUS REZENDE VIEIRA RAPALO": [
