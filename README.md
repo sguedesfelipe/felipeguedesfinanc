@@ -122,21 +122,22 @@ Os arquivos sao gravados em `reports/<data-de-hoje>/`:
     de **"Receitas ao longo do tempo"** — os dois usam os mesmos periodos e
     a mesma selecao (clicar numa barra de qualquer um dos dois seleciona o
     periodo nos dois).
-  - As abas **Categorias** e **Subcategorias** seguem o mesmo formato: uma
-    tabela **"Gastos por .../ao longo do tempo"** (categoria/subcategoria x
-    periodo, com seletor de granularidade proprio) em vez de grafico — com
-    varias categorias/subcategorias de escalas bem diferentes, uma barra
-    proporcional escondia as menores; a tabela mostra o valor exato de cada
-    uma, com um leve realce proporcional ao peso daquela linha naquele
-    periodo. Logo abaixo tem a mesma tabela para as receitas
-    (**"Receita por .../ao longo do tempo"**), usando o mesmo seletor de
-    granularidade. Clicar numa celula filtra por categoria/subcategoria +
-    periodo; clicar no nome da linha filtra so por aquela
-    categoria/subcategoria (sem trocar de aba). Tem uma linha **"Total"** no
-    rodape (subtotal de cada coluna/periodo) e uma coluna **"Total"** no fim
-    (subtotal de cada linha), e qualquer cabecalho de coluna (nome, periodo
-    ou Total) funciona como ordenador — clique pra ordenar do maior pro
-    menor ou vice-versa. Abaixo ficam duas tabelas simples: **Gastos por
+  - As abas **Categorias** e **Subcategorias** seguem o mesmo formato: tres
+    tabelas categoria/subcategoria x periodo (em vez de grafico — com varias
+    categorias/subcategorias de escalas bem diferentes, uma barra
+    proporcional escondia as menores). A primeira e o **"Saldo por .../ao
+    longo do tempo"** (receita menos despesa — verde quando positivo, ambar
+    quando negativo), seguida de **"Gastos por .../ao longo do tempo"** e
+    **"Receita por .../ao longo do tempo"**; as tres usam o mesmo seletor de
+    granularidade (no card do Saldo) e mostram o valor exato de cada
+    celula, com um leve realce proporcional ao peso daquela linha naquele
+    periodo. Clicar numa celula filtra por categoria/subcategoria + periodo;
+    clicar no nome da linha filtra so por aquela categoria/subcategoria (sem
+    trocar de aba). Tem uma linha **"Total"** no rodape (subtotal de cada
+    coluna/periodo) e uma coluna **"Total"** no fim (subtotal de cada
+    linha), e qualquer cabecalho de coluna (nome, periodo ou Total) funciona
+    como ordenador — clique pra ordenar do maior pro menor ou vice-versa.
+    Abaixo delas ficam duas tabelas simples: **Gastos por
     categoria/subcategoria** e **Receita por categoria/subcategoria** (total
     e quantidade).
   - Cada transacao tem um **ID** (o id que o Pluggy atribui; se algum dia

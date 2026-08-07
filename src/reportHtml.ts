@@ -619,24 +619,63 @@ function clientScript(): string {
     return { buckets, dims, cellMap, totals };
   }
 
+  // Igual a computeDimensionPeriodTable, mas cada celula guarda {income,
+  // expense} em vez de um total so — o saldo (income - expense) pode ser
+  // negativo, entao precisa dos dois lados pra calcular na hora de renderizar.
+  function computeDimensionSaldoPeriodTable(filtered, granularity, dimensionField) {
+    const cellMap = new Map(); // bucketKey -> Map(valor da dimensao -> {income, expense})
+    const totals = new Map();
+    const bucketSet = new Set();
+    for (const t of filtered) {
+      if (!t.valido) continue;
+      const dim = t[dimensionField] || '(sem categoria)';
+      const key = bucketKey(t, granularity);
+      bucketSet.add(key);
+      const byDim = cellMap.get(key) || new Map();
+      const cell = byDim.get(dim) || { income: 0, expense: 0 };
+      if (t.isExpense) cell.expense += t.amount; else cell.income += t.amount;
+      byDim.set(dim, cell);
+      cellMap.set(key, byDim);
+      const total = totals.get(dim) || { income: 0, expense: 0 };
+      if (t.isExpense) total.expense += t.amount; else total.income += t.amount;
+      totals.set(dim, total);
+    }
+    const buckets = [...bucketSet].sort();
+    const dims = [...totals.entries()].sort((a, b) => (b[1].income - b[1].expense) - (a[1].income - a[1].expense)).map(([d]) => d);
+    return { buckets, dims, cellMap, totals };
+  }
+
   // Estado de ordenacao de cada tabela dimensao x periodo (independente do
   // sistema de ordenacao das tabelas genericas, que dependem de TABLE_DEFS —
-  // essas duas sao renderizadas por conta propria). key pode ser 'dim'
-  // (nome da categoria/subcategoria), 'total', ou a chave de um periodo.
+  // essas sao renderizadas por conta propria). key pode ser 'dim' (nome da
+  // categoria/subcategoria), 'total', ou a chave de um periodo.
   const periodoTableSort = {};
   function getPeriodoSort(tableId) {
     if (!periodoTableSort[tableId]) periodoTableSort[tableId] = { key: null, dir: 1 };
     return periodoTableSort[tableId];
   }
-  function sortPeriodoDims(dims, cellMap, totals, sortState) {
-    if (!sortState.key) return dims; // ordem default: total decrescente (ja vem assim de computeDimensionPeriodTable)
+  // valueOf extrai um numero comparavel de cada entrada de totals/cellMap —
+  // um total simples nas tabelas de gastos/receita, ou income-expense na de
+  // saldo. Default trata a entrada como o proprio numero.
+  function sortPeriodoDims(dims, cellMap, totals, sortState, valueOf) {
+    if (!sortState.key) return dims; // ordem default ja vem pronta de compute*PeriodTable
+    const get = valueOf || ((x) => x || 0);
     const valueFor = (dim) =>
-      sortState.key === 'dim' ? dim : sortState.key === 'total' ? totals.get(dim) || 0 : (cellMap.get(sortState.key) || new Map()).get(dim) || 0;
+      sortState.key === 'dim' ? dim : sortState.key === 'total' ? get(totals.get(dim)) : get((cellMap.get(sortState.key) || new Map()).get(dim));
     return [...dims].sort((a, b) => {
       const av = valueFor(a);
       const bv = valueFor(b);
       return sortState.key === 'dim' ? sortState.dir * String(av).localeCompare(String(bv), 'pt-BR') : sortState.dir * (av - bv);
     });
+  }
+  function buildPeriodoHeaderHtml(tableId, columnLabel, buckets, granularity, sortState) {
+    function thLabel(key, label) {
+      const arrow = sortState.key === key ? (sortState.dir === 1 ? ' ▲' : ' ▼') : '';
+      return '<span class="periodo-th-label" data-table-id="' + tableId + '" data-sort-key="' + key + '">' + label + arrow + '</span>';
+    }
+    return '<tr><th>' + thLabel('dim', columnLabel) + '</th>' +
+      buckets.map((key) => '<th class="num">' + thLabel(key, bucketLabel(key, granularity)) + '</th>').join('') +
+      '<th class="num">' + thLabel('total', 'Total') + '</th></tr>';
   }
 
   function renderDimensionPeriodoTable(tableId, granularitySelectEl, filtered, dimensionField, columnLabel, isExpense) {
@@ -644,14 +683,7 @@ function clientScript(): string {
     const { buckets, dims: unsortedDims, cellMap, totals } = computeDimensionPeriodTable(filtered, granularity, dimensionField, isExpense);
     const sortState = getPeriodoSort(tableId);
     const dims = sortPeriodoDims(unsortedDims, cellMap, totals, sortState);
-
-    function thLabel(key, label) {
-      const arrow = sortState.key === key ? (sortState.dir === 1 ? ' ▲' : ' ▼') : '';
-      return '<span class="periodo-th-label" data-table-id="' + tableId + '" data-sort-key="' + key + '">' + label + arrow + '</span>';
-    }
-    const headerHtml = '<tr><th>' + thLabel('dim', columnLabel) + '</th>' +
-      buckets.map((key) => '<th class="num">' + thLabel(key, bucketLabel(key, granularity)) + '</th>').join('') +
-      '<th class="num">' + thLabel('total', 'Total') + '</th></tr>';
+    const headerHtml = buildPeriodoHeaderHtml(tableId, columnLabel, buckets, granularity, sortState);
 
     const bodyHtml = dims
       .map((dim) => {
@@ -686,13 +718,60 @@ function clientScript(): string {
     table.querySelector('tbody').innerHTML = bodyHtml + footerHtml;
   }
 
+  // Saldo = receita - despesa por celula. Ao contrario das tabelas de gastos
+  // e receita (sempre positivas), aqui o valor pode ser negativo — o realce
+  // vira divergente (verde pra saldo positivo, ambar pra negativo, mesma
+  // cor de "Saldo no periodo" no card de KPIs) em vez da escala azul unica.
+  function renderSaldoPeriodoTable(tableId, granularitySelectEl, filtered, dimensionField, columnLabel) {
+    const granularity = granularitySelectEl.value;
+    const { buckets, dims: unsortedDims, cellMap, totals } = computeDimensionSaldoPeriodTable(filtered, granularity, dimensionField);
+    const sortState = getPeriodoSort(tableId);
+    const saldoOf = (cell) => (cell ? cell.income - cell.expense : 0);
+    const dims = sortPeriodoDims(unsortedDims, cellMap, totals, sortState, saldoOf);
+    const headerHtml = buildPeriodoHeaderHtml(tableId, columnLabel, buckets, granularity, sortState);
+
+    const bodyHtml = dims
+      .map((dim) => {
+        const rowValues = buckets.map((key) => saldoOf((cellMap.get(key) || new Map()).get(dim)));
+        const rowMaxAbs = Math.max(1, ...rowValues.map((v) => Math.abs(v)));
+        const cells = rowValues
+          .map((v, i) => {
+            const cellExists = (cellMap.get(buckets[i]) || new Map()).has(dim);
+            if (!cellExists) return '<td class="num"></td>';
+            const intensity = 0.06 + Math.min(1, Math.abs(v) / rowMaxAbs) * 0.28;
+            const rgb = v >= 0 ? '0,99,0' : '154,91,0';
+            return '<td class="num periodo-cell" data-dim-field="' + dimensionField + '" data-dim-value="' + esc(dim) + '" data-bucket-key="' + buckets[i] +
+              '" data-granularity="' + granularity + '" style="background:rgba(' + rgb + ',' + intensity.toFixed(2) + ')" title="Clique para filtrar">' + brl(v) + '</td>';
+          })
+          .join('');
+        return '<tr><td class="periodo-cat-label clickable" data-dim-field="' + dimensionField + '" data-dim-value="' + esc(dim) + '" title="Clique para filtrar por ' + esc(dim) + '">' +
+          esc(dim) + '</td>' + cells + '<td class="num periodo-total">' + brl(saldoOf(totals.get(dim))) + '</td></tr>';
+      })
+      .join('');
+
+    const columnTotals = buckets.map((key) => {
+      const byDim = cellMap.get(key) || new Map();
+      return unsortedDims.reduce((sum, dim) => sum + saldoOf(byDim.get(dim)), 0);
+    });
+    const grandTotal = columnTotals.reduce((a, b) => a + b, 0);
+    const footerHtml = '<tr class="periodo-total-row"><td>Total</td>' +
+      columnTotals.map((v) => '<td class="num">' + brl(v) + '</td>').join('') +
+      '<td class="num">' + brl(grandTotal) + '</td></tr>';
+
+    const table = document.getElementById(tableId);
+    table.querySelector('thead').innerHTML = headerHtml;
+    table.querySelector('tbody').innerHTML = bodyHtml + footerHtml;
+  }
+
   const categoriaGranularitySelect = document.getElementById('categoria-chart-granularity');
   const subcategoriaGranularitySelect = document.getElementById('subcategoria-chart-granularity');
   function renderCategoriaPeriodoTable(filtered) {
+    renderSaldoPeriodoTable('categorias-saldo-periodo-table', categoriaGranularitySelect, filtered, 'categoria', 'Categoria');
     renderDimensionPeriodoTable('categorias-periodo-table', categoriaGranularitySelect, filtered, 'categoria', 'Categoria', true);
     renderDimensionPeriodoTable('categorias-receita-periodo-table', categoriaGranularitySelect, filtered, 'categoria', 'Categoria', false);
   }
   function renderSubcategoriaPeriodoTable(filtered) {
+    renderSaldoPeriodoTable('subcategorias-saldo-periodo-table', subcategoriaGranularitySelect, filtered, 'subcategoria', 'Subcategoria');
     renderDimensionPeriodoTable('subcategorias-periodo-table', subcategoriaGranularitySelect, filtered, 'subcategoria', 'Subcategoria', true);
     renderDimensionPeriodoTable('subcategorias-receita-periodo-table', subcategoriaGranularitySelect, filtered, 'subcategoria', 'Subcategoria', false);
   }
@@ -1080,8 +1159,8 @@ function clientScript(): string {
     barSelection = null;
     Object.keys(TABLE_DEFS).forEach(initTable);
     [
-      'categorias-periodo-table', 'categorias-receita-periodo-table',
-      'subcategorias-periodo-table', 'subcategorias-receita-periodo-table',
+      'categorias-saldo-periodo-table', 'categorias-periodo-table', 'categorias-receita-periodo-table',
+      'subcategorias-saldo-periodo-table', 'subcategorias-periodo-table', 'subcategorias-receita-periodo-table',
     ].forEach((tableId) => {
       periodoTableSort[tableId] = { key: null, dir: 1 };
     });
@@ -1475,7 +1554,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
     <div id="tab-categorias" class="tab-panel">
       <section class="card">
         <div class="chart-header">
-          <h2>Gastos por categoria ao longo do tempo</h2>
+          <h2>Saldo por categoria ao longo do tempo</h2>
           <select id="categoria-chart-granularity">
             <option value="dia">Por dia</option>
             <option value="mes" selected>Acumulado por mes</option>
@@ -1484,7 +1563,16 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
             <option value="ano">Acumulado por ano</option>
           </select>
         </div>
-        <p class="subtitle" style="margin:0 0 12px;">Clique numa celula ou no nome da categoria para filtrar por aquele recorte (confira o resultado na aba Transacoes quando quiser).</p>
+        <p class="subtitle" style="margin:0 0 12px;">Receita menos despesa por categoria e periodo. Clique numa celula ou no nome da categoria para filtrar por aquele recorte (confira o resultado na aba Transacoes quando quiser).</p>
+        <div class="table-scroll">
+          <table class="data-table" id="categorias-saldo-periodo-table">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="card">
+        <h2>Gastos por categoria ao longo do tempo</h2>
         <div class="table-scroll">
           <table class="data-table" id="categorias-periodo-table">
             <thead></thead>
@@ -1494,7 +1582,6 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
       </section>
       <section class="card">
         <h2>Receita por categoria ao longo do tempo</h2>
-        <p class="subtitle" style="margin:0 0 12px;">Mesma logica da tabela acima, mas somando as receitas.</p>
         <div class="table-scroll">
           <table class="data-table" id="categorias-receita-periodo-table">
             <thead></thead>
@@ -1525,7 +1612,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
     <div id="tab-subcategorias" class="tab-panel">
       <section class="card">
         <div class="chart-header">
-          <h2>Gastos por subcategoria ao longo do tempo</h2>
+          <h2>Saldo por subcategoria ao longo do tempo</h2>
           <select id="subcategoria-chart-granularity">
             <option value="dia">Por dia</option>
             <option value="mes" selected>Acumulado por mes</option>
@@ -1534,7 +1621,16 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
             <option value="ano">Acumulado por ano</option>
           </select>
         </div>
-        <p class="subtitle" style="margin:0 0 12px;">Clique numa celula ou no nome da subcategoria para filtrar por aquele recorte (confira o resultado na aba Transacoes quando quiser).</p>
+        <p class="subtitle" style="margin:0 0 12px;">Receita menos despesa por subcategoria e periodo. Clique numa celula ou no nome da subcategoria para filtrar por aquele recorte (confira o resultado na aba Transacoes quando quiser).</p>
+        <div class="table-scroll">
+          <table class="data-table" id="subcategorias-saldo-periodo-table">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="card">
+        <h2>Gastos por subcategoria ao longo do tempo</h2>
         <div class="table-scroll">
           <table class="data-table" id="subcategorias-periodo-table">
             <thead></thead>
@@ -1544,7 +1640,6 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
       </section>
       <section class="card">
         <h2>Receita por subcategoria ao longo do tempo</h2>
-        <p class="subtitle" style="margin:0 0 12px;">Mesma logica da tabela acima, mas somando as receitas.</p>
         <div class="table-scroll">
           <table class="data-table" id="subcategorias-receita-periodo-table">
             <thead></thead>
