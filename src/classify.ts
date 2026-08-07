@@ -57,7 +57,7 @@ function prefixKey(normalizedDescription: string): string {
 // Chave "solta" pra comparar categoria/subcategoria ignorando acento,
 // maiusculas e pontuacao (a taxonomia do usuario ja apareceu tanto em
 // "saúde e bem-estar" quanto "SAUDE E BEM ESTAR" em revisoes diferentes).
-function fold(value: string): string {
+export function fold(value: string): string {
   return value
     .normalize('NFKD')
     .replace(/[\u0300-\u036f]/g, '')

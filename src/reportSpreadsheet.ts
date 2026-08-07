@@ -109,6 +109,37 @@ export async function writeSpreadsheet(report: Report, filePath: string): Promis
   categorias.getRow(1).font = { bold: true };
   enableAutoFilter(categorias);
 
+  // Aba dedicada a gestao de emprestimos — so conta o que tem o flag
+  // isEmprestimo (categoria "Emprestimos"), que ja vem sempre invalido dos
+  // totais gerais (ver applyEmprestimoFlag em aggregate.ts), entao nao
+  // aparece em nenhuma outra aba/soma do relatorio.
+  const emprestimosTx = report.transactions.filter((t) => t.isEmprestimo);
+  const emprestimoSubcatMap = new Map<string, { gasto: number; receita: number; count: number }>();
+  for (const t of emprestimosTx) {
+    const entry = emprestimoSubcatMap.get(t.subcategoria) ?? { gasto: 0, receita: 0, count: 0 };
+    if (t.isExpense) entry.gasto += t.amount;
+    else entry.receita += t.amount;
+    entry.count += 1;
+    emprestimoSubcatMap.set(t.subcategoria, entry);
+  }
+  const emprestimos = workbook.addWorksheet('Emprestimos');
+  emprestimos.columns = [
+    { header: 'Subcategoria', key: 'subcategoria', width: 28 },
+    { header: 'Total gasto', key: 'gasto', width: 16 },
+    { header: 'Total recebido', key: 'receita', width: 16 },
+    { header: 'Saldo', key: 'saldo', width: 16 },
+    { header: 'Qtde. transacoes', key: 'count', width: 16 },
+  ];
+  const sortedEmprestimoEntries = [...emprestimoSubcatMap.entries()].sort(
+    (a, b) => b[1].receita - b[1].gasto - (a[1].receita - a[1].gasto)
+  );
+  for (const [subcategoria, entry] of sortedEmprestimoEntries) {
+    emprestimos.addRow({ subcategoria, gasto: entry.gasto, receita: entry.receita, saldo: entry.receita - entry.gasto, count: entry.count });
+  }
+  ['gasto', 'receita', 'saldo'].forEach((key) => (emprestimos.getColumn(key).numFmt = BRL));
+  emprestimos.getRow(1).font = { bold: true };
+  enableAutoFilter(emprestimos);
+
   const maioresGastos = workbook.addWorksheet('Maiores Gastos');
   maioresGastos.columns = [
     { header: 'Descricao', key: 'description', width: 40 },
@@ -147,6 +178,7 @@ export async function writeSpreadsheet(report: Report, filePath: string): Promis
     { header: 'Subcategoria', key: 'subcategoria', width: 26 },
     { header: 'Pendente de revisao?', key: 'pendente', width: 18 },
     { header: 'Valido?', key: 'valido', width: 10 },
+    { header: 'Emprestimo?', key: 'emprestimo', width: 12 },
     { header: 'Motivo (se invalido)', key: 'motivoInvalido', width: 40 },
     { header: 'Categoria do banco', key: 'bankCategory', width: 22 },
     { header: 'Descricao original do banco', key: 'descriptionRaw', width: 34 },
@@ -197,6 +229,7 @@ export async function writeSpreadsheet(report: Report, filePath: string): Promis
       subcategoria: t.subcategoria,
       pendente: t.pendente ? 'Sim' : '',
       valido: t.valido ? 'Sim' : 'Nao',
+      emprestimo: t.isEmprestimo ? 'Sim' : 'Nao',
       motivoInvalido: t.motivoInvalido,
       bankCategory: t.bankCategory,
       descriptionRaw: t.descriptionRaw,

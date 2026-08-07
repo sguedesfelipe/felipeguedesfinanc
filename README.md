@@ -94,7 +94,7 @@ adicionadas manualmente (ex.: extrato do proprio banco), o Pluggy nao as tem.
 Os arquivos sao gravados em `reports/<data-de-hoje>/`:
 
 - `relatorio-gastos.html` — dashboard com abas: Resumo, Categorias,
-  Subcategorias, Transacoes e Pendencias de Classificacao.
+  Subcategorias, Emprestimos, Transacoes e Pendencias de Classificacao.
   - Barra de filtros no topo, valida para todas as abas e graficos:
     **periodo** (De/Ate), **Categoria**, **Subcategoria** (so mostra as da
     categoria escolhida), **Valido**, **Conta**, **Status (banco)** e
@@ -276,6 +276,30 @@ lista de descricoes que o usuario ja marcou como invalidas manualmente (ex.:
 transferencias entre contas proprias, tipo "Pix enviado FELIPE ..." pro
 proprio nome) — essas continuam marcadas `Valido? = Nao` sempre que a mesma
 descricao aparecer de novo em relatorios futuros, ate o usuario reverter.
+
+## Coluna "Emprestimo?" e a aba Emprestimos
+
+Emprestimo (dinheiro que entra ou sai entre voce e outra pessoa/instituicao)
+nao e gasto nem receita "de verdade", entao ele tem tratamento proprio:
+
+- Toda transacao com **Categoria = Emprestimos** (em qualquer grafia — a
+  comparacao ignora acento/maiuscula) recebe automaticamente `Emprestimo? =
+  Sim` e vira **invalida** (`Valido? = Nao`), do mesmo jeito que pagamento de
+  fatura de cartao — pra nao entrar duas vezes nos totais gerais (Resumo,
+  Categorias, Subcategorias, Resumo Mensal). Isso vale tanto para o
+  historico (recalculado a cada vez que o relatorio roda) quanto para
+  edicoes que voce fizer na hora: mudar a Categoria de uma transacao pra
+  "Emprestimos" direto no dashboard desmarca o Valido dela automaticamente
+  (o inverso nao acontece sozinho — reverter a invalidacao e sempre manual).
+- A aba **Emprestimos** e dedicada a essas transacoes: mesmo formato das
+  abas Categorias/Subcategorias (Saldo/Gastos/Recebimentos ao longo do
+  tempo, agrupados por Subcategoria, mais duas tabelas simples), mas conta
+  **so** quem tem o flag `Emprestimo? = Sim` — ignora o filtro "Valido" do
+  topo (essas transacoes sao sempre invalidas pra tudo mais, entao ignorar
+  esse filtro e o que faz a aba mostrar algo).
+- Na planilha, a mesma logica aparece como a coluna `Emprestimo?` na aba
+  Transacoes e uma aba **Emprestimos** com o resumo por subcategoria (total
+  gasto, total recebido, saldo e quantidade).
 
 ## Estrutura
 

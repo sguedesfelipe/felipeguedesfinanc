@@ -1,6 +1,6 @@
 import { Transaction, TransactionPaymentParticipantDocument } from 'pluggy-sdk';
 import { AccountTransactions } from './fetchData.js';
-import { classifyTransaction, checkKnownInvalid, normalizeKey, REVISADO_ATE, Confianca } from './classify.js';
+import { classifyTransaction, checkKnownInvalid, normalizeKey, REVISADO_ATE, Confianca, fold } from './classify.js';
 
 function formatParticipant(name: string | null | undefined, doc: TransactionPaymentParticipantDocument | undefined): string {
   const parts = [name?.trim()].filter(Boolean) as string[];
@@ -153,6 +153,7 @@ export interface CategorizedTransaction extends TransactionExtra {
   motivoClassificacao: string;
   valido: boolean;
   motivoInvalido: string;
+  isEmprestimo: boolean;
   amount: number;
   isExpense: boolean;
 }
@@ -260,6 +261,22 @@ function enforceInstallmentConsistency(transactions: CategorizedTransaction[]): 
   }
 }
 
+// Emprestimo (dinheiro que entra/sai entre o usuario e outra pessoa/
+// instituicao) nao e gasto nem receita "de verdade" — marcamos o flag e
+// invalidamos automaticamente pra nao entrar nos totais gerais, do mesmo
+// jeito que pagamento de fatura de cartao. So compara a categoria (fold()
+// pra nao depender de acento/maiuscula), nunca a subcategoria — a aba
+// Emprestimos usa esse flag pra mostrar so isso, independente do Valido.
+function applyEmprestimoFlag(transactions: CategorizedTransaction[]): void {
+  for (const t of transactions) {
+    t.isEmprestimo = fold(t.categoria) === 'emprestimos';
+    if (t.isEmprestimo && t.valido) {
+      t.valido = false;
+      t.motivoInvalido = 'Classificado como Emprestimos — nao conta nos totais gerais (veja a aba Emprestimos).';
+    }
+  }
+}
+
 // Quando a fatura do cartao e paga pela mesma conta corrente conectada, o
 // Pluggy traz o mesmo valor duas vezes: como "Credit card payment" (credito)
 // na conta do cartao, e como um debito de boleto/pix na conta corrente. Os
@@ -323,6 +340,7 @@ export function buildReport(data: AccountTransactions[]): Report {
         motivoClassificacao,
         valido: !knownInvalidReason,
         motivoInvalido: knownInvalidReason ?? '',
+        isEmprestimo: false, // recalculado por applyEmprestimoFlag logo abaixo, depois que categoria fica definitiva
         amount,
         isExpense,
       });
@@ -330,6 +348,7 @@ export function buildReport(data: AccountTransactions[]): Report {
   }
 
   enforceInstallmentConsistency(transactions);
+  applyEmprestimoFlag(transactions);
   flagCardPaymentDuplicates(transactions);
   transactions.sort((a, b) => b.date.getTime() - a.date.getTime());
 

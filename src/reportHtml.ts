@@ -54,6 +54,7 @@ interface ClientTransaction {
   motivo: string;
   valido: boolean;
   motivoInvalido: string;
+  isEmprestimo: boolean;
   isExpense: boolean;
   amount: number;
 }
@@ -112,6 +113,7 @@ function toClientTransactions(report: Report): ClientTransaction[] {
     motivo: t.motivoClassificacao,
     valido: t.valido,
     motivoInvalido: t.motivoInvalido,
+    isEmprestimo: t.isEmprestimo,
     isExpense: t.isExpense,
     amount: t.amount,
   }));
@@ -206,14 +208,41 @@ function clientScript(): string {
       }
     }
   }
+
+  // --- flag de Emprestimo: sempre derivado da categoria atual (fold()
+  // ignora acento/maiuscula, igual ao mesmo calculo do lado do servidor em
+  // aggregate.ts). Roda de novo aqui pra ficar certo mesmo apos restaurar
+  // edicoes do localStorage ou sincronizar parcelas com a lider. ---
+  function foldClient(s) {
+    let result = '';
+    for (const ch of String(s || '').normalize('NFKD')) {
+      const code = ch.codePointAt(0);
+      if (code >= 0x0300 && code <= 0x036f) continue; // marca de acento combinante — descarta
+      result += ch;
+    }
+    return result.toUpperCase().trim();
+  }
+  function recomputeEmprestimoFlag(t) {
+    t.isEmprestimo = foldClient(t.categoria) === 'EMPRESTIMOS';
+  }
+  state.forEach(recomputeEmprestimoFlag);
+
   function propagateInstallmentGroup(t) {
     if (!t.installmentGroupKey || t.installmentLocked) return;
     const group = installmentGroups.get(t.installmentGroupKey);
     if (!group || group.length < 2) return;
+    let anyBecameEmprestimo = false;
     for (const sibling of group) {
       if (sibling === t) continue;
       sibling.categoria = t.categoria;
       sibling.subcategoria = t.subcategoria;
+      const wasEmprestimo = sibling.isEmprestimo;
+      recomputeEmprestimoFlag(sibling);
+      if (sibling.isEmprestimo && !wasEmprestimo && sibling.valido) {
+        sibling.valido = false;
+        document.querySelectorAll('.valido-input[data-id="' + sibling.id + '"]').forEach((cb) => { cb.checked = false; });
+        anyBecameEmprestimo = true;
+      }
       saveEdit(sibling);
       ['categoria', 'subcategoria'].forEach((field) => {
         document.querySelectorAll('tr[data-row-id="' + sibling.id + '"] td[data-col="' + field + '"]').forEach((cell) => {
@@ -221,6 +250,7 @@ function clientScript(): string {
         });
       });
     }
+    if (anyBecameEmprestimo) refreshAfterValidoChange();
   }
 
   const savedNotice = document.getElementById('saved-edits-notice');
@@ -294,7 +324,10 @@ function clientScript(): string {
   });
   [subcategoriaFilter, ...SIMPLE_DIMENSION_FILTERS].forEach((el) => el.addEventListener('change', renderAll));
 
-  function getBaseFiltered() {
+  // skipValido ignora o filtro "Valido" do topo — usado so pela aba
+  // Emprestimos, cujas transacoes sao sempre invalidas por definicao (ver
+  // applyEmprestimoFlag em aggregate.ts); sem isso ela nunca mostraria nada.
+  function getBaseFiltered(skipValido) {
     const from = fromInput.value || minDate;
     const to = toInput.value || maxDate;
     const cat = categoriaFilter.value;
@@ -307,8 +340,10 @@ function clientScript(): string {
       if (t.dataConsideradaISO < from || t.dataConsideradaISO > to) return false;
       if (cat && t.categoria !== cat) return false;
       if (sub && t.subcategoria !== sub) return false;
-      if (validoSel === 'sim' && !t.valido) return false;
-      if (validoSel === 'nao' && t.valido) return false;
+      if (!skipValido) {
+        if (validoSel === 'sim' && !t.valido) return false;
+        if (validoSel === 'nao' && t.valido) return false;
+      }
       if (conta && t.account !== conta) return false;
       if (status && t.statusBanco !== status) return false;
       if (tipo === 'gasto' && !t.isExpense) return false;
@@ -329,6 +364,12 @@ function clientScript(): string {
   }
   function getFiltered() {
     return applyBarSelection(getBaseFiltered());
+  }
+  // Fonte de dados da aba Emprestimos: os mesmos filtros do topo (periodo,
+  // conta, status, tipo, selecao de barras), mas ignorando "Valido" e
+  // restrito ao flag isEmprestimo — essas transacoes contam so aqui.
+  function getEmprestimoFiltered() {
+    return applyBarSelection(getBaseFiltered(true)).filter((t) => t.isEmprestimo);
   }
   function toggleBarSelection(key, granularity, multi) {
     if (!barSelection || barSelection.granularity !== granularity) {
@@ -488,10 +529,10 @@ function clientScript(): string {
     return [...map.values()].sort((a, b) => a.key.localeCompare(b.key));
   }
 
-  function computeByDimension(filtered, dimensionField, isExpense) {
+  function computeByDimension(filtered, dimensionField, isExpense, requireValido) {
     const map = new Map();
     for (const t of filtered) {
-      if (!t.valido || t.isExpense !== isExpense) continue;
+      if ((requireValido && !t.valido) || t.isExpense !== isExpense) continue;
       const key = t[dimensionField] || '(sem categoria)';
       const entry = map.get(key) || { category: key, total: 0, count: 0 };
       entry.total += t.amount;
@@ -600,12 +641,12 @@ function clientScript(): string {
   // quanto maior o valor NA PROPRIA LINHA, pra nao competir entre linhas de
   // escalas diferentes) so como pista visual. Clicar numa celula ou no nome
   // da linha filtra (a mesma funcao serve pra categoria e subcategoria). ---
-  function computeDimensionPeriodTable(filtered, granularity, dimensionField, isExpense) {
+  function computeDimensionPeriodTable(filtered, granularity, dimensionField, isExpense, requireValido) {
     const cellMap = new Map(); // bucketKey -> Map(valor da dimensao -> total)
     const totals = new Map();
     const bucketSet = new Set();
     for (const t of filtered) {
-      if (!t.valido || t.isExpense !== isExpense) continue;
+      if ((requireValido && !t.valido) || t.isExpense !== isExpense) continue;
       const dim = t[dimensionField] || '(sem categoria)';
       const key = bucketKey(t, granularity);
       bucketSet.add(key);
@@ -622,12 +663,12 @@ function clientScript(): string {
   // Igual a computeDimensionPeriodTable, mas cada celula guarda {income,
   // expense} em vez de um total so — o saldo (income - expense) pode ser
   // negativo, entao precisa dos dois lados pra calcular na hora de renderizar.
-  function computeDimensionSaldoPeriodTable(filtered, granularity, dimensionField) {
+  function computeDimensionSaldoPeriodTable(filtered, granularity, dimensionField, requireValido) {
     const cellMap = new Map(); // bucketKey -> Map(valor da dimensao -> {income, expense})
     const totals = new Map();
     const bucketSet = new Set();
     for (const t of filtered) {
-      if (!t.valido) continue;
+      if (requireValido && !t.valido) continue;
       const dim = t[dimensionField] || '(sem categoria)';
       const key = bucketKey(t, granularity);
       bucketSet.add(key);
@@ -678,9 +719,9 @@ function clientScript(): string {
       '<th class="num">' + thLabel('total', 'Total') + '</th></tr>';
   }
 
-  function renderDimensionPeriodoTable(tableId, granularitySelectEl, filtered, dimensionField, columnLabel, isExpense) {
+  function renderDimensionPeriodoTable(tableId, granularitySelectEl, filtered, dimensionField, columnLabel, isExpense, requireValido) {
     const granularity = granularitySelectEl.value;
-    const { buckets, dims: unsortedDims, cellMap, totals } = computeDimensionPeriodTable(filtered, granularity, dimensionField, isExpense);
+    const { buckets, dims: unsortedDims, cellMap, totals } = computeDimensionPeriodTable(filtered, granularity, dimensionField, isExpense, requireValido);
     const sortState = getPeriodoSort(tableId);
     const dims = sortPeriodoDims(unsortedDims, cellMap, totals, sortState);
     const headerHtml = buildPeriodoHeaderHtml(tableId, columnLabel, buckets, granularity, sortState);
@@ -722,9 +763,9 @@ function clientScript(): string {
   // e receita (sempre positivas), aqui o valor pode ser negativo — o realce
   // vira divergente (verde pra saldo positivo, ambar pra negativo, mesma
   // cor de "Saldo no periodo" no card de KPIs) em vez da escala azul unica.
-  function renderSaldoPeriodoTable(tableId, granularitySelectEl, filtered, dimensionField, columnLabel) {
+  function renderSaldoPeriodoTable(tableId, granularitySelectEl, filtered, dimensionField, columnLabel, requireValido) {
     const granularity = granularitySelectEl.value;
-    const { buckets, dims: unsortedDims, cellMap, totals } = computeDimensionSaldoPeriodTable(filtered, granularity, dimensionField);
+    const { buckets, dims: unsortedDims, cellMap, totals } = computeDimensionSaldoPeriodTable(filtered, granularity, dimensionField, requireValido);
     const sortState = getPeriodoSort(tableId);
     const saldoOf = (cell) => (cell ? cell.income - cell.expense : 0);
     const dims = sortPeriodoDims(unsortedDims, cellMap, totals, sortState, saldoOf);
@@ -765,18 +806,29 @@ function clientScript(): string {
 
   const categoriaGranularitySelect = document.getElementById('categoria-chart-granularity');
   const subcategoriaGranularitySelect = document.getElementById('subcategoria-chart-granularity');
+  const emprestimoGranularitySelect = document.getElementById('emprestimo-chart-granularity');
   function renderCategoriaPeriodoTable(filtered) {
-    renderSaldoPeriodoTable('categorias-saldo-periodo-table', categoriaGranularitySelect, filtered, 'categoria', 'Categoria');
-    renderDimensionPeriodoTable('categorias-periodo-table', categoriaGranularitySelect, filtered, 'categoria', 'Categoria', true);
-    renderDimensionPeriodoTable('categorias-receita-periodo-table', categoriaGranularitySelect, filtered, 'categoria', 'Categoria', false);
+    renderSaldoPeriodoTable('categorias-saldo-periodo-table', categoriaGranularitySelect, filtered, 'categoria', 'Categoria', true);
+    renderDimensionPeriodoTable('categorias-periodo-table', categoriaGranularitySelect, filtered, 'categoria', 'Categoria', true, true);
+    renderDimensionPeriodoTable('categorias-receita-periodo-table', categoriaGranularitySelect, filtered, 'categoria', 'Categoria', false, true);
   }
   function renderSubcategoriaPeriodoTable(filtered) {
-    renderSaldoPeriodoTable('subcategorias-saldo-periodo-table', subcategoriaGranularitySelect, filtered, 'subcategoria', 'Subcategoria');
-    renderDimensionPeriodoTable('subcategorias-periodo-table', subcategoriaGranularitySelect, filtered, 'subcategoria', 'Subcategoria', true);
-    renderDimensionPeriodoTable('subcategorias-receita-periodo-table', subcategoriaGranularitySelect, filtered, 'subcategoria', 'Subcategoria', false);
+    renderSaldoPeriodoTable('subcategorias-saldo-periodo-table', subcategoriaGranularitySelect, filtered, 'subcategoria', 'Subcategoria', true);
+    renderDimensionPeriodoTable('subcategorias-periodo-table', subcategoriaGranularitySelect, filtered, 'subcategoria', 'Subcategoria', true, true);
+    renderDimensionPeriodoTable('subcategorias-receita-periodo-table', subcategoriaGranularitySelect, filtered, 'subcategoria', 'Subcategoria', false, true);
+  }
+  // Aba Emprestimos: mesma logica das duas acima, mas agrupada por
+  // subcategoria (categoria e sempre "Emprestimos" aqui, entao agrupar por
+  // ela nao ajudaria) e sem exigir Valido — essas transacoes sao sempre
+  // invalidas pra nao contar nos totais gerais.
+  function renderEmprestimoPeriodoTable(filtered) {
+    renderSaldoPeriodoTable('emprestimos-saldo-periodo-table', emprestimoGranularitySelect, filtered, 'subcategoria', 'Subcategoria', false);
+    renderDimensionPeriodoTable('emprestimos-periodo-table', emprestimoGranularitySelect, filtered, 'subcategoria', 'Subcategoria', true, false);
+    renderDimensionPeriodoTable('emprestimos-receita-periodo-table', emprestimoGranularitySelect, filtered, 'subcategoria', 'Subcategoria', false, false);
   }
   categoriaGranularitySelect.addEventListener('change', () => renderCategoriaPeriodoTable(getFiltered()));
   subcategoriaGranularitySelect.addEventListener('change', () => renderSubcategoriaPeriodoTable(getFiltered()));
+  emprestimoGranularitySelect.addEventListener('change', () => renderEmprestimoPeriodoTable(getEmprestimoFiltered()));
 
   // --- tabelas genericas: cabecalho clicavel pra ordenar + filtro por coluna ---
   const TX_COLUMNS = [
@@ -790,6 +842,7 @@ function clientScript(): string {
     { key: 'account', label: 'Conta', value: (t) => t.account },
     { key: 'pendente', label: 'Pendente', value: (t) => (t.pendente ? 'Sim' : 'Nao'), render: (t) => (t.pendente ? '<span class="badge-pend">pendente</span>' : '') },
     { key: 'valido', label: 'Valido?', value: (t) => (t.valido ? 'Sim' : 'Nao'), render: (t) => validoCheckbox(t) },
+    { key: 'isEmprestimo', label: 'Emprestimo?', value: (t) => (t.isEmprestimo ? 'Sim' : 'Nao') },
     { key: 'motivoInvalido', label: 'Motivo (invalido)', value: (t) => t.motivoInvalido },
     { key: 'bankCategory', label: 'Categoria do banco', value: (t) => t.bankCategory },
     { key: 'descriptionRaw', label: 'Descricao original do banco', value: (t) => t.descriptionRaw },
@@ -884,10 +937,12 @@ function clientScript(): string {
   const TABLE_DEFS = {
     'transacoes-table': { columns: TX_COLUMNS, rows: () => getFiltered(), rowId: (t) => t.id },
     'pendencias-table': { columns: PEND_COLUMNS, rows: () => getFiltered().filter((t) => t.pendente && t.valido), rowId: (t) => t.id },
-    'categorias-table': { columns: CAT_COLUMNS, rows: () => computeByDimension(getFiltered(), 'categoria', true) },
-    'categorias-receita-table': { columns: RECEITA_CAT_COLUMNS, rows: () => computeByDimension(getFiltered(), 'categoria', false) },
-    'subcategorias-table': { columns: SUBCAT_COLUMNS, rows: () => computeByDimension(getFiltered(), 'subcategoria', true) },
-    'subcategorias-receita-table': { columns: RECEITA_SUBCAT_COLUMNS, rows: () => computeByDimension(getFiltered(), 'subcategoria', false) },
+    'categorias-table': { columns: CAT_COLUMNS, rows: () => computeByDimension(getFiltered(), 'categoria', true, true) },
+    'categorias-receita-table': { columns: RECEITA_CAT_COLUMNS, rows: () => computeByDimension(getFiltered(), 'categoria', false, true) },
+    'subcategorias-table': { columns: SUBCAT_COLUMNS, rows: () => computeByDimension(getFiltered(), 'subcategoria', true, true) },
+    'subcategorias-receita-table': { columns: RECEITA_SUBCAT_COLUMNS, rows: () => computeByDimension(getFiltered(), 'subcategoria', false, true) },
+    'emprestimos-table': { columns: SUBCAT_COLUMNS, rows: () => computeByDimension(getEmprestimoFiltered(), 'subcategoria', true, false) },
+    'emprestimos-receita-table': { columns: RECEITA_SUBCAT_COLUMNS, rows: () => computeByDimension(getEmprestimoFiltered(), 'subcategoria', false, false) },
     'merchants-table': { columns: MERCHANT_COLUMNS, rows: () => computeMerchants(getFiltered()) },
     'accounts-table': { columns: ACCOUNT_COLUMNS, rows: () => computeAccounts(getFiltered()) },
   };
@@ -1022,7 +1077,8 @@ function clientScript(): string {
       if (sortState.key === key) sortState.dir *= -1;
       else { sortState.key = key; sortState.dir = 1; }
       if (tableId.startsWith('categorias-')) renderCategoriaPeriodoTable(getFiltered());
-      else renderSubcategoriaPeriodoTable(getFiltered());
+      else if (tableId.startsWith('subcategorias-')) renderSubcategoriaPeriodoTable(getFiltered());
+      else renderEmprestimoPeriodoTable(getEmprestimoFiltered());
       return;
     }
 
@@ -1058,8 +1114,11 @@ function clientScript(): string {
       renderTable('categorias-receita-table');
       renderTable('subcategorias-table');
       renderTable('subcategorias-receita-table');
+      renderTable('emprestimos-table');
+      renderTable('emprestimos-receita-table');
       renderCategoriaPeriodoTable(getFiltered());
       renderSubcategoriaPeriodoTable(getFiltered());
+      renderEmprestimoPeriodoTable(getEmprestimoFiltered());
     }
   });
 
@@ -1082,10 +1141,24 @@ function clientScript(): string {
     }
     // Propagar pra parcelas-irmas so ao sair do campo (nao a cada tecla) —
     // evita reescrever o localStorage e varrer o DOM das outras linhas a
-    // cada letra digitada na classificacao da parcela lider.
+    // cada letra digitada na classificacao da parcela lider. Tambem e onde
+    // conferimos se a categoria virou "Emprestimos": se virou, invalida a
+    // transacao automaticamente (empréstimo não é gasto/receita de verdade).
     if (el.classList && el.classList.contains('cls-input')) {
       const t = findTransaction(el.dataset.id);
-      if (t) propagateInstallmentGroup(t);
+      if (t) {
+        if (el.dataset.field === 'categoria') {
+          const wasEmprestimo = t.isEmprestimo;
+          recomputeEmprestimoFlag(t);
+          if (t.isEmprestimo && !wasEmprestimo && t.valido) {
+            t.valido = false;
+            document.querySelectorAll('.valido-input[data-id="' + t.id + '"]').forEach((cb) => { cb.checked = false; });
+            saveEdit(t);
+            refreshAfterValidoChange();
+          }
+        }
+        propagateInstallmentGroup(t);
+      }
       return;
     }
     if (!el.classList || !el.classList.contains('valido-input')) return;
@@ -1096,14 +1169,7 @@ function clientScript(): string {
     document.querySelectorAll('.valido-input[data-id="' + el.dataset.id + '"]').forEach((other) => {
       if (other !== el) other.checked = el.checked;
     });
-    renderResumo(getBaseFiltered());
-    renderTable('categorias-table');
-    renderTable('categorias-receita-table');
-    renderTable('subcategorias-table');
-    renderTable('subcategorias-receita-table');
-    renderTable('merchants-table');
-    renderTable('accounts-table');
-    renderTable('pendencias-table');
+    refreshAfterValidoChange();
   });
 
   // --- exportar aba Transacoes para .csv (abre direto no Excel/Sheets) ---
@@ -1141,7 +1207,27 @@ function clientScript(): string {
 
   function renderAll() {
     renderResumo(getBaseFiltered());
+    renderEmprestimoPeriodoTable(getEmprestimoFiltered());
     Object.keys(TABLE_DEFS).forEach((tableId) => renderTable(tableId));
+  }
+
+  // Reaproveitado pelo toggle manual de "Valido" e pela auto-invalidacao ao
+  // classificar algo como Emprestimos — os dois mudam o que entra nos
+  // totais, entao precisam do mesmo conjunto de tabelas atualizado.
+  function refreshAfterValidoChange() {
+    renderResumo(getBaseFiltered());
+    renderEmprestimoPeriodoTable(getEmprestimoFiltered());
+    renderCategoriaPeriodoTable(getFiltered());
+    renderSubcategoriaPeriodoTable(getFiltered());
+    renderTable('categorias-table');
+    renderTable('categorias-receita-table');
+    renderTable('subcategorias-table');
+    renderTable('subcategorias-receita-table');
+    renderTable('emprestimos-table');
+    renderTable('emprestimos-receita-table');
+    renderTable('merchants-table');
+    renderTable('accounts-table');
+    renderTable('pendencias-table');
   }
 
   document.getElementById('filter-apply').addEventListener('click', renderAll);
@@ -1161,6 +1247,7 @@ function clientScript(): string {
     [
       'categorias-saldo-periodo-table', 'categorias-periodo-table', 'categorias-receita-periodo-table',
       'subcategorias-saldo-periodo-table', 'subcategorias-periodo-table', 'subcategorias-receita-periodo-table',
+      'emprestimos-saldo-periodo-table', 'emprestimos-periodo-table', 'emprestimos-receita-periodo-table',
     ].forEach((tableId) => {
       periodoTableSort[tableId] = { key: null, dir: 1 };
     });
@@ -1479,6 +1566,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
       <button class="tab-btn active" data-tab="resumo">Resumo</button>
       <button class="tab-btn" data-tab="categorias">Categorias</button>
       <button class="tab-btn" data-tab="subcategorias">Subcategorias</button>
+      <button class="tab-btn" data-tab="emprestimos">Emprestimos</button>
       <button class="tab-btn" data-tab="transacoes">Transacoes</button>
       <button class="tab-btn" data-tab="pendencias">Pendencias de Classificacao (<span id="pend-tab-count">0</span>)</button>
     </div>
@@ -1660,6 +1748,64 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
         <h2>Receita por subcategoria</h2>
         <div class="table-scroll">
           <table class="data-table" id="subcategorias-receita-table">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <div id="tab-emprestimos" class="tab-panel">
+      <section class="card">
+        <div class="chart-header">
+          <h2>Saldo de Emprestimos ao longo do tempo</h2>
+          <select id="emprestimo-chart-granularity">
+            <option value="dia">Por dia</option>
+            <option value="mes" selected>Acumulado por mes</option>
+            <option value="trimestre">Acumulado por trimestre</option>
+            <option value="semestre">Acumulado por semestre</option>
+            <option value="ano">Acumulado por ano</option>
+          </select>
+        </div>
+        <p class="subtitle" style="margin:0 0 12px;">Aba dedicada a gestao de emprestimos — so conta o que foi classificado como categoria "Emprestimos" (marcado automaticamente como invalido nas demais abas, pra nao entrar nos totais gerais). Agrupado por subcategoria. Clique numa celula ou no nome da subcategoria para filtrar por aquele recorte (confira o resultado na aba Transacoes quando quiser).</p>
+        <div class="table-scroll">
+          <table class="data-table" id="emprestimos-saldo-periodo-table">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="card">
+        <h2>Gastos de Emprestimos ao longo do tempo</h2>
+        <div class="table-scroll">
+          <table class="data-table" id="emprestimos-periodo-table">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="card">
+        <h2>Recebimentos de Emprestimos ao longo do tempo</h2>
+        <div class="table-scroll">
+          <table class="data-table" id="emprestimos-receita-periodo-table">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="card">
+        <h2>Gastos de Emprestimos</h2>
+        <div class="table-scroll">
+          <table class="data-table" id="emprestimos-table">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="card">
+        <h2>Recebimentos de Emprestimos</h2>
+        <div class="table-scroll">
+          <table class="data-table" id="emprestimos-receita-table">
             <thead></thead>
             <tbody></tbody>
           </table>
