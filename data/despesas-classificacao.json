@@ -119,19 +119,22 @@
     "PAGAMENTO DE BOLETO ITAU UNIBANCO HOLDING S.A.": "Classificado como invalido pelo usuario na revisao manual.",
     "PAGAMENTO RECEBIDO": "Classificado como invalido pelo usuario na revisao manual.",
     "PIX ENVIADO EHS NEGOCIOS": "Classificado como invalido pelo usuario na revisao manual.",
+    "PIX ENVIADO EHS VEICULOS": "Classificado como invalido pelo usuario na revisao manual.",
     "PIX ENVIADO FELIPE HENRIQUE SILVA GUEDES": "Classificado como invalido pelo usuario na revisao manual.",
     "PIX ENVIADO LOCALIZA FLEET S.A.": "Classificado como invalido pelo usuario na revisao manual.",
+    "PIX ENVIADO LUISA LUGAO ACESSORIOS": "Classificado como invalido pelo usuario na revisao manual.",
     "PIX ENVIADO RENATA SILVA GUEDES": "Classificado como invalido pelo usuario na revisao manual.",
     "PIX RECEBIDO EHS NEGOCIOS LTDA": "Classificado como invalido pelo usuario na revisao manual.",
     "PIX RECEBIDO FELIPE GUEDES": "Classificado como invalido pelo usuario na revisao manual.",
     "PIX RECEBIDO FELIPE HENRIQUE SILVA GUEDES": "Classificado como invalido pelo usuario na revisao manual.",
+    "PIX RECEBIDO LUÍSA LUGÃO GUIMARÃES GUEDES": "Classificado como invalido pelo usuario na revisao manual.",
     "PIX RECEBIDO RENATA SILVA GUEDES": "Classificado como invalido pelo usuario na revisao manual.",
     "PIX RECEBIDO SIMONE APARECIDA SILVA GUEDES": "Classificado como invalido pelo usuario na revisao manual.",
     "TED RECEBIDA BR CONSORCIOS ADMINISTRADORA DE CONSORCI": "Classificado como invalido pelo usuario na revisao manual.",
     "TED RECEBIDA FELIPE HENRIQUE SILVA GUEDES": "Classificado como invalido pelo usuario na revisao manual.",
     "TED RECEBIDA TED 104.0000CAIXA ECON F": "Classificado como invalido pelo usuario na revisao manual."
   },
-  "revisadoAte": "2026-08-03",
+  "revisadoAte": "2026-08-06",
   "rulesFull": {
     "00153 SH BOULEVARD BH": [
       "COMPRAS E LAZER",
@@ -4238,6 +4241,11 @@
       "ELETRONICOS",
       3
     ],
+    "PH2 GRAFICABELO HORIZONTBR": [
+      "EMPRESTIMOS",
+      "EMPRESTIMOS PESSOAIS",
+      9999
+    ],
     "PICCO RESTAURANTE LTDA": [
       "COMPRAS E LAZER",
       "RESTAURANTE OU DELIVERY",
@@ -4628,6 +4636,11 @@
       "JOGOS E ENTRETENIMENTO",
       9999
     ],
+    "PIX ENVIADO PH2 GRAFICA": [
+      "EMPRESTIMOS",
+      "EMPRESTIMOS PESSOAIS",
+      9999
+    ],
     "PIX ENVIADO PIX TRANSF DANIEL": [
       "COMPRAS E LAZER",
       "PRESENTES",
@@ -4646,6 +4659,11 @@
     "PIX ENVIADO RAFAEL BATISTA": [
       "COMPRAS E LAZER",
       "FESTAS E ENCONTROS",
+      9999
+    ],
+    "PIX ENVIADO RAFAEL LEONCIO CARDOSO DE ARAUJO": [
+      "OUTROS",
+      "OUTROS",
       9999
     ],
     "PIX ENVIADO RAFAEL SUTERIO RABELO": [
@@ -5417,6 +5435,11 @@
       "EMPRESTIMOS",
       "EMPRESTIMOS PESSOAIS",
       20
+    ],
+    "POSTO AEROPORTOBELO HORIZONTBR": [
+      "TRANSPORTE",
+      "COMBUSTIVEL",
+      9999
     ],
     "POSTO CAMILA": [
       "TRANSPORTE",
