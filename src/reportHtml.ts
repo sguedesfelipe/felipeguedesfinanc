@@ -371,6 +371,13 @@ function clientScript(): string {
   function getEmprestimoFiltered() {
     return applyBarSelection(getBaseFiltered(true)).filter((t) => t.isEmprestimo);
   }
+  // Fonte de dados da aba Invalidos: mesma ideia, mas pra qualquer transacao
+  // invalida (fatura de cartao duplicada, invalidada manualmente na
+  // planilha, emprestimo, etc.) — nao so a categoria "Emprestimos". Da pra
+  // gerir tudo que hoje fica de fora dos totais gerais num lugar so.
+  function getInvalidoFiltered() {
+    return applyBarSelection(getBaseFiltered(true)).filter((t) => !t.valido);
+  }
   function toggleBarSelection(key, granularity, multi) {
     if (!barSelection || barSelection.granularity !== granularity) {
       barSelection = { granularity, keys: new Set([key]) };
@@ -807,6 +814,7 @@ function clientScript(): string {
   const categoriaGranularitySelect = document.getElementById('categoria-chart-granularity');
   const subcategoriaGranularitySelect = document.getElementById('subcategoria-chart-granularity');
   const emprestimoGranularitySelect = document.getElementById('emprestimo-chart-granularity');
+  const invalidoGranularitySelect = document.getElementById('invalido-chart-granularity');
   function renderCategoriaPeriodoTable(filtered) {
     renderSaldoPeriodoTable('categorias-saldo-periodo-table', categoriaGranularitySelect, filtered, 'categoria', 'Categoria', true);
     renderDimensionPeriodoTable('categorias-periodo-table', categoriaGranularitySelect, filtered, 'categoria', 'Categoria', true, true);
@@ -826,9 +834,19 @@ function clientScript(): string {
     renderDimensionPeriodoTable('emprestimos-periodo-table', emprestimoGranularitySelect, filtered, 'subcategoria', 'Subcategoria', true, false);
     renderDimensionPeriodoTable('emprestimos-receita-periodo-table', emprestimoGranularitySelect, filtered, 'subcategoria', 'Subcategoria', false, false);
   }
+  // Aba Invalidos: agrupada por categoria (ao contrario de Emprestimos, aqui
+  // a categoria varia — fatura de cartao duplicada, invalidacao manual,
+  // emprestimo, etc. — entao agrupar por ela ajuda a ver onde o volume
+  // invalidado esta concentrado). Tambem sem exigir Valido, obviamente.
+  function renderInvalidoPeriodoTable(filtered) {
+    renderSaldoPeriodoTable('invalidos-saldo-periodo-table', invalidoGranularitySelect, filtered, 'categoria', 'Categoria', false);
+    renderDimensionPeriodoTable('invalidos-periodo-table', invalidoGranularitySelect, filtered, 'categoria', 'Categoria', true, false);
+    renderDimensionPeriodoTable('invalidos-receita-periodo-table', invalidoGranularitySelect, filtered, 'categoria', 'Categoria', false, false);
+  }
   categoriaGranularitySelect.addEventListener('change', () => renderCategoriaPeriodoTable(getFiltered()));
   subcategoriaGranularitySelect.addEventListener('change', () => renderSubcategoriaPeriodoTable(getFiltered()));
   emprestimoGranularitySelect.addEventListener('change', () => renderEmprestimoPeriodoTable(getEmprestimoFiltered()));
+  invalidoGranularitySelect.addEventListener('change', () => renderInvalidoPeriodoTable(getInvalidoFiltered()));
 
   // --- tabelas genericas: cabecalho clicavel pra ordenar + filtro por coluna ---
   const TX_COLUMNS = [
@@ -943,6 +961,8 @@ function clientScript(): string {
     'subcategorias-receita-table': { columns: RECEITA_SUBCAT_COLUMNS, rows: () => computeByDimension(getFiltered(), 'subcategoria', false, true) },
     'emprestimos-table': { columns: SUBCAT_COLUMNS, rows: () => computeByDimension(getEmprestimoFiltered(), 'subcategoria', true, false) },
     'emprestimos-receita-table': { columns: RECEITA_SUBCAT_COLUMNS, rows: () => computeByDimension(getEmprestimoFiltered(), 'subcategoria', false, false) },
+    'invalidos-table': { columns: CAT_COLUMNS, rows: () => computeByDimension(getInvalidoFiltered(), 'categoria', true, false) },
+    'invalidos-receita-table': { columns: RECEITA_CAT_COLUMNS, rows: () => computeByDimension(getInvalidoFiltered(), 'categoria', false, false) },
     'merchants-table': { columns: MERCHANT_COLUMNS, rows: () => computeMerchants(getFiltered()) },
     'accounts-table': { columns: ACCOUNT_COLUMNS, rows: () => computeAccounts(getFiltered()) },
   };
@@ -1078,7 +1098,8 @@ function clientScript(): string {
       else { sortState.key = key; sortState.dir = 1; }
       if (tableId.startsWith('categorias-')) renderCategoriaPeriodoTable(getFiltered());
       else if (tableId.startsWith('subcategorias-')) renderSubcategoriaPeriodoTable(getFiltered());
-      else renderEmprestimoPeriodoTable(getEmprestimoFiltered());
+      else if (tableId.startsWith('emprestimos-')) renderEmprestimoPeriodoTable(getEmprestimoFiltered());
+      else renderInvalidoPeriodoTable(getInvalidoFiltered());
       return;
     }
 
@@ -1116,9 +1137,12 @@ function clientScript(): string {
       renderTable('subcategorias-receita-table');
       renderTable('emprestimos-table');
       renderTable('emprestimos-receita-table');
+      renderTable('invalidos-table');
+      renderTable('invalidos-receita-table');
       renderCategoriaPeriodoTable(getFiltered());
       renderSubcategoriaPeriodoTable(getFiltered());
       renderEmprestimoPeriodoTable(getEmprestimoFiltered());
+      renderInvalidoPeriodoTable(getInvalidoFiltered());
     }
   });
 
@@ -1208,6 +1232,7 @@ function clientScript(): string {
   function renderAll() {
     renderResumo(getBaseFiltered());
     renderEmprestimoPeriodoTable(getEmprestimoFiltered());
+    renderInvalidoPeriodoTable(getInvalidoFiltered());
     Object.keys(TABLE_DEFS).forEach((tableId) => renderTable(tableId));
   }
 
@@ -1217,6 +1242,7 @@ function clientScript(): string {
   function refreshAfterValidoChange() {
     renderResumo(getBaseFiltered());
     renderEmprestimoPeriodoTable(getEmprestimoFiltered());
+    renderInvalidoPeriodoTable(getInvalidoFiltered());
     renderCategoriaPeriodoTable(getFiltered());
     renderSubcategoriaPeriodoTable(getFiltered());
     renderTable('categorias-table');
@@ -1225,6 +1251,8 @@ function clientScript(): string {
     renderTable('subcategorias-receita-table');
     renderTable('emprestimos-table');
     renderTable('emprestimos-receita-table');
+    renderTable('invalidos-table');
+    renderTable('invalidos-receita-table');
     renderTable('merchants-table');
     renderTable('accounts-table');
     renderTable('pendencias-table');
@@ -1248,6 +1276,7 @@ function clientScript(): string {
       'categorias-saldo-periodo-table', 'categorias-periodo-table', 'categorias-receita-periodo-table',
       'subcategorias-saldo-periodo-table', 'subcategorias-periodo-table', 'subcategorias-receita-periodo-table',
       'emprestimos-saldo-periodo-table', 'emprestimos-periodo-table', 'emprestimos-receita-periodo-table',
+      'invalidos-saldo-periodo-table', 'invalidos-periodo-table', 'invalidos-receita-periodo-table',
     ].forEach((tableId) => {
       periodoTableSort[tableId] = { key: null, dir: 1 };
     });
@@ -1567,6 +1596,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
       <button class="tab-btn" data-tab="categorias">Categorias</button>
       <button class="tab-btn" data-tab="subcategorias">Subcategorias</button>
       <button class="tab-btn" data-tab="emprestimos">Emprestimos</button>
+      <button class="tab-btn" data-tab="invalidos">Invalidos</button>
       <button class="tab-btn" data-tab="transacoes">Transacoes</button>
       <button class="tab-btn" data-tab="pendencias">Pendencias de Classificacao (<span id="pend-tab-count">0</span>)</button>
     </div>
@@ -1806,6 +1836,64 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
         <h2>Recebimentos de Emprestimos</h2>
         <div class="table-scroll">
           <table class="data-table" id="emprestimos-receita-table">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <div id="tab-invalidos" class="tab-panel">
+      <section class="card">
+        <div class="chart-header">
+          <h2>Saldo de Invalidos ao longo do tempo</h2>
+          <select id="invalido-chart-granularity">
+            <option value="dia">Por dia</option>
+            <option value="mes" selected>Acumulado por mes</option>
+            <option value="trimestre">Acumulado por trimestre</option>
+            <option value="semestre">Acumulado por semestre</option>
+            <option value="ano">Acumulado por ano</option>
+          </select>
+        </div>
+        <p class="subtitle" style="margin:0 0 12px;">Aba dedicada a gestao do que fica de fora dos totais gerais — fatura de cartao duplicada, invalidado manualmente, emprestimos, etc. So conta o que tem Valido = Nao, ignorando o filtro "Valido" do topo. Agrupado por categoria. Clique numa celula ou no nome da categoria para filtrar por aquele recorte (confira o resultado na aba Transacoes quando quiser).</p>
+        <div class="table-scroll">
+          <table class="data-table" id="invalidos-saldo-periodo-table">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="card">
+        <h2>Gastos Invalidos ao longo do tempo</h2>
+        <div class="table-scroll">
+          <table class="data-table" id="invalidos-periodo-table">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="card">
+        <h2>Receitas Invalidas ao longo do tempo</h2>
+        <div class="table-scroll">
+          <table class="data-table" id="invalidos-receita-periodo-table">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="card">
+        <h2>Gastos Invalidos</h2>
+        <div class="table-scroll">
+          <table class="data-table" id="invalidos-table">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="card">
+        <h2>Receitas Invalidas</h2>
+        <div class="table-scroll">
+          <table class="data-table" id="invalidos-receita-table">
             <thead></thead>
             <tbody></tbody>
           </table>

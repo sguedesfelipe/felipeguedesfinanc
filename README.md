@@ -94,7 +94,8 @@ adicionadas manualmente (ex.: extrato do proprio banco), o Pluggy nao as tem.
 Os arquivos sao gravados em `reports/<data-de-hoje>/`:
 
 - `relatorio-gastos.html` — dashboard com abas: Resumo, Categorias,
-  Subcategorias, Emprestimos, Transacoes e Pendencias de Classificacao.
+  Subcategorias, Emprestimos, Invalidos, Transacoes e Pendencias de
+  Classificacao.
   - Barra de filtros no topo, valida para todas as abas e graficos:
     **periodo** (De/Ate), **Categoria**, **Subcategoria** (so mostra as da
     categoria escolhida), **Valido**, **Conta**, **Status (banco)** e
@@ -300,6 +301,19 @@ nao e gasto nem receita "de verdade", entao ele tem tratamento proprio:
 - Na planilha, a mesma logica aparece como a coluna `Emprestimo?` na aba
   Transacoes e uma aba **Emprestimos** com o resumo por subcategoria (total
   gasto, total recebido, saldo e quantidade).
+
+## Aba Invalidos
+
+Alem da aba Emprestimos (especifica pra esse tipo de transacao), o dashboard
+tem uma aba **Invalidos** pra gerenciar **tudo** que esta com `Valido? = Nao`,
+qualquer que seja o motivo — fatura de cartao duplicada, transferencia entre
+contas proprias marcada manualmente, Emprestimos, ou qualquer invalidacao
+manual que voce fizer clicando no checkbox de uma linha. Mesmo formato das
+abas Categorias/Emprestimos (Saldo/Gastos/Receitas ao longo do tempo, mais
+duas tabelas simples), so que agrupada por **Categoria** (em vez de
+Subcategoria, ja que aqui os motivos de invalidacao cruzam varias categorias
+diferentes) e, como a aba Emprestimos, ignora o filtro "Valido" do topo — o
+proposito dela e justamente mostrar o que esse filtro normalmente esconde.
 
 ## Estrutura
 
