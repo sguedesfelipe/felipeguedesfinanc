@@ -306,7 +306,14 @@ function flagCardPaymentDuplicates(transactions: CategorizedTransaction[]): void
   }
 }
 
-export function buildReport(data: AccountTransactions[]): Report {
+// Classifica e formata cada transacao crua do Pluggy, sem nenhuma logica que
+// dependa do conjunto inteiro (parcelas, flag de Emprestimo, fatura
+// duplicada) — essa parte fica em deriveReport() abaixo. Separado porque o
+// job de atualizacao diaria so precisa disso (classifica e grava no
+// Firestore uma vez); a passada "olhando tudo junto" tem que rodar de novo
+// toda vez que alguem le os dados (ex.: uma correcao manual pode mudar quem
+// e o lider de um grupo de parcelas), nao so quando uma transacao nova chega.
+export function classifyAndShapeTransactions(data: AccountTransactions[]): CategorizedTransaction[] {
   const transactions: CategorizedTransaction[] = [];
 
   for (const { account, transactions: txs } of data) {
@@ -347,6 +354,23 @@ export function buildReport(data: AccountTransactions[]): Report {
     }
   }
 
+  return transactions;
+}
+
+export interface AccountLike {
+  id: string;
+  name: string;
+  type: string;
+  balance: number;
+}
+
+// Roda as consistencias entre transacoes (parcelas, flag de Emprestimo,
+// fatura de cartao duplicada — todas mutam `transactions` em memoria, nunca
+// gravam de volta no Firestore) e monta os totais/agregados. Recebe as
+// contas separadamente porque no modo hospedado elas vem de uma colecao
+// propria no Firestore (ultimo saldo conhecido), nao de uma busca fresca no
+// Pluggy a cada leitura.
+export function deriveReport(transactions: CategorizedTransaction[], accountsList: AccountLike[]): Report {
   enforceInstallmentConsistency(transactions);
   applyEmprestimoFlag(transactions);
   flagCardPaymentDuplicates(transactions);
@@ -385,7 +409,7 @@ export function buildReport(data: AccountTransactions[]): Report {
     monthlyMap.set(mKey, monthEntry);
   }
 
-  const accounts: AccountSummary[] = data.map(({ account }) => ({
+  const accounts: AccountSummary[] = accountsList.map((account) => ({
     id: account.id,
     name: account.name,
     type: account.type,
@@ -414,4 +438,16 @@ export function buildReport(data: AccountTransactions[]): Report {
       invalidas: transactions.filter((t) => !t.valido).length,
     },
   };
+}
+
+// Pipeline completo (classificar + derivar) a partir de dados frescos do
+// Pluggy — usado pelo CLI local (src/index.ts) e pelo script de migracao,
+// que ainda trabalham com um lote de contas+transacoes buscado de uma vez,
+// nao com o Firestore como fonte.
+export function buildReport(data: AccountTransactions[]): Report {
+  const transactions = classifyAndShapeTransactions(data);
+  return deriveReport(
+    transactions,
+    data.map(({ account }) => account)
+  );
 }

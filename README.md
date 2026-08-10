@@ -5,6 +5,14 @@ para buscar contas e transacoes reais e gerar um relatorio de gastos em dois
 formatos: uma planilha (`.xlsx`) com todas as transacoes categorizadas e um
 dashboard (`.html`) com totais, gastos por mes e por categoria.
 
+O jeito descrito abaixo (`npm run report`) gera arquivos locais e continua
+funcionando 100% offline — bom pra depurar ou gerar um relatorio pontual.
+Pra ter o dashboard sempre online, com login restrito a sua conta Google e
+atualizacao automatica 1x/dia (sem precisar gerar/mandar nada manualmente),
+veja **[RUNBOOK.md](./RUNBOOK.md)** — nesse modo hospedado, os dados moram
+no Firestore em vez de arquivos locais, e toda edicao de
+categoria/subcategoria/valido feita no dashboard ja fica permanente na hora.
+
 ## 1. Credenciais do Pluggy
 
 O app que voce ja usa em [meu.pluggy.ai](https://meu.pluggy.ai/overview) e o

@@ -7,14 +7,22 @@
   "scripts": {
     "report": "tsx src/index.ts",
     "connect": "tsx src/connect.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "build": "tsc",
+    "migrate": "tsx src/migrate.ts",
+    "refresh": "tsx src/refreshJob.ts",
+    "dev:server": "tsx src/server.ts",
+    "start": "node dist/server.js"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
     "exceljs": "^4.4.0",
+    "express": "^5.2.1",
+    "firebase-admin": "^14.2.0",
     "pluggy-sdk": "^0.89.0"
   },
   "devDependencies": {
+    "@types/express": "^5.0.6",
     "@types/node": "^20.14.0",
     "tsx": "^4.19.0",
     "typescript": "^5.5.0"

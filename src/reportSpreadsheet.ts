@@ -56,7 +56,7 @@ function enableAutoFilter(sheet: ExcelJS.Worksheet): void {
   sheet.autoFilter = `A1:${lastCol}1`;
 }
 
-export async function writeSpreadsheet(report: Report, filePath: string): Promise<void> {
+function buildWorkbook(report: Report): ExcelJS.Workbook {
   const workbook = new ExcelJS.Workbook();
   workbook.creator = 'Relatorio de gastos Pluggy';
   workbook.created = new Date();
@@ -337,5 +337,16 @@ export async function writeSpreadsheet(report: Report, filePath: string): Promis
     'Sugestoes automaticas para lancamentos sem historico parecido. Corrija a Categoria/Subcategoria aqui ' +
     'e repita a mesma escolha na linha indicada da aba Transacoes (e la que os totais do relatorio sao calculados).';
 
-  await workbook.xlsx.writeFile(filePath);
+  return workbook;
+}
+
+export async function writeSpreadsheet(report: Report, filePath: string): Promise<void> {
+  await buildWorkbook(report).xlsx.writeFile(filePath);
+}
+
+// Mesma planilha, em memoria — usada pelo botao "Baixar Excel" do dashboard
+// hospedado, que gera o arquivo sob demanda a partir dos dados atuais em vez
+// de escrever num caminho local.
+export async function writeSpreadsheetBuffer(report: Report): Promise<ExcelJS.Buffer> {
+  return buildWorkbook(report).xlsx.writeBuffer();
 }

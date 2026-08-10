@@ -1,11 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import type { Firestore } from 'firebase-admin/firestore';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DATA_PATH = path.join(__dirname, '..', 'data', 'despesas-classificacao.json');
 
-interface RulesFile {
+export interface RulesFile {
   categories: Record<string, string[]>;
   rulesFull: Record<string, [string, string, number]>;
   rulesPrefix: Record<string, [string, string, number]>;
@@ -13,20 +14,47 @@ interface RulesFile {
   revisadoAte: string | null;
 }
 
-const rules: RulesFile = JSON.parse(fs.readFileSync(DATA_PATH, 'utf-8'));
+// Le a taxonomia/historico direto do arquivo local — usado pelo CLI
+// (src/index.ts) e pelo script de migracao, que precisam funcionar sem
+// depender do Firestore (ex.: gerar um relatorio offline pra depurar algo).
+export function loadRulesFromFile(): RulesFile {
+  return JSON.parse(fs.readFileSync(DATA_PATH, 'utf-8'));
+}
+
+// Le a mesma coisa do doc unico "classification/rules" no Firestore — usado
+// pelo servidor web e pelo job de atualizacao diaria, onde o arquivo local
+// nao existe (a imagem do container nem o inclui).
+export async function loadRulesFromFirestore(db: Firestore): Promise<RulesFile> {
+  const snap = await db.doc('classification/rules').get();
+  if (!snap.exists) {
+    throw new Error(
+      'Doc "classification/rules" nao existe no Firestore ainda. Rode o script de migracao (src/migrate.ts) primeiro.'
+    );
+  }
+  return snap.data() as RulesFile;
+}
+
+interface CategoryIndexEntry {
+  categoria: string;
+  subcategorias: Map<string, string>; // fold(subcategoria) -> subcategoria canonica
+}
+
+interface ClassificationState {
+  rules: RulesFile;
+  categoryIndex: Map<string, CategoryIndexEntry>; // fold(categoria) -> entry
+  resolvedFallback: Map<string, [string, string]>;
+  outros: [string, string];
+}
+
+let state: ClassificationState | null = null;
 
 // Data (YYYY-MM-DD) ate onde o usuario ja revisou classificacoes manualmente.
 // Qualquer lancamento com DataConsiderada nesse dia ou depois ainda nao foi
 // visto por ele e deve ficar pendente, mesmo com sugestao de alta confianca.
-export const REVISADO_ATE: string | null = rules.revisadoAte;
-
-export const CATEGORIAS: string[] = Object.keys(rules.categories).sort((a, b) =>
-  a.localeCompare(b, 'pt-BR')
-);
-
-export const SUBCATEGORIAS: string[] = [...new Set(Object.values(rules.categories).flat())].sort(
-  (a, b) => a.localeCompare(b, 'pt-BR')
-);
+// So fica valido depois de initClassification() rodar.
+export let REVISADO_ATE: string | null = null;
+export let CATEGORIAS: string[] = [];
+export let SUBCATEGORIAS: string[] = [];
 
 export type Confianca = 'alta' | 'media' | 'baixa';
 
@@ -58,38 +86,31 @@ function prefixKey(normalizedDescription: string): string {
 // maiusculas e pontuacao (a taxonomia do usuario ja apareceu tanto em
 // "saúde e bem-estar" quanto "SAUDE E BEM ESTAR" em revisoes diferentes).
 export function fold(value: string): string {
-  return value
-    .normalize('NFKD')
-    .replace(/[\u0300-\u036f]/g, '')
+  let stripped = '';
+  for (const ch of value.normalize('NFKD')) {
+    const code = ch.codePointAt(0) ?? 0;
+    if (code >= 0x0300 && code <= 0x036f) continue; // marca de acento combinante — descarta
+    stripped += ch;
+  }
+  return stripped
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, ' ')
     .trim();
 }
 
-interface CategoryIndexEntry {
-  categoria: string;
-  subcategorias: Map<string, string>; // fold(subcategoria) -> subcategoria canonica
-}
-
-const categoryIndex = new Map<string, CategoryIndexEntry>(); // fold(categoria) -> entry
-for (const [categoria, subcategorias] of Object.entries(rules.categories)) {
-  categoryIndex.set(fold(categoria), {
-    categoria,
-    subcategorias: new Map(subcategorias.map((s) => [fold(s), s])),
-  });
-}
-
 // Resolve um par categoria/subcategoria (em qualquer grafia) para a grafia
 // canonica atual da taxonomia. Usado pelo mapa de palpites abaixo, pra nao
 // quebrar toda vez que o usuario reclassifica a planilha e a grafia muda.
-function resolveCanonical(categoria: string, subcategoria: string): [string, string] {
+function resolveCanonical(
+  categoryIndex: Map<string, CategoryIndexEntry>,
+  categoria: string,
+  subcategoria: string
+): [string, string] {
   const entry = categoryIndex.get(fold(categoria));
   if (!entry) return [categoria, subcategoria];
   const canonSub = entry.subcategorias.get(fold(subcategoria));
   return [entry.categoria, canonSub ?? subcategoria];
 }
-
-const OUTROS = resolveCanonical('outros', 'outros');
 
 // Categoria generica que o Pluggy atribui (em ingles) -> melhor palpite na
 // taxonomia do usuario, para quando nao ha nenhum historico parecido. A
@@ -139,24 +160,51 @@ const FALLBACK_BY_PLUGGY_CATEGORY: Record<string, [string, string]> = {
   'Proceeds interests and dividends': ['investimentos', 'proventos de investimentos'],
 };
 
-// Falha cedo se algum palpite acima referenciar uma categoria que sumiu de
-// vez da taxonomia (subcategoria pode ter mudado de grafia sem problema,
-// resolveCanonical cobre isso — so a categoria em si precisa mesmo existir).
-const RESOLVED_FALLBACK = new Map<string, [string, string]>();
-for (const [pluggyCategory, [categoria, subcategoria]] of Object.entries(FALLBACK_BY_PLUGGY_CATEGORY)) {
-  if (!categoryIndex.has(fold(categoria))) {
-    throw new Error(
-      `FALLBACK_BY_PLUGGY_CATEGORY["${pluggyCategory}"] aponta para a categoria "${categoria}", ` +
-        'que nao existe mais em data/despesas-classificacao.json. Atualize o mapeamento em src/classify.ts.'
-    );
+// Constroi os indices derivados (categoryIndex, resolvedFallback, outros) a
+// partir de um RulesFile ja carregado — mesma logica que antes rodava uma
+// vez no load do modulo, agora reexecutada toda vez que initClassification()
+// roda (uma vez por processo, seja no boot do servidor/job, seja no CLI).
+export function initClassification(rules: RulesFile): void {
+  const categoryIndex = new Map<string, CategoryIndexEntry>();
+  for (const [categoria, subcategorias] of Object.entries(rules.categories)) {
+    categoryIndex.set(fold(categoria), {
+      categoria,
+      subcategorias: new Map(subcategorias.map((s) => [fold(s), s])),
+    });
   }
-  RESOLVED_FALLBACK.set(pluggyCategory, resolveCanonical(categoria, subcategoria));
+
+  const outros = resolveCanonical(categoryIndex, 'outros', 'outros');
+
+  // Falha cedo se algum palpite acima referenciar uma categoria que sumiu de
+  // vez da taxonomia (subcategoria pode ter mudado de grafia sem problema,
+  // resolveCanonical cobre isso — so a categoria em si precisa mesmo existir).
+  const resolvedFallback = new Map<string, [string, string]>();
+  for (const [pluggyCategory, [categoria, subcategoria]] of Object.entries(FALLBACK_BY_PLUGGY_CATEGORY)) {
+    if (!categoryIndex.has(fold(categoria))) {
+      throw new Error(
+        `FALLBACK_BY_PLUGGY_CATEGORY["${pluggyCategory}"] aponta para a categoria "${categoria}", ` +
+          'que nao existe mais em data/despesas-classificacao.json. Atualize o mapeamento em src/classify.ts.'
+      );
+    }
+    resolvedFallback.set(pluggyCategory, resolveCanonical(categoryIndex, categoria, subcategoria));
+  }
+
+  state = { rules, categoryIndex, resolvedFallback, outros };
+  REVISADO_ATE = rules.revisadoAte;
+  CATEGORIAS = Object.keys(rules.categories).sort((a, b) => a.localeCompare(b, 'pt-BR'));
+  SUBCATEGORIAS = [...new Set(Object.values(rules.categories).flat())].sort((a, b) => a.localeCompare(b, 'pt-BR'));
 }
 
-export function classifyTransaction(
-  description: string,
-  pluggyCategory: string | null
-): Classification {
+function requireState(): ClassificationState {
+  if (!state) {
+    throw new Error('classify.ts nao foi inicializado — chame initClassification() antes de usar.');
+  }
+  return state;
+}
+
+export function classifyTransaction(description: string, pluggyCategory: string | null): Classification {
+  const { rules, resolvedFallback, outros } = requireState();
+
   const fullKey = normalizeKey(description);
   const fullMatch = rules.rulesFull[fullKey];
   if (fullMatch) {
@@ -181,7 +229,7 @@ export function classifyTransaction(
     };
   }
 
-  const fallback = pluggyCategory ? RESOLVED_FALLBACK.get(pluggyCategory) : undefined;
+  const fallback = pluggyCategory ? resolvedFallback.get(pluggyCategory) : undefined;
   if (fallback) {
     return {
       categoria: fallback[0],
@@ -193,8 +241,8 @@ export function classifyTransaction(
   }
 
   return {
-    categoria: OUTROS[0],
-    subcategoria: OUTROS[1],
+    categoria: outros[0],
+    subcategoria: outros[1],
     confianca: 'baixa',
     pendente: true,
     motivo: pluggyCategory
@@ -209,5 +257,33 @@ export function classifyTransaction(
 // Recebe a chave ja normalizada (normalizeKey) pra nao recalcular a mesma
 // coisa que classifyTransaction ja calculou pra essa transacao.
 export function checkKnownInvalid(normalizedDescription: string): string | null {
-  return rules.invalidFull[normalizedDescription] ?? null;
+  return requireState().rules.invalidFull[normalizedDescription] ?? null;
+}
+
+// Grava uma correcao de categoria/subcategoria feita no dashboard como regra
+// permanente: da proxima vez que a mesma descricao aparecer (ex.: no proximo
+// fechamento de fatura), classifyTransaction() ja acerta de primeira com
+// confianca alta — substitui o antigo fluxo manual de exportar CSV, mandar
+// numa conversa e mesclar com um script externo.
+export async function persistClassificationEdit(
+  db: Firestore,
+  description: string,
+  categoria: string,
+  subcategoria: string
+): Promise<void> {
+  const { rules } = requireState();
+  const key = normalizeKey(description);
+  const previousCount = rules.rulesFull[key]?.[2] ?? 0;
+  const entry: [string, string, number] = [categoria, subcategoria, previousCount + 1];
+
+  // Usa FieldPath em vez de uma chave "rulesFull.<key>" em string: a
+  // descricao normalizada pode conter pontos, e o Firestore trataria um
+  // ponto dentro da string como separador de campo aninhado.
+  const { FieldPath } = await import('firebase-admin/firestore');
+  await db.doc('classification/rules').update(new FieldPath('rulesFull', key), entry);
+
+  // Atualiza o indice em memoria deste processo tambem, pra classificacoes
+  // seguintes na mesma execucao (ex.: outras parcelas do mesmo grupo) ja
+  // verem a correcao sem esperar um reload do doc inteiro.
+  rules.rulesFull[key] = entry;
 }

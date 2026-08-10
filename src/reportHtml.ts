@@ -59,7 +59,7 @@ interface ClientTransaction {
   amount: number;
 }
 
-function toClientTransactions(report: Report): ClientTransaction[] {
+export function toClientTransactions(report: Report): ClientTransaction[] {
   return report.transactions.map((t, id) => ({
     id,
     transactionId: t.transactionId,
@@ -151,40 +151,41 @@ function clientScript(): string {
   const MONTH_NAMES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
   const monthLabel = (m) => { const [y, mm] = m.split('-'); return MONTH_NAMES[Number(mm) - 1] + '/' + y.slice(2); };
 
-  // --- edicoes salvas neste navegador (categoria/subcategoria/valido/pendente
-  // sobrevivem a um F5 ou a fechar e reabrir esta mesma pagina; nao viajam
-  // pra um relatorio novo gerado depois — pra isso, exporte o CSV e mande) ---
-  const STORAGE_KEY = 'pluggy-relatorio-edicoes';
-  function loadSavedEdits() {
-    try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-    } catch (e) {
-      return {};
-    }
-  }
-  // Cache em memoria do blob salvo, pra "cls-input" (que dispara a cada
-  // tecla digitada) nao precisar reler+reparsear o localStorage inteiro a
-  // cada letra — so escreve de volta o que mudou.
-  const savedEditsCache = loadSavedEdits();
+  // --- edicoes de categoria/subcategoria/valido/pendente sao salvas direto no
+  // servidor (Firestore), nao mais no navegador: qualquer edicao ja fica
+  // permanente e disponivel em qualquer dispositivo/sessao no proximo
+  // carregamento da pagina, sem precisar exportar CSV e mandar de volta.
+  // Se a pagina estiver aberta sem servidor por tras (ex.: um relatorio
+  // estatico gerado localmente pelo CLI), o fetch so falha silenciosamente —
+  // a edicao ainda aparece na tela durante essa sessao, so nao persiste.
+  // Debounced por transacao: o campo de categoria dispara saveEdit a cada
+  // tecla digitada (pra tabela reagir na hora), mas so manda pro servidor
+  // 400ms depois da ultima tecla — senao cada letra vira uma escrita no
+  // Firestore.
+  const pendingSaves = new Map();
   function saveEdit(t) {
-    savedEditsCache[t.transactionId] = { categoria: t.categoria, subcategoria: t.subcategoria, valido: t.valido, pendente: t.pendente };
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(savedEditsCache));
-    } catch (e) {
-      // localStorage indisponivel (ex.: aba anonima) — edicao so vale nesta sessao
-    }
+    const id = t.transactionId;
+    clearTimeout(pendingSaves.get(id));
+    pendingSaves.set(
+      id,
+      setTimeout(() => {
+        pendingSaves.delete(id);
+        fetch('/api/transactions/' + encodeURIComponent(id), {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            description: t.description,
+            categoria: t.categoria,
+            subcategoria: t.subcategoria,
+            valido: t.valido,
+            pendente: t.pendente,
+          }),
+        }).catch((e) => {
+          console.error('Nao foi possivel salvar a edicao no servidor:', e);
+        });
+      }, 400)
+    );
   }
-  function restoreSavedEdits() {
-    let n = 0;
-    for (const t of state) {
-      const edit = savedEditsCache[t.transactionId];
-      if (!edit) continue;
-      Object.assign(t, edit);
-      n += 1;
-    }
-    return n;
-  }
-  const savedEditsCount = restoreSavedEdits();
 
   // --- compras parceladas devem ter sempre a mesma classificacao: so a
   // primeira parcela (menor installmentNumber) fica editavel, as demais
@@ -211,8 +212,8 @@ function clientScript(): string {
 
   // --- flag de Emprestimo: sempre derivado da categoria atual (fold()
   // ignora acento/maiuscula, igual ao mesmo calculo do lado do servidor em
-  // aggregate.ts). Roda de novo aqui pra ficar certo mesmo apos restaurar
-  // edicoes do localStorage ou sincronizar parcelas com a lider. ---
+  // aggregate.ts). Roda de novo aqui pra ficar certo mesmo apos sincronizar
+  // parcelas com a lider. ---
   function foldClient(s) {
     let result = '';
     for (const ch of String(s || '').normalize('NFKD')) {
@@ -252,17 +253,6 @@ function clientScript(): string {
     }
     if (anyBecameEmprestimo) refreshAfterValidoChange();
   }
-
-  const savedNotice = document.getElementById('saved-edits-notice');
-  if (savedEditsCount > 0) {
-    savedNotice.textContent = savedEditsCount + ' edicao(oes) salva(s) neste navegador foram restauradas.';
-    savedNotice.style.display = 'inline';
-  }
-  document.getElementById('clear-saved-edits').addEventListener('click', () => {
-    if (!confirm('Isso apaga as edicoes salvas neste navegador (nao desfaz o que ja foi exportado ou mandado). Continuar?')) return;
-    localStorage.removeItem(STORAGE_KEY);
-    location.reload();
-  });
 
   // --- filtro de periodo + dimensoes, valido para as 5 tabelas e os graficos ---
   // Usa DataConsiderada (a data real da compra, ja projetada por parcela),
@@ -1164,8 +1154,8 @@ function clientScript(): string {
       return;
     }
     // Propagar pra parcelas-irmas so ao sair do campo (nao a cada tecla) —
-    // evita reescrever o localStorage e varrer o DOM das outras linhas a
-    // cada letra digitada na classificacao da parcela lider. Tambem e onde
+    // evita varrer o DOM das outras linhas a cada letra digitada na
+    // classificacao da parcela lider. Tambem e onde
     // conferimos se a categoria virou "Emprestimos": se virou, invalida a
     // transacao automaticamente (empréstimo não é gasto/receita de verdade).
     if (el.classList && el.classList.contains('cls-input')) {
@@ -1588,7 +1578,6 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
       <button type="button" id="filter-apply" class="btn-export">Aplicar filtro</button>
       <button type="button" id="filter-clear">Limpar todos os filtros</button>
       <span class="filter-hint">Limpa periodo, dimensoes, selecao de barras e filtros de coluna — vale para todas as abas.</span>
-      <span class="filter-hint" id="saved-edits-notice" style="display:none;"></span>
     </div>
 
     <div class="tab-bar">
@@ -1934,10 +1923,8 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
 
     <div id="datalists"></div>
     <footer>
-      Relatorio gerado localmente a partir da API do Pluggy. Edicoes de classificacao/valido feitas aqui sao salvas
-      automaticamente neste navegador (sobrevivem a fechar e reabrir a pagina) — mas nao viajam sozinhas pra um
-      relatorio novo gerado depois. Pra isso, use "Exportar CSV" na aba Transacoes e mande o arquivo de volta.
-      <button type="button" id="clear-saved-edits" class="link-btn">Limpar edicoes salvas neste navegador</button>
+      Relatorio gerado a partir da API do Pluggy. Edicoes de classificacao/valido feitas aqui sao salvas
+      automaticamente no servidor — ja aparecem em qualquer dispositivo no proximo carregamento da pagina.
     </footer>
   </div>
   <script>

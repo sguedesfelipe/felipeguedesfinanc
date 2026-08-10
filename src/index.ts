@@ -5,6 +5,7 @@ import { loadConfig } from './config.js';
 import { createPluggyClient } from './pluggyClient.js';
 import { fetchAccountsAndTransactions } from './fetchData.js';
 import { buildReport } from './aggregate.js';
+import { initClassification, loadRulesFromFile } from './classify.js';
 import { writeSpreadsheet } from './reportSpreadsheet.js';
 import { buildHtmlReport } from './reportHtml.js';
 
@@ -14,6 +15,7 @@ function isoDate(date: Date): string {
 
 async function main() {
   const config = loadConfig();
+  initClassification(loadRulesFromFile());
 
   const dateTo = new Date();
   let dateFrom: Date;
