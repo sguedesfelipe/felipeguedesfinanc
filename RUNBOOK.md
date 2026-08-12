@@ -19,8 +19,21 @@ gcloud config set project "$PROJECT_ID"
 **Custo esperado: praticamente zero (US$0-1/mês).** Tudo abaixo usa o free
 tier do Cloud Run, Firestore, Cloud Scheduler e Secret Manager para o volume
 de dados desse projeto (single user, ~2 mil transações, uma atualização por
-dia). Se o seu projeto exigir o caminho "clássico" de IAP (seção 6), soma
-mais alguns dólares/mês pelo IP fixo do load balancer.
+dia).
+
+**Nota sobre permissões em projetos GCP novos:** projetos criados recentemente
+não dão mais permissão automática de "Editor" pra conta de serviço padrão
+(`PROJECT_NUMBER-compute@developer.gserviceaccount.com`), que é quem builda
+e roda tudo abaixo. Isso significa que, na primeira vez que cada serviço novo
+tenta usar algo (Cloud Storage, Artifact Registry, Cloud Logging, Secret
+Manager, Firestore...), pode faltar permissão especificamente pra essa conta
+— o próprio comando costuma avisar exatamente qual `role` falta. As seções
+abaixo já incluem os `add-iam-policy-binding` que descobrimos serem
+necessários; se algum comando novo reclamar de permissão, o padrão é sempre o
+mesmo: conceder o `role` indicado à conta `${PROJECT_NUMBER}-compute@developer.gserviceaccount.com`
+via `gcloud projects add-iam-policy-binding` (pra permissões de projeto) ou
+`gcloud secrets add-iam-policy-binding <nome> ...` (pra um segredo
+específico).
 
 ## 0. Testar localmente antes de mexer em infra real (opcional, recomendado)
 
@@ -41,14 +54,13 @@ planilha baixa certinho).
 ```bash
 gcloud services enable \
   run.googleapis.com \
-  iap.googleapis.com \
   cloudscheduler.googleapis.com \
   firestore.googleapis.com \
   secretmanager.googleapis.com \
   cloudbuild.googleapis.com
 ```
 
-## 2. Tela de consentimento OAuth (necessária pro IAP)
+## 2. Tela de consentimento OAuth (necessária pro login do Google no app)
 
 No Console (`APIs e Serviços > Tela de consentimento OAuth`):
 1. Tipo: **Externo**.
@@ -63,12 +75,37 @@ No Console (`APIs e Serviços > Tela de consentimento OAuth`):
 gcloud firestore databases create --location="$REGION" --type=firestore-native
 ```
 
-## 4. Guardar as credenciais do Pluggy no Secret Manager
+Dá permissão pra conta de serviço padrão ler/escrever no Firestore (é ela
+quem roda o site e o job diário):
+
+```bash
+PROJECT_NUMBER=$(gcloud projects describe "$PROJECT_ID" --format='value(projectNumber)')
+gcloud projects add-iam-policy-binding "$PROJECT_ID" \
+  --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+  --role="roles/datastore.user"
+```
+
+## 4. Guardar as credenciais do Pluggy e a chave de sessão no Secret Manager
 
 ```bash
 printf '%s' "SEU_CLIENT_ID" | gcloud secrets create pluggy-client-id --data-file=-
 printf '%s' "SEU_CLIENT_SECRET" | gcloud secrets create pluggy-client-secret --data-file=-
 printf '%s' "seu-item-id-1,seu-item-id-2" | gcloud secrets create pluggy-item-ids --data-file=-
+
+# chave aleatoria usada pra assinar o cookie de sessao do login (ver secao 6a)
+openssl rand -base64 32 | tr -d '\n' | gcloud secrets create session-secret --data-file=-
+```
+
+Dá permissão pra conta de serviço padrão ler os 4 segredos (ver nota sobre
+permissões no topo deste arquivo):
+
+```bash
+PROJECT_NUMBER=$(gcloud projects describe "$PROJECT_ID" --format='value(projectNumber)')
+for SECRET in pluggy-client-id pluggy-client-secret pluggy-item-ids session-secret; do
+  gcloud secrets add-iam-policy-binding "$SECRET" \
+    --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+    --role="roles/secretmanager.secretAccessor"
+done
 ```
 
 ## 5. Migração inicial (rodar uma única vez, localmente)
@@ -92,23 +129,71 @@ histórico completo no Pluggy, gravando tudo no Firestore. O script imprime os
 totais no final — confira contra o último relatório gerado pelo CLI
 (`reports/<data>/relatorio-gastos.html`) pra bater os números antes de seguir.
 
-## 6. Deploy do serviço web no Cloud Run
+## 6a. Criar as credenciais do login do Google
+
+O acesso ao site é protegido por um login "Entrar com o Google" feito no
+próprio app (ver `src/auth.ts`) — não usa IAP. Isso porque a integração
+nativa de IAP com Cloud Run se mostrou pouco confiável na prática (várias
+permissões corretas e ainda assim acesso negado, e a API que gerencia os
+"brands" do IAP está sendo descontinuada pelo Google). Login feito no
+próprio código é mais previsível e mais fácil de depurar.
+
+No Console: **APIs e Serviços > Credenciais > + CREATE CREDENTIALS > OAuth
+client ID**.
+1. Tipo de aplicativo: **Web application**.
+2. Em "Authorized JavaScript origins", adicione a URL do seu serviço Cloud
+   Run (só vai saber a URL definitiva depois do primeiro deploy da seção
+   6b — pode voltar aqui e editar depois, ou já colocar um palpite tipo
+   `https://SERVICE-PROJECT_NUMBER.REGION.run.app`).
+3. Crie e copie o **Client ID** gerado (termina em
+   `.apps.googleusercontent.com`) — não é segredo, pode ficar em variável
+   de ambiente normal.
+
+```bash
+export GOOGLE_CLIENT_ID=SEU_CLIENT_ID_AQUI
+```
+
+## 6b. Deploy do serviço web no Cloud Run
+
+Na primeira vez que `--source .` builda algo nesse projeto, a conta de
+serviço padrão também costuma faltar permissão pra ler o código enviado, pra
+publicar a imagem no Artifact Registry e pra escrever log da build — dá pra
+conceder tudo de uma vez, adiantando o problema (ver nota sobre permissões
+no topo deste arquivo):
+
+```bash
+PROJECT_NUMBER=$(gcloud projects describe "$PROJECT_ID" --format='value(projectNumber)')
+for ROLE in storage.objectViewer artifactregistry.writer logging.logWriter; do
+  gcloud projects add-iam-policy-binding "$PROJECT_ID" \
+    --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+    --role="roles/${ROLE}"
+done
+```
 
 ```bash
 gcloud run deploy "$SERVICE" \
   --source . \
   --region "$REGION" \
   --allow-unauthenticated \
-  --set-secrets="PLUGGY_CLIENT_ID=pluggy-client-id:latest,PLUGGY_CLIENT_SECRET=pluggy-client-secret:latest,PLUGGY_ITEM_IDS=pluggy-item-ids:latest"
+  --set-env-vars="GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID},ALLOWED_EMAILS=${SEU_EMAIL}" \
+  --set-secrets="PLUGGY_CLIENT_ID=pluggy-client-id:latest,PLUGGY_CLIENT_SECRET=pluggy-client-secret:latest,PLUGGY_ITEM_IDS=pluggy-item-ids:latest,SESSION_SECRET=session-secret:latest"
 ```
 
 `--source .` builda a imagem automaticamente via Cloud Build (usa o
 `Dockerfile` do repositório) — não precisa configurar Artifact Registry na
-mão. `--allow-unauthenticated` é temporário, só pra confirmar que o serviço
-sobe certo; a seção 8 troca isso pelo IAP.
+mão. `--allow-unauthenticated` aqui é definitivo (não é um passo temporário):
+o Cloud Run fica com ingress público, e quem realmente controla o acesso é o
+próprio app, checando o cookie de sessão em toda requisição (rotas `/` e
+`/api/*`; `/login` e `/auth/google` ficam sempre abertas, é onde o login
+acontece).
 
-Abra a URL que o comando imprimir e confira se o dashboard carrega com os
-dados migrados.
+`ALLOWED_EMAILS` aceita uma lista separada por vírgula, se mais de uma conta
+Google precisar de acesso (ex.: `${SEU_EMAIL},conjuge@gmail.com`) — não
+precisa mudar nada no código pra isso, só redeployar com a lista atualizada.
+
+Abra a URL que o comando imprimir — deve aparecer a tela de login própria do
+site ("Relatório de gastos / Entrar com o Google"), não mais um link direto
+pro dashboard. Entre e confira se os dados migrados aparecem certinho.
 
 ## 7. Job diário + Cloud Scheduler
 
@@ -148,55 +233,6 @@ rodando manualmente antes de confiar no agendamento:
 gcloud run jobs execute relatorio-gastos-refresh --region "$REGION"
 ```
 
-## 8. Ativar o IAP (login restrito à sua conta Google)
-
-Primeiro confira se o seu projeto tem a integração nativa de IAP no Cloud
-Run:
-
-```bash
-gcloud run services describe "$SERVICE" --region "$REGION"
-```
-
-No Console, vá em **Cloud Run > (seu serviço) > Segurança** e procure uma
-opção de ativar IAP diretamente. Se existir, ative por ali e pule pro passo
-"Liberar seu e-mail" abaixo. Se não existir (depende da maturidade/região do
-projeto), o caminho é o clássico — um Load Balancer HTTPS na frente do Cloud
-Run:
-
-```bash
-gcloud compute backend-services create relatorio-gastos-backend --global
-gcloud compute network-endpoint-groups create relatorio-gastos-neg \
-  --region "$REGION" --network-endpoint-type=serverless --cloud-run-service="$SERVICE"
-gcloud compute backend-services add-backend relatorio-gastos-backend \
-  --global --network-endpoint-group=relatorio-gastos-neg --network-endpoint-group-region="$REGION"
-gcloud compute addresses create relatorio-gastos-ip --global
-gcloud compute ssl-certificates create relatorio-gastos-cert --domains=SEU_DOMINIO_OU_IP.nip.io --global
-gcloud compute url-maps create relatorio-gastos-lb --default-service=relatorio-gastos-backend
-gcloud compute target-https-proxies create relatorio-gastos-proxy \
-  --url-map=relatorio-gastos-lb --ssl-certificates=relatorio-gastos-cert
-gcloud compute forwarding-rules create relatorio-gastos-fr \
-  --global --target-https-proxy=relatorio-gastos-proxy --address=relatorio-gastos-ip --ports=443
-gcloud compute backend-services update relatorio-gastos-backend --global --iap=enabled
-```
-
-Depois de qualquer um dos dois caminhos, remova o acesso público do Cloud
-Run (o IAP passa a ser a única porta de entrada) e libere seu e-mail:
-
-```bash
-gcloud run services update "$SERVICE" --region "$REGION" --no-allow-unauthenticated
-
-gcloud iap web add-iam-policy-binding \
-  --member="user:${SEU_EMAIL}" \
-  --role="roles/iap.httpsResourceAccessor" \
-  --resource-type=cloud-run \
-  --service="$SERVICE" \
-  --region "$REGION"
-```
-
-Pronto: só a sua conta Google consegue abrir a URL do serviço a partir daqui.
-O Google cuida da tela de login e da sessão — nenhum código de autenticação
-roda no app.
-
 ## Depois de tudo no ar
 
 - O botão **"Atualizar agora"** no dashboard chama `POST /api/refresh` e
@@ -204,6 +240,11 @@ roda no app.
 - Toda edição de Categoria/Subcategoria/Válido feita no dashboard já fica
   permanente no Firestore — não precisa mais exportar CSV nem mandar nada
   numa conversa pra classificação virar definitiva.
-- Pra liberar outra conta Google (ex.: cônjuge), repita o
-  `gcloud iap web add-iam-policy-binding` do passo 8 com o e-mail dela — não
-  precisa mudar nada no código ou no modelo de dados.
+- O botão **"Sair"** no rodapé do dashboard encerra a sessão.
+- Pra liberar outra conta Google (ex.: cônjuge), redeploya (seção 6b) com
+  `ALLOWED_EMAILS` incluindo o e-mail dela — não precisa mudar nada no código
+  ou no modelo de dados.
+- Se em algum momento precisar trocar a chave de sessão (`SESSION_SECRET`) —
+  por exemplo, se ela vazar — gere uma nova e redeploye: todo mundo logado é
+  automaticamente deslogado (cookies antigos assinados com a chave anterior
+  deixam de validar).
