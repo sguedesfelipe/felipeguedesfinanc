@@ -1,4 +1,5 @@
 import express from 'express';
+import cookieParser from 'cookie-parser';
 import type { Firestore } from 'firebase-admin/firestore';
 import { getDb } from './firestore.js';
 import { initClassification, loadRulesFromFirestore, persistClassificationEdit } from './classify.js';
@@ -7,6 +8,14 @@ import { loadAllTransactions, loadAllAccounts, updateTransaction } from './repo.
 import { buildHtmlReport, toClientTransactions } from './reportHtml.js';
 import { writeSpreadsheetBuffer } from './reportSpreadsheet.js';
 import { runDailyRefresh } from './refresh.js';
+import {
+  loadAuthConfig,
+  loginPageHtml,
+  verifyGoogleIdToken,
+  createSessionCookieValue,
+  verifySessionCookieValue,
+  SESSION_COOKIE_NAME,
+} from './auth.js';
 
 async function loadReport(db: Firestore): Promise<Report> {
   const [transactions, accounts] = await Promise.all([loadAllTransactions(db), loadAllAccounts(db)]);
@@ -29,9 +38,58 @@ function reportDateRange(report: Report): { from: string; to: string } {
 async function main() {
   const db = getDb();
   initClassification(await loadRulesFromFirestore(db));
+  const auth = loadAuthConfig();
 
   const app = express();
   app.use(express.json());
+  app.use(cookieParser());
+
+  // Login com Google feito no proprio app (ver src/auth.ts): nao depende de
+  // nenhuma configuracao de plataforma tipo IAP, so das duas rotas abaixo +
+  // este middleware de portaria. O cookie de sessao e verificado a cada
+  // requisicao; quem nao tiver um valido e redirecionado (paginas) ou
+  // recebe 401 (API) antes de chegar em qualquer dado.
+  app.get('/login', (_req, res) => {
+    res.set('Content-Type', 'text/html; charset=utf-8').send(loginPageHtml(auth.googleClientId));
+  });
+
+  app.post('/auth/google', async (req, res) => {
+    const { credential } = req.body ?? {};
+    if (typeof credential !== 'string') {
+      res.status(400).end();
+      return;
+    }
+    const email = await verifyGoogleIdToken(credential, auth.googleClientId).catch(() => null);
+    if (!email || !auth.allowedEmails.includes(email)) {
+      res.status(403).end();
+      return;
+    }
+    res.cookie(SESSION_COOKIE_NAME, createSessionCookieValue(email, auth.sessionSecret), {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+    });
+    res.status(204).end();
+  });
+
+  app.post('/logout', (_req, res) => {
+    res.clearCookie(SESSION_COOKIE_NAME);
+    res.status(204).end();
+  });
+
+  app.use((req, res, next) => {
+    const email = verifySessionCookieValue(req.cookies?.[SESSION_COOKIE_NAME], auth.sessionSecret);
+    if (email && auth.allowedEmails.includes(email)) {
+      next();
+      return;
+    }
+    if (req.path.startsWith('/api/')) {
+      res.status(401).json({ error: 'Nao autenticado.' });
+      return;
+    }
+    res.redirect('/login');
+  });
 
   app.get('/', async (_req, res) => {
     const report = await loadReport(db);

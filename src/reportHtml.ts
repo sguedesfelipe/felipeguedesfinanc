@@ -1219,6 +1219,15 @@ function clientScript(): string {
   }
   document.getElementById('export-transacoes').addEventListener('click', exportTransacoesCsv);
 
+  const logoutBtn = document.getElementById('logout-btn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      fetch('/logout', { method: 'POST' }).finally(() => {
+        location.href = '/login';
+      });
+    });
+  }
+
   function renderAll() {
     renderResumo(getBaseFiltered());
     renderEmprestimoPeriodoTable(getEmprestimoFiltered());
@@ -1925,6 +1934,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
     <footer>
       Relatorio gerado a partir da API do Pluggy. Edicoes de classificacao/valido feitas aqui sao salvas
       automaticamente no servidor — ja aparecem em qualquer dispositivo no proximo carregamento da pagina.
+      <button type="button" id="logout-btn" class="link-btn">Sair</button>
     </footer>
   </div>
   <script>
