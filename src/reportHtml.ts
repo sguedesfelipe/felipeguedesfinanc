@@ -1,5 +1,12 @@
 import { Report } from './aggregate.js';
-import { CATEGORIAS, SUBCATEGORIAS } from './classify.js';
+import { CATEGORIAS, SUBCATEGORIAS, Confianca } from './classify.js';
+import { DESIGN_TOKENS_CSS } from './reportTokens.js';
+import { SHELL_CSS, SHELL_SCRIPT, shellSidebarHtml, shellMobileTopbarHtml, shellBottomNavHtml } from './reportShell.js';
+import { FILTER_BAR_CSS, FILTER_BAR_SCRIPT, filterBarHtml } from './reportFilterBar.js';
+import { RESUMO_CSS, RESUMO_SCRIPT, resumoTabHtml } from './reportResumo.js';
+import { PERIODO_TABLE_CSS, PERIODO_TABLE_SCRIPT } from './reportPeriodoTableCss.js';
+import { TRANSACOES_CSS, TRANSACOES_SCRIPT } from './reportTransacoes.js';
+import { PENDENCIAS_CSS, PENDENCIAS_SCRIPT } from './reportPendencias.js';
 
 interface ClientTransaction {
   id: number;
@@ -52,6 +59,7 @@ interface ClientTransaction {
   updatedAtLabel: string;
   pendente: boolean;
   motivo: string;
+  confianca: Confianca;
   valido: boolean;
   motivoInvalido: string;
   isEmprestimo: boolean;
@@ -111,6 +119,7 @@ export function toClientTransactions(report: Report): ClientTransaction[] {
     updatedAtLabel: t.updatedAt.toLocaleString('pt-BR'),
     pendente: t.pendente,
     motivo: t.motivoClassificacao,
+    confianca: t.confianca,
     valido: t.valido,
     motivoInvalido: t.motivoInvalido,
     isEmprestimo: t.isEmprestimo,
@@ -732,7 +741,7 @@ function clientScript(): string {
             if (v <= 0) return '<td class="num"></td>';
             const intensity = 0.06 + Math.min(1, v / rowMax) * 0.28;
             return '<td class="num periodo-cell" data-dim-field="' + dimensionField + '" data-dim-value="' + esc(dim) + '" data-bucket-key="' + buckets[i] +
-              '" data-granularity="' + granularity + '" style="background:rgba(42,120,214,' + intensity.toFixed(2) + ')" title="Clique para filtrar">' + brl(v) + '</td>';
+              '" data-granularity="' + granularity + '" style="background:rgba(0,169,154,' + intensity.toFixed(2) + ')" title="Clique para filtrar">' + brl(v) + '</td>';
           })
           .join('');
         return '<tr><td class="periodo-cat-label clickable" data-dim-field="' + dimensionField + '" data-dim-value="' + esc(dim) + '" title="Clique para filtrar por ' + esc(dim) + '">' +
@@ -777,7 +786,7 @@ function clientScript(): string {
             const cellExists = (cellMap.get(buckets[i]) || new Map()).has(dim);
             if (!cellExists) return '<td class="num"></td>';
             const intensity = 0.06 + Math.min(1, Math.abs(v) / rowMaxAbs) * 0.28;
-            const rgb = v >= 0 ? '0,99,0' : '154,91,0';
+            const rgb = v >= 0 ? '46,158,79' : '193,112,28';
             return '<td class="num periodo-cell" data-dim-field="' + dimensionField + '" data-dim-value="' + esc(dim) + '" data-bucket-key="' + buckets[i] +
               '" data-granularity="' + granularity + '" style="background:rgba(' + rgb + ',' + intensity.toFixed(2) + ')" title="Clique para filtrar">' + brl(v) + '</td>';
           })
@@ -1219,14 +1228,13 @@ function clientScript(): string {
   }
   document.getElementById('export-transacoes').addEventListener('click', exportTransacoesCsv);
 
-  const logoutBtn = document.getElementById('logout-btn');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
+  document.querySelectorAll('.js-logout').forEach((btn) => {
+    btn.addEventListener('click', () => {
       fetch('/logout', { method: 'POST' }).finally(() => {
         location.href = '/login';
       });
     });
-  }
+  });
 
   function renderAll() {
     renderResumo(getBaseFiltered());
@@ -1568,107 +1576,36 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
     text-decoration: underline;
     cursor: pointer;
   }
+  ${DESIGN_TOKENS_CSS}
+  ${SHELL_CSS}
+  ${FILTER_BAR_CSS}
+  ${RESUMO_CSS}
+  ${PERIODO_TABLE_CSS}
+  ${TRANSACOES_CSS}
+  ${PENDENCIAS_CSS}
+  .g-report-meta { font-size: 12px; color: var(--g-text-3); margin: 0 0 16px; }
 </style>
 </head>
 <body class="viz-root">
-  <div class="wrap">
-    <h1>Relatorio de gastos</h1>
-    <p class="subtitle">Dados buscados no Pluggy de ${dateFrom} a ${dateTo} &middot; Gerado em ${generatedAt}</p>
+  <div class="g-shell">
+    ${shellSidebarHtml()}
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column;">
+      ${shellMobileTopbarHtml()}
+      <main class="g-main">
+        <p class="g-report-meta">Dados buscados no Pluggy de ${dateFrom} a ${dateTo} &middot; Gerado em ${generatedAt}</p>
 
-    <div class="filter-bar">
-      <label>De <input type="date" id="filter-from"></label>
-      <label>Ate <input type="date" id="filter-to"></label>
-      <label>Categoria <select id="filter-categoria"><option value="">Todas</option></select></label>
-      <label>Subcategoria <select id="filter-subcategoria"><option value="">Todas</option></select></label>
-      <label>Valido <select id="filter-valido"><option value="">Todos</option><option value="sim">Sim</option><option value="nao">Nao</option></select></label>
-      <label>Conta <select id="filter-conta"><option value="">Todas</option></select></label>
-      <label>Status (banco) <select id="filter-status"><option value="">Todos</option></select></label>
-      <label>Tipo <select id="filter-tipo"><option value="">Todos</option><option value="gasto">Gasto</option><option value="receita">Receita</option></select></label>
-      <button type="button" id="filter-apply" class="btn-export">Aplicar filtro</button>
-      <button type="button" id="filter-clear">Limpar todos os filtros</button>
-      <span class="filter-hint">Limpa periodo, dimensoes, selecao de barras e filtros de coluna — vale para todas as abas.</span>
-    </div>
+        ${filterBarHtml()}
 
-    <div class="tab-bar">
-      <button class="tab-btn active" data-tab="resumo">Resumo</button>
-      <button class="tab-btn" data-tab="categorias">Categorias</button>
-      <button class="tab-btn" data-tab="subcategorias">Subcategorias</button>
-      <button class="tab-btn" data-tab="emprestimos">Emprestimos</button>
-      <button class="tab-btn" data-tab="invalidos">Invalidos</button>
-      <button class="tab-btn" data-tab="transacoes">Transacoes</button>
-      <button class="tab-btn" data-tab="pendencias">Pendencias de Classificacao (<span id="pend-tab-count">0</span>)</button>
-    </div>
-
-    <div id="tab-resumo" class="tab-panel active">
-      <section class="kpi-row">
-        <div class="kpi-tile">
-          <div class="kpi-label">Total de gastos</div>
-          <div class="kpi-value" id="kpi-expenses"></div>
-        </div>
-        <div class="kpi-tile">
-          <div class="kpi-label">Total de receitas</div>
-          <div class="kpi-value" id="kpi-income"></div>
-        </div>
-        <div class="kpi-tile">
-          <div class="kpi-label">Saldo no periodo</div>
-          <div class="kpi-value" id="kpi-net"></div>
-        </div>
-        <div class="kpi-tile">
-          <div class="kpi-label">Transacoes no periodo</div>
-          <div class="kpi-value" id="kpi-count"></div>
-        </div>
-        <div class="kpi-tile">
-          <div class="kpi-label">Pendentes de classificacao</div>
-          <div class="kpi-value" id="kpi-pendentes"></div>
-        </div>
-      </section>
-
-      <section class="card" style="margin-top:24px;">
-        <div class="chart-header">
-          <h2>Gastos ao longo do tempo</h2>
-          <div style="display:flex;align-items:center;gap:12px;">
-            <span id="bar-selection-info"></span>
-            <select id="chart-granularity">
-              <option value="dia">Por dia</option>
-              <option value="mes" selected>Acumulado por mes</option>
-              <option value="trimestre">Acumulado por trimestre</option>
-              <option value="semestre">Acumulado por semestre</option>
-              <option value="ano">Acumulado por ano</option>
-            </select>
-          </div>
-        </div>
-        <p class="subtitle" style="margin:0 0 4px;">Clique numa barra pra selecionar aquele periodo (Ctrl+clique pra selecionar varios) — filtra o resto do relatorio sem esconder as outras barras.</p>
-        <div id="monthly-chart"></div>
-      </section>
-
-      <section class="card">
-        <h2>Receitas ao longo do tempo</h2>
-        <div id="monthly-income-chart"></div>
-      </section>
-
-      <section class="card">
-        <h2>Maiores gastos (por descricao)</h2>
-        <div class="table-scroll">
-          <table class="data-table" id="merchants-table">
-            <thead></thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="card">
-        <h2>Contas conectadas</h2>
-        <div class="table-scroll">
-          <table class="data-table" id="accounts-table">
-            <thead></thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </section>
-    </div>
+    ${resumoTabHtml()}
 
     <div id="tab-categorias" class="tab-panel">
-      <section class="card">
+      <div class="g-tab-pills" data-subtab-group="categorias">
+        <button type="button" class="g-tab-pill active" data-subtab-target="saldo">Saldo</button>
+        <button type="button" class="g-tab-pill" data-subtab-target="gastos">Gastos</button>
+        <button type="button" class="g-tab-pill" data-subtab-target="receita">Receita</button>
+      </div>
+
+      <section class="card" data-subtab="saldo">
         <div class="chart-header">
           <h2>Saldo por categoria ao longo do tempo</h2>
           <select id="categoria-chart-granularity">
@@ -1687,7 +1624,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
           </table>
         </div>
       </section>
-      <section class="card">
+      <section class="card" data-subtab="gastos">
         <h2>Gastos por categoria ao longo do tempo</h2>
         <div class="table-scroll">
           <table class="data-table" id="categorias-periodo-table">
@@ -1696,7 +1633,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
           </table>
         </div>
       </section>
-      <section class="card">
+      <section class="card" data-subtab="receita">
         <h2>Receita por categoria ao longo do tempo</h2>
         <div class="table-scroll">
           <table class="data-table" id="categorias-receita-periodo-table">
@@ -1705,7 +1642,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
           </table>
         </div>
       </section>
-      <section class="card">
+      <section class="card" data-subtab="gastos">
         <h2>Gastos por categoria</h2>
         <div class="table-scroll">
           <table class="data-table" id="categorias-table">
@@ -1714,7 +1651,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
           </table>
         </div>
       </section>
-      <section class="card">
+      <section class="card" data-subtab="receita">
         <h2>Receita por categoria</h2>
         <div class="table-scroll">
           <table class="data-table" id="categorias-receita-table">
@@ -1726,7 +1663,13 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
     </div>
 
     <div id="tab-subcategorias" class="tab-panel">
-      <section class="card">
+      <div class="g-tab-pills" data-subtab-group="subcategorias">
+        <button type="button" class="g-tab-pill active" data-subtab-target="saldo">Saldo</button>
+        <button type="button" class="g-tab-pill" data-subtab-target="gastos">Gastos</button>
+        <button type="button" class="g-tab-pill" data-subtab-target="receita">Receita</button>
+      </div>
+
+      <section class="card" data-subtab="saldo">
         <div class="chart-header">
           <h2>Saldo por subcategoria ao longo do tempo</h2>
           <select id="subcategoria-chart-granularity">
@@ -1745,7 +1688,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
           </table>
         </div>
       </section>
-      <section class="card">
+      <section class="card" data-subtab="gastos">
         <h2>Gastos por subcategoria ao longo do tempo</h2>
         <div class="table-scroll">
           <table class="data-table" id="subcategorias-periodo-table">
@@ -1754,7 +1697,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
           </table>
         </div>
       </section>
-      <section class="card">
+      <section class="card" data-subtab="receita">
         <h2>Receita por subcategoria ao longo do tempo</h2>
         <div class="table-scroll">
           <table class="data-table" id="subcategorias-receita-periodo-table">
@@ -1763,7 +1706,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
           </table>
         </div>
       </section>
-      <section class="card">
+      <section class="card" data-subtab="gastos">
         <h2>Gastos por subcategoria</h2>
         <div class="table-scroll">
           <table class="data-table" id="subcategorias-table">
@@ -1772,7 +1715,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
           </table>
         </div>
       </section>
-      <section class="card">
+      <section class="card" data-subtab="receita">
         <h2>Receita por subcategoria</h2>
         <div class="table-scroll">
           <table class="data-table" id="subcategorias-receita-table">
@@ -1784,7 +1727,13 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
     </div>
 
     <div id="tab-emprestimos" class="tab-panel">
-      <section class="card">
+      <div class="g-tab-pills" data-subtab-group="emprestimos">
+        <button type="button" class="g-tab-pill active" data-subtab-target="saldo">Saldo</button>
+        <button type="button" class="g-tab-pill" data-subtab-target="gastos">Gastos</button>
+        <button type="button" class="g-tab-pill" data-subtab-target="receita">Receita</button>
+      </div>
+
+      <section class="card" data-subtab="saldo">
         <div class="chart-header">
           <h2>Saldo de Emprestimos ao longo do tempo</h2>
           <select id="emprestimo-chart-granularity">
@@ -1803,7 +1752,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
           </table>
         </div>
       </section>
-      <section class="card">
+      <section class="card" data-subtab="gastos">
         <h2>Gastos de Emprestimos ao longo do tempo</h2>
         <div class="table-scroll">
           <table class="data-table" id="emprestimos-periodo-table">
@@ -1812,7 +1761,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
           </table>
         </div>
       </section>
-      <section class="card">
+      <section class="card" data-subtab="receita">
         <h2>Recebimentos de Emprestimos ao longo do tempo</h2>
         <div class="table-scroll">
           <table class="data-table" id="emprestimos-receita-periodo-table">
@@ -1821,7 +1770,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
           </table>
         </div>
       </section>
-      <section class="card">
+      <section class="card" data-subtab="gastos">
         <h2>Gastos de Emprestimos</h2>
         <div class="table-scroll">
           <table class="data-table" id="emprestimos-table">
@@ -1830,7 +1779,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
           </table>
         </div>
       </section>
-      <section class="card">
+      <section class="card" data-subtab="receita">
         <h2>Recebimentos de Emprestimos</h2>
         <div class="table-scroll">
           <table class="data-table" id="emprestimos-receita-table">
@@ -1842,7 +1791,13 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
     </div>
 
     <div id="tab-invalidos" class="tab-panel">
-      <section class="card">
+      <div class="g-tab-pills" data-subtab-group="invalidos">
+        <button type="button" class="g-tab-pill active" data-subtab-target="saldo">Saldo</button>
+        <button type="button" class="g-tab-pill" data-subtab-target="gastos">Gastos</button>
+        <button type="button" class="g-tab-pill" data-subtab-target="receita">Receita</button>
+      </div>
+
+      <section class="card" data-subtab="saldo">
         <div class="chart-header">
           <h2>Saldo de Invalidos ao longo do tempo</h2>
           <select id="invalido-chart-granularity">
@@ -1861,7 +1816,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
           </table>
         </div>
       </section>
-      <section class="card">
+      <section class="card" data-subtab="gastos">
         <h2>Gastos Invalidos ao longo do tempo</h2>
         <div class="table-scroll">
           <table class="data-table" id="invalidos-periodo-table">
@@ -1870,7 +1825,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
           </table>
         </div>
       </section>
-      <section class="card">
+      <section class="card" data-subtab="receita">
         <h2>Receitas Invalidas ao longo do tempo</h2>
         <div class="table-scroll">
           <table class="data-table" id="invalidos-receita-periodo-table">
@@ -1879,7 +1834,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
           </table>
         </div>
       </section>
-      <section class="card">
+      <section class="card" data-subtab="gastos">
         <h2>Gastos Invalidos</h2>
         <div class="table-scroll">
           <table class="data-table" id="invalidos-table">
@@ -1888,7 +1843,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
           </table>
         </div>
       </section>
-      <section class="card">
+      <section class="card" data-subtab="receita">
         <h2>Receitas Invalidas</h2>
         <div class="table-scroll">
           <table class="data-table" id="invalidos-receita-table">
@@ -1930,16 +1885,24 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
       </section>
     </div>
 
-    <div id="datalists"></div>
-    <footer>
-      Relatorio gerado a partir da API do Pluggy. Edicoes de classificacao/valido feitas aqui sao salvas
-      automaticamente no servidor — ja aparecem em qualquer dispositivo no proximo carregamento da pagina.
-      <button type="button" id="logout-btn" class="link-btn">Sair</button>
-    </footer>
+        <div id="datalists"></div>
+        <footer>
+          Relatorio gerado a partir da API do Pluggy. Edicoes de classificacao/valido feitas aqui sao salvas
+          automaticamente no servidor — ja aparecem em qualquer dispositivo no proximo carregamento da pagina.
+        </footer>
+      </main>
+      ${shellBottomNavHtml()}
+    </div>
   </div>
   <script>
     const REPORT_DATA = ${buildClientPayload(report)};
     ${clientScript()}
+    ${SHELL_SCRIPT}
+    ${FILTER_BAR_SCRIPT}
+    ${RESUMO_SCRIPT}
+    ${PERIODO_TABLE_SCRIPT}
+    ${TRANSACOES_SCRIPT}
+    ${PENDENCIAS_SCRIPT}
   </script>
 </body>
 </html>`;
