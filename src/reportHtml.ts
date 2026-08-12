@@ -275,8 +275,18 @@ function clientScript(): string {
   const toInput = document.getElementById('filter-to');
   fromInput.min = toInput.min = minDate;
   fromInput.max = toInput.max = maxDate;
-  fromInput.value = minDate;
-  toInput.value = maxDate;
+  // Padrao ao abrir o dashboard: meses do ano corrente ate hoje (nao o
+  // historico inteiro) — "Limpar todos os filtros" continua voltando pro
+  // historico completo, ver handler de #filter-clear mais abaixo.
+  function clampToDateRange(iso) { return iso < minDate ? minDate : iso > maxDate ? maxDate : iso; }
+  const now = new Date();
+  // pad2() ja existe mais abaixo neste mesmo escopo (usada por
+  // bucketDateRange) — declaracoes de function sao hoisted, entao ja da pra
+  // chamar aqui sem duplicar.
+  const todayIso = now.getFullYear() + '-' + pad2(now.getMonth() + 1) + '-' + pad2(now.getDate());
+  const yearStartIso = now.getFullYear() + '-01-01';
+  fromInput.value = clampToDateRange(yearStartIso);
+  toInput.value = clampToDateRange(todayIso);
 
   const categoriaFilter = document.getElementById('filter-categoria');
   const subcategoriaFilter = document.getElementById('filter-subcategoria');
@@ -1342,8 +1352,8 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
   * { box-sizing: border-box; }
   body {
     margin: 0;
-    background: var(--page);
-    color: var(--text-primary);
+    background: var(--g-paper);
+    color: var(--g-text-1);
     font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
   }
   .wrap { max-width: 1200px; margin: 0 auto; padding: 32px 20px 64px; }

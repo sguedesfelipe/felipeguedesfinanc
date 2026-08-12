@@ -254,9 +254,18 @@ function enforceInstallmentConsistency(transactions: CategorizedTransaction[]): 
       t.subcategoria = leader.subcategoria;
       t.confianca = leader.confianca;
       const motivoBase = `${leader.motivoClassificacao} (segue a classificacao da parcela ${leader.installment || '1'}.)`;
-      const { pendente, motivo } = applyReviewCutoff(leader.pendente, motivoBase, t.dataConsiderada);
-      t.pendente = pendente;
-      t.motivoClassificacao = motivo;
+      // So reavalia pendente/motivo enquanto a parcela ainda esta pendente —
+      // uma vez que o usuario marcou como revisada (pendente:false, gravado
+      // no Firestore), isso precisa ficar assim pra sempre; sem essa guarda,
+      // essa funcao roda de novo em toda leitura e reverte o aceite sempre
+      // que a parcela lider (ou o corte de revisao) ainda estiver pendente.
+      if (t.pendente) {
+        const { pendente, motivo } = applyReviewCutoff(leader.pendente, motivoBase, t.dataConsiderada);
+        t.pendente = pendente;
+        t.motivoClassificacao = motivo;
+      } else {
+        t.motivoClassificacao = motivoBase;
+      }
     }
   }
 }

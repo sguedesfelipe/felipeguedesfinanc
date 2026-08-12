@@ -280,7 +280,10 @@ export const FILTER_BAR_SCRIPT = `
     });
 
     function applyPreset(preset) {
-      const today = maxDate;
+      // "Hoje" e' a data real do calendario (nao a ultima data com dado no
+      // periodo, que pode estar no futuro por causa de parcelas projetadas).
+      const now = new Date();
+      const today = clamp(toISO(now.getFullYear(), now.getMonth(), now.getDate()));
       if (preset === 'today') { pendingFrom = today; pendingTo = today; }
       else if (preset === '7d') { pendingFrom = clamp(addDaysIso(today, -6)); pendingTo = today; }
       else if (preset === 'month') { const p = parseISO(today); pendingFrom = clamp(toISO(p.y, p.m, 1)); pendingTo = today; }
