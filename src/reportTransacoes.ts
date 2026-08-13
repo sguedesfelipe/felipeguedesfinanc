@@ -1,14 +1,16 @@
 export const TRANSACOES_CSS = `
-  /* Colunas enxutas: so Descricao/Categoria/Subcategoria/Valor/Conta/Valido
-     ficam visiveis por padrao (posicoes fixas em TX_COLUMNS, contadas em
-     ordem 1-indexada). O restante dos ~40 campos do Pluggy continua no DOM
-     (nada foi removido de TX_COLUMNS nem do render generico), so escondido
-     por CSS — abre no painel de detalhe (linha extra) ao clicar no chevron. */
-  #transacoes-table thead th:not(:nth-child(3)):not(:nth-child(4)):not(:nth-child(5)):not(:nth-child(6)):not(:nth-child(8)):not(:nth-child(10)),
-  #transacoes-table tbody tr:not(.g-tx-detail-row) td:not(:nth-child(3)):not(:nth-child(4)):not(:nth-child(5)):not(:nth-child(6)):not(:nth-child(8)):not(:nth-child(10)) {
+  /* Colunas enxutas: so Data/Descricao/Categoria/Subcategoria/Valor/Conta/
+     Valido ficam visiveis por padrao (posicoes fixas em TX_COLUMNS,
+     contadas em ordem 1-indexada). O restante dos ~40 campos do Pluggy
+     continua no DOM (nada foi removido de TX_COLUMNS nem do render
+     generico), so escondido por CSS — abre no painel de detalhe (linha
+     extra) ao clicar no chevron. */
+  #transacoes-table thead th:not(:nth-child(1)):not(:nth-child(3)):not(:nth-child(4)):not(:nth-child(5)):not(:nth-child(6)):not(:nth-child(8)):not(:nth-child(10)),
+  #transacoes-table tbody tr:not(.g-tx-detail-row) td:not(:nth-child(1)):not(:nth-child(3)):not(:nth-child(4)):not(:nth-child(5)):not(:nth-child(6)):not(:nth-child(8)):not(:nth-child(10)) {
     display: none;
   }
 
+  #transacoes-table td[data-col="dateISO"] { color: var(--g-text-2); font-size: 12px; white-space: nowrap; }
   #transacoes-table td[data-col="description"] { display: flex; align-items: center; gap: 8px; max-width: 360px; }
   #transacoes-table .g-tx-desc-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--g-text-1); }
   #transacoes-table .g-tx-avatar-sm {
@@ -71,7 +73,7 @@ export const TRANSACOES_CSS = `
 
 export const TRANSACOES_SCRIPT = `
   (function () {
-    const G_TX_VISIBLE_KEYS = ['description', 'categoria', 'subcategoria', 'amount', 'account', 'valido'];
+    const G_TX_VISIBLE_KEYS = ['dateISO', 'description', 'categoria', 'subcategoria', 'amount', 'account', 'valido'];
     const G_TX_DETAIL_COLUMNS = TX_COLUMNS.filter(function (c) { return G_TX_VISIBLE_KEYS.indexOf(c.key) === -1; });
 
     function g_txDetailHtml(t) {
@@ -99,7 +101,7 @@ export const TRANSACOES_SCRIPT = `
       if (!t) return;
       const detailTr = document.createElement('tr');
       detailTr.className = 'g-tx-detail-row';
-      detailTr.innerHTML = '<td colspan="6">' + g_txDetailHtml(t) + '</td>';
+      detailTr.innerHTML = '<td colspan="7">' + g_txDetailHtml(t) + '</td>';
       tr.after(detailTr);
       const btn = tr.querySelector('.g-tx-expand');
       if (btn) btn.classList.add('g-open');

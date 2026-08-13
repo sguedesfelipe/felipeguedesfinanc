@@ -2,11 +2,12 @@ export const PENDENCIAS_CSS = `
   /* Mesma tecnica da aba Transacoes: colunas enxutas via CSS (posicoes fixas
      em PEND_COLUMNS), nada removido do render generico — o resto dos campos
      continua acessivel no painel de detalhe. */
-  #pendencias-table thead th:not(:nth-child(1)):not(:nth-child(2)):not(:nth-child(6)):not(:nth-child(7)):not(:nth-child(9)):not(:nth-child(10)),
-  #pendencias-table tbody tr:not(.g-tx-detail-row) td:not(:nth-child(1)):not(:nth-child(2)):not(:nth-child(6)):not(:nth-child(7)):not(:nth-child(9)):not(:nth-child(10)) {
+  #pendencias-table thead th:not(:nth-child(1)):not(:nth-child(2)):not(:nth-child(4)):not(:nth-child(6)):not(:nth-child(7)):not(:nth-child(9)):not(:nth-child(10)),
+  #pendencias-table tbody tr:not(.g-tx-detail-row) td:not(:nth-child(1)):not(:nth-child(2)):not(:nth-child(4)):not(:nth-child(6)):not(:nth-child(7)):not(:nth-child(9)):not(:nth-child(10)) {
     display: none;
   }
 
+  #pendencias-table td[data-col="dateISO"] { color: var(--g-text-2); font-size: 12px; white-space: nowrap; }
   #pendencias-table input[type="checkbox"] { accent-color: var(--g-accent); width: 16px; height: 16px; cursor: pointer; }
 
   #pendencias-table td[data-col="description"] { display: flex; align-items: center; gap: 8px; max-width: 320px; }
@@ -73,7 +74,7 @@ export const PENDENCIAS_CSS = `
 
 export const PENDENCIAS_SCRIPT = `
   (function () {
-    const G_PEND_VISIBLE_KEYS = ['_select', '_acao', 'description', 'amount', 'categoria', 'subcategoria'];
+    const G_PEND_VISIBLE_KEYS = ['_select', '_acao', 'dateISO', 'description', 'amount', 'categoria', 'subcategoria'];
     const G_PEND_DETAIL_COLUMNS = PEND_COLUMNS.filter(function (c) { return G_PEND_VISIBLE_KEYS.indexOf(c.key) === -1; });
     const G_CONF_LABELS = { alta: 'Alta confianca', media: 'Media confianca', baixa: 'Baixa confianca' };
 
@@ -108,7 +109,7 @@ export const PENDENCIAS_SCRIPT = `
       if (!t) return;
       const detailTr = document.createElement('tr');
       detailTr.className = 'g-tx-detail-row';
-      detailTr.innerHTML = '<td colspan="6">' + g_pendDetailHtml(t) + '</td>';
+      detailTr.innerHTML = '<td colspan="7">' + g_pendDetailHtml(t) + '</td>';
       tr.after(detailTr);
       const btn = tr.querySelector('.g-tx-expand');
       if (btn) btn.classList.add('g-open');
