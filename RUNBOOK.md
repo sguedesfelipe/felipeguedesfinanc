@@ -233,6 +233,109 @@ rodando manualmente antes de confiar no agendamento:
 gcloud run jobs execute relatorio-gastos-refresh --region "$REGION"
 ```
 
+## 8. Backup automático do Firestore
+
+O Firestore tem um recurso nativo de backup agendado — sem precisar montar
+export manual pra um bucket nem escrever nenhum código. Cria uma política
+que gera um backup completo todo dia, guardado por um período configurável:
+
+```bash
+gcloud firestore backups schedules create \
+  --database='(default)' \
+  --recurrence=daily \
+  --retention=7d \
+  --project="$PROJECT_ID"
+```
+
+Confirmar que a política foi criada:
+
+```bash
+gcloud firestore backups schedules list --database='(default)' --project="$PROJECT_ID"
+```
+
+Depois do primeiro ciclo (até 24h), os backups aparecem em:
+
+```bash
+gcloud firestore backups list --project="$PROJECT_ID"
+```
+
+Se precisar restaurar (cria um banco novo a partir do backup — não sobrescreve
+o banco atual):
+
+```bash
+gcloud firestore databases restore \
+  --source-backup="BACKUP_NAME_AQUI" \
+  --destination-database="relatorio-gastos-restaurado" \
+  --project="$PROJECT_ID"
+```
+
+`BACKUP_NAME_AQUI` vem da coluna `NAME` do comando `backups list` acima.
+Isso tem um custo pequeno de armazenamento (fora do free tier padrão, mas
+irrelevante pro volume de dados deste projeto — poucos MB).
+
+## 9. Alerta se o job diário falhar
+
+Hoje a única forma de saber que o job diário falhou é olhando os logs manualmente.
+O caminho mais confiável pra configurar um alerta é pelo console (os nomes
+exatos de métrica podem mudar de versão pra versão, então a interface visual
+evita depender de sintaxe que pode ficar desatualizada):
+
+1. Abra [Cloud Monitoring → Alerting](https://console.cloud.google.com/monitoring/alerting) no projeto `$PROJECT_ID`.
+2. **Create Policy** → **Select a metric** → resource type **Cloud Run Job**,
+   métrica **Job Execution** (ou **Completed Execution Count**) → filtre por
+   `job_name = relatorio-gastos-refresh` e `result = failed`.
+3. Condição: **is above 0**, janela de checagem **1 day** (cobre uma execução
+   diária).
+4. Notificação: adicione seu e-mail como canal (crie um se ainda não tiver
+   nenhum).
+5. Salve com um nome tipo "Job diário de atualização falhou".
+
+Se preferir configurar tudo via terminal, dá pra criar o canal de notificação
+e a política por `gcloud`, mas os nomes de campo abaixo valem a pena conferir
+no **Metrics Explorer** do console antes de confiar cegamente neles (métricas
+do Cloud Run Jobs mudam de rótulo ocasionalmente):
+
+```bash
+gcloud beta monitoring channels create \
+  --display-name="E-mail - alertas do job diario" \
+  --type=email \
+  --channel-labels=email_address="$SEU_EMAIL" \
+  --project="$PROJECT_ID"
+# anote o ID do canal que o comando devolve (algo como
+# projects/.../notificationChannels/1234567890)
+```
+
+```bash
+cat > /tmp/alert-policy-refresh.json <<'EOF'
+{
+  "displayName": "Job diario de atualizacao falhou",
+  "combiner": "OR",
+  "conditions": [{
+    "displayName": "Execucao do job com falha",
+    "conditionThreshold": {
+      "filter": "resource.type=\"cloud_run_job\" AND resource.labels.job_name=\"relatorio-gastos-refresh\" AND metric.type=\"run.googleapis.com/job/completed_execution_count\" AND metric.labels.result=\"failed\"",
+      "comparison": "COMPARISON_GT",
+      "thresholdValue": 0,
+      "duration": "0s",
+      "aggregations": [{
+        "alignmentPeriod": "86400s",
+        "perSeriesAligner": "ALIGN_COUNT",
+        "crossSeriesReducer": "REDUCE_SUM"
+      }]
+    }
+  }],
+  "notificationChannels": ["CHANNEL_ID_AQUI"],
+  "alertStrategy": { "autoClose": "86400s" }
+}
+EOF
+
+gcloud alpha monitoring policies create \
+  --policy-from-file=/tmp/alert-policy-refresh.json \
+  --project="$PROJECT_ID"
+```
+
+Troque `CHANNEL_ID_AQUI` pelo ID anotado no passo anterior antes de rodar.
+
 ## Depois de tudo no ar
 
 - O botão **"Atualizar agora"** no dashboard chama `POST /api/refresh` e

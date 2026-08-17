@@ -12,7 +12,9 @@
     "migrate": "tsx src/migrate.ts",
     "refresh": "tsx src/refreshJob.ts",
     "dev:server": "tsx src/server.ts",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "test:e2e": "node tests/e2e/run.mjs",
+    "test": "npm run build && npm run test:e2e"
   },
   "dependencies": {
     "cookie-parser": "^1.4.7",
@@ -27,6 +29,8 @@
     "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.6",
     "@types/node": "^20.14.0",
+    "firebase-tools": "^15.27.0",
+    "playwright": "^1.62.1",
     "tsx": "^4.19.0",
     "typescript": "^5.5.0"
   }

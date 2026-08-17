@@ -82,6 +82,7 @@ export function loginPageHtml(googleClientId: string): string {
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Entrar — Relatorio de gastos</title>
+<link rel="icon" href="data:,">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
   body { font: 15px system-ui, sans-serif; background: #f5f5f3; color: #1a1a1a; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
