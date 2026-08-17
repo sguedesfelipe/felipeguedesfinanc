@@ -33,7 +33,10 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          # firebase-tools (usado pra subir o emulador do Firestore nos
+          # testes) exige Java 21+ a partir da v14 — 17 falha com
+          # "firebase-tools no longer supports Java version before 21".
+          java-version: '21'
       - run: npm ci
       - name: Instalar o Chromium do Playwright
         run: npx playwright install --with-deps chromium
