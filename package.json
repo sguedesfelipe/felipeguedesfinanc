@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit",
     "build": "tsc",
     "migrate": "tsx src/migrate.ts",
+    "migrate:mark-notified": "tsx src/migrateMarkNotified.ts",
     "refresh": "tsx src/refreshJob.ts",
     "dev:server": "tsx src/server.ts",
     "start": "node dist/server.js",

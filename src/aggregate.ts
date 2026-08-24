@@ -156,6 +156,10 @@ export interface CategorizedTransaction extends TransactionExtra {
   isEmprestimo: boolean;
   amount: number;
   isExpense: boolean;
+  // true depois que essa transacao ja apareceu num digest diario do
+  // WhatsApp (ver src/dailyDigest.ts) — evita reenviar a mesma transacao
+  // em digests futuros. Default false pra tudo que chega novo do Pluggy.
+  notificadoWhatsapp: boolean;
 }
 
 export interface MonthTotal {
@@ -359,6 +363,7 @@ export function classifyAndShapeTransactions(data: AccountTransactions[]): Categ
         isEmprestimo: false, // recalculado por applyEmprestimoFlag logo abaixo, depois que categoria fica definitiva
         amount,
         isExpense,
+        notificadoWhatsapp: false,
       });
     }
   }

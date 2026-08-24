@@ -336,6 +336,163 @@ gcloud alpha monitoring policies create \
 
 Troque `CHANNEL_ID_AQUI` pelo ID anotado no passo anterior antes de rodar.
 
+## 10. Digest diário via WhatsApp
+
+Depois que o job diário (seção 7) atualiza os dados, ele também manda uma
+mensagem no WhatsApp com as transações novas desde o último envio e o total
+de pendências aguardando revisão (ver `src/dailyDigest.ts`). Usa a API
+oficial do WhatsApp Cloud da Meta, direto — sem Twilio nem outro
+intermediário — com um único destinatário fixo (você mesmo).
+
+### 10a. Criar o app na Meta e um número de produção
+
+1. Em [developers.facebook.com](https://developers.facebook.com/apps), crie
+   um app novo, adicione o caso de uso **"Conectar-se com clientes pelo
+   WhatsApp"** e associe a um portfólio empresarial (Business Manager).
+2. **Não use o número de teste gratuito da Etapa 1** — apps em modo
+   Desenvolvimento só podem mandar mensagem pra até 5 destinatários
+   verificados manualmente (tela de reivindicação costuma falhar/travar sem
+   aviso claro de erro). Um **número de produção de verdade** (Etapa 2 →
+   "Registre seu número de telefone do WhatsApp" → "Adicionar novo número")
+   não tem essa restrição.
+3. O número de produção **precisa ser diferente do seu WhatsApp pessoal** —
+   um número só pode estar em uma conta do WhatsApp por vez (pessoal *ou*
+   API, nunca as duas). Um eSIM avulso de operadora virtual, ativado só pra
+   receber o SMS/ligação de verificação, resolve sem custo relevante.
+4. No formulário "Adicionar novo número", nome/site da empresa podem ser
+   qualquer valor plausível (não aparece pro destinatário nesse uso pessoal)
+   — se não tiver site, o campo aceita ficar em branco.
+5. Depois de adicionar o número, clique em **"Registrar"** e defina um PIN
+   de 6 dígitos (anote — precisa dele pra re-registrar o número no futuro).
+   Se o widget do painel falhar com "Falha na inscrição" mesmo com o PIN
+   certo (bug observado no painel web), registre via API diretamente:
+
+   ```bash
+   curl -X POST "https://graph.facebook.com/v21.0/{PHONE_NUMBER_ID}/register" \
+     -H "Authorization: Bearer {TOKEN_TEMPORARIO}" \
+     -H "Content-Type: application/json" \
+     -d '{"messaging_product":"whatsapp","pin":"SEU_PIN_AQUI"}'
+   ```
+
+   `{TOKEN_TEMPORARIO}` pode ser gerado na
+   [Graph API Explorer](https://developers.facebook.com/tools/explorer) (seleciona o app,
+   adiciona a permissão `whatsapp_business_messaging`, gera o token — vale só
+   algumas horas, serve só pra esse comando pontual).
+
+### 10b. Criar o template de mensagem
+
+Mensagens iniciadas pela empresa (fora de uma janela de conversa de 24h)
+exigem um template pré-aprovado pela Meta. Em **WhatsApp Manager → Modelos
+de mensagens → Gerenciar modelos → Criar modelo**:
+
+- Nome: `atualizacao_diaria_gastos`
+- Categoria: **Utilidade**
+- Idioma: Português (BR)
+- Corpo:
+
+  ```
+  📊 Atualização diária de gastos
+
+  Novas transações:
+  {{1}}
+
+  Pendências aguardando revisão: {{2}}.
+  ```
+
+**Atenção**: variáveis de template do WhatsApp (a) não podem ficar no início
+nem no fim do corpo (por isso o `.` depois de `{{2}}`) e (b) não podem
+conter quebra de linha — é por isso que `src/dailyDigest.ts` junta a lista
+de transações numa única linha, separada por `||`, em vez de uma por linha.
+Nos exemplos de variável pedidos na hora de submeter, use algo no mesmo
+formato, ex. `Supermercado XPTO: R$ 120,50 || Uber: R$ 35,00` pra `{{1}}` e
+`3` pra `{{2}}`.
+
+Aprovação costuma levar de minutos a ~24h. Acompanhe o status em "Gerenciar
+modelos" (`Em análise` → `Ativo`).
+
+### 10c. Gerar um token de acesso permanente
+
+O token gerado pela Graph API Explorer expira em algumas horas — inútil pro
+job diário rodando sozinho. Gere um token de **System User**, que não
+expira:
+
+1. Em [business.facebook.com](https://business.facebook.com) →
+   **Configurações do Negócio → Usuários → Usuários do sistema → Adicionar**.
+2. Crie um usuário do sistema (função Admin).
+3. **Adicionar ativos** → selecione o app da Meta criado no passo 10a, ative
+   "Gerenciar app", atribua.
+4. Repita pra **Contas do WhatsApp** → selecione a WABA (conta do WhatsApp
+   Business) → ative "Tudo" (acesso total), atribua.
+5. **Gerar novo token** → app correto, permissão `whatsapp_business_messaging`.
+6. Copie o token — só aparece uma vez. Confirme que não expira:
+
+   ```bash
+   curl "https://graph.facebook.com/v21.0/debug_token?input_token={TOKEN}&access_token={TOKEN}"
+   # espera: "type": "SYSTEM_USER", "expires_at": 0
+   ```
+
+### 10d. Guardar os segredos e atualizar o Job
+
+```bash
+printf '%s' "SEU_TOKEN_PERMANENTE" | gcloud secrets create whatsapp-access-token --data-file=-
+printf '%s' "SEU_PHONE_NUMBER_ID" | gcloud secrets create whatsapp-phone-number-id --data-file=-
+printf '%s' "5531999999999" | gcloud secrets create whatsapp-recipient-number --data-file=-  # seu numero, formato internacional sem +
+printf '%s' "atualizacao_diaria_gastos" | gcloud secrets create whatsapp-template-name --data-file=-
+
+PROJECT_NUMBER=$(gcloud projects describe "$PROJECT_ID" --format='value(projectNumber)')
+for SECRET in whatsapp-access-token whatsapp-phone-number-id whatsapp-recipient-number whatsapp-template-name; do
+  gcloud secrets add-iam-policy-binding "$SECRET" \
+    --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+    --role="roles/secretmanager.secretAccessor"
+done
+```
+
+Atualiza o Job existente (criado na seção 7) pra usar a imagem mais recente
+(com o código do digest) e incluir os 4 segredos novos:
+
+```bash
+IMAGE=$(gcloud run services describe "$SERVICE" --region "$REGION" --format='value(spec.template.spec.containers[0].image)')
+
+gcloud run jobs update relatorio-gastos-refresh \
+  --image "$IMAGE" \
+  --region "$REGION" \
+  --update-secrets="WHATSAPP_ACCESS_TOKEN=whatsapp-access-token:latest,WHATSAPP_PHONE_NUMBER_ID=whatsapp-phone-number-id:latest,WHATSAPP_RECIPIENT_NUMBER=whatsapp-recipient-number:latest,WHATSAPP_TEMPLATE_NAME=whatsapp-template-name:latest"
+```
+
+(Antes disso, redeploy o serviço web normalmente — seção 6b — pra gerar uma
+imagem nova com o código do digest, e use essa imagem no comando acima.)
+
+### 10e. Migração de bootstrap (rodar uma única vez)
+
+As transações que já existem no Firestore não têm o campo
+`notificadoWhatsapp` — sem isso, o primeiro digest tentaria listar todo o
+histórico de uma vez. Marca tudo que já existe como já notificado, com as
+mesmas credenciais locais da seção 5:
+
+```bash
+GOOGLE_CLOUD_PROJECT="$PROJECT_ID" npm run migrate:mark-notified
+```
+
+Só a partir da próxima atualização diária (transações novas que chegarem
+depois disso) é que vão aparecer no digest.
+
+### 10f. Testar
+
+```bash
+gcloud run jobs execute relatorio-gastos-refresh --region "$REGION"
+```
+
+Confira os logs da execução (`gcloud run jobs executions list --job
+relatorio-gastos-refresh --region "$REGION"`, depois `gcloud run jobs
+executions logs read`) — deve aparecer "Digest diario enviado: N
+transacao(oes) nova(s) avisada(s)" ou "nenhuma transacao nova" se não
+houver nada novo desde o bootstrap. Rodar o job duas vezes seguidas não deve
+mandar a mesma transação de novo (idempotência via `notificadoWhatsapp`).
+
+Falha só no envio do WhatsApp fica logada mas não derruba o job nem dispara
+o alerta de monitoramento da seção 9 (que olha o exit code do job) — a
+atualização dos dados continua sendo a parte crítica.
+
 ## Depois de tudo no ar
 
 - O botão **"Atualizar agora"** no dashboard chama `POST /api/refresh` e
