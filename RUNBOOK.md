@@ -218,16 +218,26 @@ gcloud run jobs add-iam-policy-binding relatorio-gastos-refresh \
   --member="serviceAccount:relatorio-gastos-scheduler@${PROJECT_ID}.iam.gserviceaccount.com" \
   --role="roles/run.invoker"
 
-gcloud scheduler jobs create http relatorio-gastos-diario \
+gcloud scheduler jobs create http relatorio-gastos-diario-meio-dia \
   --location "$REGION" \
-  --schedule="0 7 * * *" \
+  --schedule="0 12 * * *" \
+  --time-zone="America/Sao_Paulo" \
+  --uri="https://${REGION}-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/${PROJECT_ID}/jobs/relatorio-gastos-refresh:run" \
+  --http-method=POST \
+  --oauth-service-account-email="relatorio-gastos-scheduler@${PROJECT_ID}.iam.gserviceaccount.com"
+
+gcloud scheduler jobs create http relatorio-gastos-diario-noite \
+  --location "$REGION" \
+  --schedule="0 20 * * *" \
+  --time-zone="America/Sao_Paulo" \
   --uri="https://${REGION}-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/${PROJECT_ID}/jobs/relatorio-gastos-refresh:run" \
   --http-method=POST \
   --oauth-service-account-email="relatorio-gastos-scheduler@${PROJECT_ID}.iam.gserviceaccount.com"
 ```
 
-Ajuste `0 7 * * *` (7h UTC = 4h em Brasília) pro horário que preferir. Teste
-rodando manualmente antes de confiar no agendamento:
+Duas execuções por dia (meio-dia e 20h, horário de Brasília — `--time-zone`
+cuida da conversão pro fuso certo sozinho). Ajuste os horários pro que
+preferir. Teste rodando manualmente antes de confiar no agendamento:
 
 ```bash
 gcloud run jobs execute relatorio-gastos-refresh --region "$REGION"
@@ -485,9 +495,11 @@ gcloud run jobs execute relatorio-gastos-refresh --region "$REGION"
 Confira os logs da execução (`gcloud run jobs executions list --job
 relatorio-gastos-refresh --region "$REGION"`, depois `gcloud run jobs
 executions logs read`) — deve aparecer "Digest diario enviado: N
-transacao(oes) nova(s) avisada(s)" ou "nenhuma transacao nova" se não
-houver nada novo desde o bootstrap. Rodar o job duas vezes seguidas não deve
-mandar a mesma transação de novo (idempotência via `notificadoWhatsapp`).
+transacao(oes) nova(s) avisada(s)". O digest **sempre** manda mensagem,
+mesmo com `N=0` (o usuário quer a confirmação de que a atualização rodou,
+não só um aviso quando há algo novo) — nesse caso a mensagem mostra "Novas
+transações: Nenhuma". Rodar o job duas vezes seguidas não deve mandar a
+mesma transação de novo (idempotência via `notificadoWhatsapp`).
 
 Falha só no envio do WhatsApp fica logada mas não derruba o job nem dispara
 o alerta de monitoramento da seção 9 (que olha o exit code do job) — a

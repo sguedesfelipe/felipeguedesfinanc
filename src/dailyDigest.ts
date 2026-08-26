@@ -31,17 +31,15 @@ export function formatNewTransactionsSummary(transactions: CategorizedTransactio
 // transacoes que chegaram desde o ultimo envio (notificadoWhatsapp:false) e
 // o total de pendencias, e so marca essas transacoes como notificadas depois
 // que o envio confirma sucesso — se o envio falhar, nada e marcado e essas
-// mesmas transacoes entram no proximo digest de novo (idempotente).
+// mesmas transacoes entram no proximo digest de novo (idempotente). Sempre
+// envia, mesmo com zero transacoes novas (formatNewTransactionsSummary volta
+// "Nenhuma" nesse caso) — o usuario quer a confirmacao de que a atualizacao
+// rodou mesmo sem novidade, nao so um aviso quando ha algo para reportar.
 export async function sendDailyDigest(db: Firestore): Promise<void> {
   const [transactions, accounts] = await Promise.all([loadAllTransactions(db), loadAllAccounts(db)]);
   const report = deriveReport(transactions, accounts);
 
   const newTransactions = report.transactions.filter((t) => t.valido && !t.notificadoWhatsapp);
-  if (newTransactions.length === 0) {
-    console.log('Digest diario: nenhuma transacao nova para avisar, nada enviado.');
-    return;
-  }
-
   const config = loadWhatsappConfig();
   await sendWhatsappTemplateMessage(config, [
     formatNewTransactionsSummary(newTransactions),
