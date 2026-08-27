@@ -11,8 +11,16 @@ const MAX_TRANSACTIONS_IN_MESSAGE = 15;
 
 const currencyFormatter = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 
+// A API do WhatsApp rejeita o envio inteiro (erro 132018) se uma variavel de
+// template tiver quebra de linha/tab ou mais de 4 espacos seguidos — e
+// descricao de transacao (vinda direto do banco via Pluggy) as vezes traz
+// isso (ex.: texto de boleto/PIX com formatacao propria do banco).
+function sanitizeForTemplateParam(value: string): string {
+  return value.replace(/[\n\t\r]+/g, ' ').replace(/ {2,}/g, ' ').trim();
+}
+
 function formatTransactionLine(t: CategorizedTransaction): string {
-  return `${t.description}: ${currencyFormatter.format(t.amount)}`;
+  return `${sanitizeForTemplateParam(t.description)}: ${currencyFormatter.format(t.amount)}`;
 }
 
 // Variaveis de template do WhatsApp nao podem conter quebra de linha, entao
