@@ -118,7 +118,7 @@ export const TRANSACOES_SCRIPT = `
           descTd.innerHTML =
             '<button type="button" class="g-tx-expand" data-id="' + tr.dataset.rowId + '">&#9656;</button>' +
             '<span class="g-tx-avatar-sm">' + icon + '</span>' +
-            '<span class="g-tx-desc-text">' + esc(text) + '</span>';
+            '<span class="g-tx-desc-text" title="' + esc(text) + '">' + esc(text) + '</span>';
         }
         const amountTd = tr.querySelector('td[data-col="amount"]');
         if (amountTd) {

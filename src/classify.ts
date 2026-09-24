@@ -55,6 +55,10 @@ let state: ClassificationState | null = null;
 export let REVISADO_ATE: string | null = null;
 export let CATEGORIAS: string[] = [];
 export let SUBCATEGORIAS: string[] = [];
+// Mapa categoria -> subcategorias validas, pro editor no dashboard sugerir
+// so as subcategorias que fazem sentido pra categoria selecionada (em vez da
+// lista achatada inteira de SUBCATEGORIAS).
+export let CATEGORIA_SUBCATEGORIAS: Record<string, string[]> = {};
 
 export type Confianca = 'alta' | 'media' | 'baixa';
 
@@ -193,6 +197,7 @@ export function initClassification(rules: RulesFile): void {
   REVISADO_ATE = rules.revisadoAte;
   CATEGORIAS = Object.keys(rules.categories).sort((a, b) => a.localeCompare(b, 'pt-BR'));
   SUBCATEGORIAS = [...new Set(Object.values(rules.categories).flat())].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+  CATEGORIA_SUBCATEGORIAS = rules.categories;
 }
 
 function requireState(): ClassificationState {

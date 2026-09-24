@@ -24,12 +24,14 @@ export async function upsertTransactions(db: Firestore, transactions: Categorize
   const collection = db.collection('transactions');
 
   // O refresh diario rebusca uma janela de 45 dias e reclassifica tudo do
-  // zero — pra transacoes que ja existem no Firestore, "pendente" pode ja
-  // ter sido revisado manualmente no dashboard (PATCH -> pendente:false).
-  // Sem essa checagem, o upsert sobrescreveria isso com o valor recalculado
-  // pela classificacao (que sempre aplica o corte de REVISADO_ATE) todo dia,
-  // fazendo a mesma transacao voltar pra pendente pra sempre, mesmo revisada.
-  // So transacoes genuinamente novas recebem o pendente calculado agora.
+  // zero — pra transacoes que ja existem no Firestore, "pendente" e "valido"
+  // podem ja ter sido revisados manualmente no dashboard (PATCH ->
+  // pendente:false / valido:false). Sem essa checagem, o upsert sobrescreveria
+  // isso com o valor recalculado pela classificacao (pendente sempre aplica o
+  // corte de REVISADO_ATE; valido vem so de checkKnownInvalid, ignorando
+  // qualquer correcao manual) todo dia, fazendo a mesma transacao voltar ao
+  // estado original pra sempre, mesmo revisada/corrigida. So transacoes
+  // genuinamente novas recebem os valores calculados agora.
   const existingIds = new Set<string>();
   const refs = transactions.map((t) => collection.doc(t.transactionId));
   for (let i = 0; i < refs.length; i += FIRESTORE_BATCH_LIMIT) {
@@ -47,12 +49,12 @@ export async function upsertTransactions(db: Firestore, transactions: Categorize
       // como o refresh diario rebusca uma janela de 45 dias, um upsert normal reescreveria
       // false por cima de transacoes que ja foram marcadas como notificadas — o campo so muda
       // via markTransactionsNotified() abaixo, nunca aqui.
-      const { notificadoWhatsapp, pendente, motivoClassificacao, ...rest } = t;
+      const { notificadoWhatsapp, pendente, motivoClassificacao, valido, motivoInvalido, ...rest } = t;
       const doc = collection.doc(t.transactionId);
       if (existingIds.has(t.transactionId)) {
         batch.set(doc, rest, { merge: true });
       } else {
-        batch.set(doc, { ...rest, pendente, motivoClassificacao }, { merge: true });
+        batch.set(doc, { ...rest, pendente, motivoClassificacao, valido, motivoInvalido }, { merge: true });
       }
     }
     await batch.commit();

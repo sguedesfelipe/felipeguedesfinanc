@@ -19,6 +19,11 @@ export async function run({ browser, baseUrl }) {
   const pillClass = await page.getAttribute('#pendencias-table tbody tr:first-child .g-conf-pill', 'class');
   log('selo de confianca tem classe g-conf-{alta|media|baixa}', /g-conf-(alta|media|baixa)/.test(pillClass || ''), pillClass);
 
+  const pendDescSpan = await page.$('#pendencias-table tbody tr:first-child .g-tx-desc-text');
+  const pendDescTitle = pendDescSpan ? await pendDescSpan.getAttribute('title') : null;
+  const pendDescText = pendDescSpan ? await pendDescSpan.textContent() : null;
+  log('span da descricao tem title com o texto completo', !!pendDescTitle && pendDescTitle === pendDescText, `title="${pendDescTitle}" text="${pendDescText}"`);
+
   // painel de detalhe: abre, tem os campos certos, fecha
   const expandBtn = await page.$('#pendencias-table tbody tr:first-child .g-tx-expand');
   await expandBtn.click();

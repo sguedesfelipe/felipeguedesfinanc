@@ -1,5 +1,5 @@
 import { Report } from './aggregate.js';
-import { CATEGORIAS, SUBCATEGORIAS, Confianca } from './classify.js';
+import { CATEGORIAS, SUBCATEGORIAS, CATEGORIA_SUBCATEGORIAS, Confianca } from './classify.js';
 import { DESIGN_TOKENS_CSS } from './reportTokens.js';
 import { SHELL_CSS, SHELL_SCRIPT, shellSidebarHtml, shellMobileTopbarHtml, shellBottomNavHtml } from './reportShell.js';
 import { FILTER_BAR_CSS, FILTER_BAR_SCRIPT, filterBarHtml } from './reportFilterBar.js';
@@ -138,6 +138,7 @@ function buildClientPayload(report: Report): string {
     accounts: report.accounts.map((a) => ({ id: a.id, name: a.name, type: a.type, balance: a.balance })),
     categorias: CATEGORIAS,
     subcategorias: SUBCATEGORIAS,
+    categoriaSubcategorias: CATEGORIA_SUBCATEGORIAS,
   };
   // Escapa "<" para nao correr risco de uma descricao de transacao fechar a
   // tag <script> (ex.: "</script>") no meio do JSON embutido.
@@ -429,19 +430,79 @@ function clientScript(): string {
     renderAll();
   }
 
-  function datalistOptions(id, values) {
-    return '<datalist id="' + id + '">' + values.map((v) => '<option value="' + esc(v) + '"></option>').join('') + '</datalist>';
-  }
-  document.getElementById('datalists').innerHTML =
-    datalistOptions('categorias-list', DATA.categorias) + datalistOptions('subcategorias-list', DATA.subcategorias);
-
   function classificationInput(t, field) {
     if (t.installmentLocked) {
       return '<span class="cls-locked" title="Segue a classificacao da 1a parcela desta compra">' + esc(t[field]) + '</span>';
     }
-    const list = field === 'categoria' ? 'categorias-list' : 'subcategorias-list';
-    return '<input class="cls-input" list="' + list + '" data-id="' + t.id + '" data-field="' + field + '" value="' + esc(t[field]) + '">';
+    return '<input class="cls-input" autocomplete="off" data-id="' + t.id + '" data-field="' + field + '" value="' + esc(t[field]) + '">';
   }
+
+  // Painel de sugestoes do editor de categoria/subcategoria: <datalist> nativa
+  // e pouco confiavel em navegadores mobile (Android/iOS costumam nao mostrar
+  // nada), entao construimos o dropdown na mao — um unico painel compartilhado
+  // (nao um por linha, que sumiria a cada re-render da tabela), posicionado
+  // sobre o campo focado. Digitar um valor que nao esta na lista continua
+  // funcionando normalmente (fica como categoria/subcategoria nova).
+  let clsSuggestBox = null;
+  function ensureClsSuggestBox() {
+    if (clsSuggestBox) return clsSuggestBox;
+    clsSuggestBox = document.createElement('div');
+    clsSuggestBox.className = 'cls-suggest-box';
+    document.body.appendChild(clsSuggestBox);
+    return clsSuggestBox;
+  }
+  function closeClsSuggest() {
+    if (clsSuggestBox) {
+      clsSuggestBox.remove();
+      clsSuggestBox = null;
+    }
+  }
+  function clsOptionsFor(el) {
+    if (el.dataset.field === 'subcategoria') {
+      const t = findTransaction(el.dataset.id);
+      const scoped = t && t.categoria ? DATA.categoriaSubcategorias[t.categoria] : null;
+      return scoped && scoped.length ? scoped : DATA.subcategorias;
+    }
+    return DATA.categorias;
+  }
+  function openClsSuggest(el) {
+    const box = ensureClsSuggestBox();
+    const needle = el.value.trim().toLowerCase();
+    const options = clsOptionsFor(el);
+    const matches = (needle ? options.filter((o) => o.toLowerCase().includes(needle)) : options).slice(0, 30);
+    box.innerHTML = matches.length
+      ? matches.map((o) => '<button type="button" class="cls-suggest-item">' + esc(o) + '</button>').join('')
+      : '<div class="cls-suggest-empty">Nenhuma opcao parecida — o texto digitado sera usado como novo valor.</div>';
+    const rect = el.getBoundingClientRect();
+    box.style.left = rect.left + window.scrollX + 'px';
+    box.style.top = rect.bottom + window.scrollY + 4 + 'px';
+    box.style.minWidth = rect.width + 'px';
+    box.dataset.forId = el.dataset.id;
+    box.dataset.forField = el.dataset.field;
+  }
+  document.addEventListener('focusin', (ev) => {
+    if (ev.target.classList && ev.target.classList.contains('cls-input')) openClsSuggest(ev.target);
+  });
+  document.addEventListener('focusout', (ev) => {
+    if (ev.target.classList && ev.target.classList.contains('cls-input')) setTimeout(closeClsSuggest, 150);
+  });
+  // mousedown (nao click) + preventDefault: escolher uma sugestao nao pode
+  // tirar o foco do <input> antes de mexermos nele, senao o focusout acima
+  // fecha o painel antes do clique terminar de registrar.
+  document.addEventListener('mousedown', (ev) => {
+    const item = ev.target.closest('.cls-suggest-item');
+    if (!item || !clsSuggestBox) return;
+    ev.preventDefault();
+    const el = document.querySelector(
+      'input.cls-input[data-id="' + clsSuggestBox.dataset.forId + '"][data-field="' + clsSuggestBox.dataset.forField + '"]'
+    );
+    closeClsSuggest();
+    if (!el) return;
+    el.value = item.textContent;
+    el.focus();
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+  });
 
   function validoCheckbox(t) {
     return '<input type="checkbox" class="valido-input" data-id="' + t.id + '"' + (t.valido ? ' checked' : '') + '>';
@@ -858,17 +919,22 @@ function clientScript(): string {
   invalidoGranularitySelect.addEventListener('change', () => renderInvalidoPeriodoTable(getInvalidoFiltered()));
 
   // --- tabelas genericas: cabecalho clicavel pra ordenar + filtro por coluna ---
+  // Contas distintas existentes (pro filtro de coluna "Conta" virar dropdown
+  // em vez de texto livre) — DATA ja esta populado nesse ponto do script.
+  const ACCOUNT_NAMES = DATA.accounts.map((a) => a.name);
+  const SIM_NAO_OPTIONS = ['Sim', 'Nao'];
+
   const TX_COLUMNS = [
     { key: 'dateISO', label: 'Data', value: (t) => t.dateISO, render: (t) => t.dateLabel },
     { key: 'dataConsideradaISO', label: 'DataConsiderada', value: (t) => t.dataConsideradaISO, render: (t) => t.dataConsideradaLabel },
     { key: 'description', label: 'Descricao', value: (t) => t.description },
-    { key: 'categoria', label: 'Categoria', value: (t) => t.categoria, render: (t) => classificationInput(t, 'categoria') },
-    { key: 'subcategoria', label: 'Subcategoria', value: (t) => t.subcategoria, render: (t) => classificationInput(t, 'subcategoria') },
+    { key: 'categoria', label: 'Categoria', value: (t) => t.categoria, render: (t) => classificationInput(t, 'categoria'), filterOptions: DATA.categorias },
+    { key: 'subcategoria', label: 'Subcategoria', value: (t) => t.subcategoria, render: (t) => classificationInput(t, 'subcategoria'), filterOptions: DATA.subcategorias },
     { key: 'amount', label: 'Valor', value: (t) => t.amount, type: 'currency' },
     { key: 'transactionId', label: 'ID', value: (t) => t.transactionId },
-    { key: 'account', label: 'Conta', value: (t) => t.account },
-    { key: 'pendente', label: 'Pendente', value: (t) => (t.pendente ? 'Sim' : 'Nao'), render: (t) => (t.pendente ? '<span class="badge-pend">pendente</span>' : '') },
-    { key: 'valido', label: 'Valido?', value: (t) => (t.valido ? 'Sim' : 'Nao'), render: (t) => validoCheckbox(t) },
+    { key: 'account', label: 'Conta', value: (t) => t.account, filterOptions: ACCOUNT_NAMES },
+    { key: 'pendente', label: 'Pendente', value: (t) => (t.pendente ? 'Sim' : 'Nao'), render: (t) => (t.pendente ? '<span class="badge-pend">pendente</span>' : ''), filterOptions: SIM_NAO_OPTIONS },
+    { key: 'valido', label: 'Valido?', value: (t) => (t.valido ? 'Sim' : 'Nao'), render: (t) => validoCheckbox(t), filterOptions: SIM_NAO_OPTIONS },
     { key: 'isEmprestimo', label: 'Emprestimo?', value: (t) => (t.isEmprestimo ? 'Sim' : 'Nao') },
     { key: 'motivoInvalido', label: 'Motivo (invalido)', value: (t) => t.motivoInvalido },
     { key: 'bankCategory', label: 'Categoria do banco', value: (t) => t.bankCategory },
@@ -1012,8 +1078,15 @@ function clientScript(): string {
           const currentFilter = state.filters[c.key] || '';
           const filterHtml = c.noFilter
             ? ''
-            : '<br><input type="text" class="col-filter" data-table="' + tableId + '" data-filter-key="' + c.key +
-              '" placeholder="filtrar..." value="' + esc(currentFilter) + '">';
+            : c.filterOptions
+              ? '<br><select class="col-filter" data-table="' + tableId + '" data-filter-key="' + c.key + '">' +
+                '<option value="">Todos</option>' +
+                c.filterOptions
+                  .map((v) => '<option value="' + esc(v) + '"' + (v === currentFilter ? ' selected' : '') + '>' + esc(v) + '</option>')
+                  .join('') +
+                '</select>'
+              : '<br><input type="text" class="col-filter" data-table="' + tableId + '" data-filter-key="' + c.key +
+                '" placeholder="filtrar..." value="' + esc(currentFilter) + '">';
           return '<th>' + labelHtml + filterHtml + '</th>';
         })
         .join('') +
@@ -1036,7 +1109,11 @@ function clientScript(): string {
       rows = rows.filter((row) =>
         activeFilters.every(([key, needle]) => {
           const col = def.columns.find((c) => c.key === key);
-          return String(col.value(row) ?? '').toLowerCase().includes(needle.toLowerCase());
+          const value = String(col.value(row) ?? '');
+          // Colunas com dropdown (filterOptions) comparam por igualdade exata
+          // — o valor selecionado ja e uma das opcoes validas, e "includes"
+          // faria "Alimentacao" tambem casar com "Alimentacao e bebida".
+          return col.filterOptions ? value === needle : value.toLowerCase().includes(needle.toLowerCase());
         })
       );
     }
@@ -1152,6 +1229,7 @@ function clientScript(): string {
       renderSubcategoriaPeriodoTable(getFiltered());
       renderEmprestimoPeriodoTable(getEmprestimoFiltered());
       renderInvalidoPeriodoTable(getInvalidoFiltered());
+      openClsSuggest(el);
     }
   });
 
@@ -1493,7 +1571,7 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
   .th-label:hover { color: var(--text-primary); }
   table.data-table td.num, table.data-table th.num { text-align: right; font-variant-numeric: tabular-nums; }
 
-  input.col-filter {
+  .col-filter {
     font: inherit;
     font-size: 11px;
     font-weight: 400;
@@ -1505,8 +1583,9 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
     color: var(--text-primary);
     width: 100%;
     box-sizing: border-box;
-    cursor: text;
   }
+  input.col-filter { cursor: text; }
+  select.col-filter { cursor: pointer; }
 
   input.cls-input {
     font: inherit;
@@ -1518,7 +1597,34 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
     color: var(--text-primary);
     width: 130px;
   }
-  input.cls-input:focus, input.col-filter:focus { outline: 2px solid var(--series-1); outline-offset: 1px; }
+  input.cls-input:focus, .col-filter:focus { outline: 2px solid var(--series-1); outline-offset: 1px; }
+
+  .cls-suggest-box {
+    position: absolute;
+    z-index: 60;
+    max-height: 220px;
+    overflow-y: auto;
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px -8px rgba(0,0,0,0.35);
+    padding: 4px;
+  }
+  .cls-suggest-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    font: inherit;
+    font-size: 12px;
+    padding: 6px 8px;
+    border: none;
+    border-radius: 5px;
+    background: transparent;
+    color: var(--text-primary);
+    cursor: pointer;
+  }
+  .cls-suggest-item:hover { background: var(--page); color: var(--series-1); }
+  .cls-suggest-empty { font-size: 11px; padding: 6px 8px; color: var(--text-secondary); max-width: 220px; }
 
   .badge-pend {
     display: inline-block;
@@ -1895,8 +2001,6 @@ export function buildHtmlReport(report: Report, dateFrom: string, dateTo: string
         </div>
       </section>
     </div>
-
-        <div id="datalists"></div>
         <footer>
           Relatorio gerado a partir da API do Pluggy. Edicoes de classificacao/valido feitas aqui sao salvas
           automaticamente no servidor — ja aparecem em qualquer dispositivo no proximo carregamento da pagina.

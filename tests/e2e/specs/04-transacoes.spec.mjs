@@ -64,6 +64,72 @@ export async function run({ browser, baseUrl }) {
 
   log('botao Exportar CSV ainda presente', !!(await page.$('#export-transacoes')));
 
+  // --- descricao completa via title (hover) ---
+  const descSpan = await page.$('#transacoes-table tbody tr:first-child .g-tx-desc-text');
+  const descTitle = descSpan ? await descSpan.getAttribute('title') : null;
+  const descText = descSpan ? await descSpan.textContent() : null;
+  log('span da descricao tem title com o texto completo', !!descTitle && descTitle === descText, `title="${descTitle}" text="${descText}"`);
+
+  // --- filtros de coluna como dropdown (Categoria/Subcategoria/Conta/Valido) ---
+  const filterTagNames = await page.$$eval(
+    '#transacoes-table thead th',
+    (ths) =>
+      Object.fromEntries(
+        ths.map((th) => {
+          const label = th.querySelector('.th-label');
+          const filterEl = th.querySelector('.col-filter');
+          return [label ? label.textContent.replace(/[▲▼]/g, '').trim() : '', filterEl ? filterEl.tagName : null];
+        })
+      )
+  );
+  log('filtro de Categoria e um <select>', filterTagNames['Categoria'] === 'SELECT', filterTagNames['Categoria']);
+  log('filtro de Subcategoria e um <select>', filterTagNames['Subcategoria'] === 'SELECT', filterTagNames['Subcategoria']);
+  log('filtro de Conta e um <select>', filterTagNames['Conta'] === 'SELECT', filterTagNames['Conta']);
+  log('filtro de Valido? e um <select>', filterTagNames['Valido?'] === 'SELECT', filterTagNames['Valido?']);
+  log('filtro de Descricao continua texto livre (nao vira dropdown)', filterTagNames['Descricao'] === 'INPUT', filterTagNames['Descricao']);
+
+  const contaFilter = await page.$('#transacoes-table thead select.col-filter[data-filter-key="account"]');
+  const rowsBeforeContaFilter = await page.$$eval('#transacoes-table tbody tr[data-row-id]', (trs) => trs.length);
+  await contaFilter.selectOption('Cartao Teste');
+  await page.waitForTimeout(150);
+  const rowsAfterContaFilter = await page.$$eval('#transacoes-table tbody tr[data-row-id]', (trs) => trs.length);
+  log(
+    'selecionar "Cartao Teste" no dropdown de Conta filtra a tabela (match exato, nao substring)',
+    rowsAfterContaFilter > 0 && rowsAfterContaFilter < rowsBeforeContaFilter,
+    `antes=${rowsBeforeContaFilter} depois=${rowsAfterContaFilter}`
+  );
+  await contaFilter.selectOption('');
+  await page.waitForTimeout(150);
+
+  // --- combobox de categoria: sugestoes construidas via JS, nao <datalist> nativa ---
+  const catInputForSuggest = await page.$('#transacoes-table tbody tr:first-child input.cls-input[data-field="categoria"]');
+  if (catInputForSuggest) {
+    await catInputForSuggest.click();
+    await page.waitForTimeout(150);
+    const suggestItems = await page.$$('.cls-suggest-box .cls-suggest-item');
+    log('focar o campo de categoria abre o painel de sugestoes', suggestItems.length > 0, `${suggestItems.length} opcoes`);
+
+    if (suggestItems.length > 0) {
+      const firstOptionText = await suggestItems[0].textContent();
+      const [patchReq] = await Promise.all([
+        page.waitForRequest((req) => req.method() === 'PATCH' && req.url().includes('/api/transactions/'), { timeout: 3000 }).catch(() => null),
+        suggestItems[0].click(),
+      ]);
+      const newValue = await catInputForSuggest.inputValue();
+      log('clicar numa sugestao preenche o campo e dispara PATCH', newValue === firstOptionText && !!patchReq, `valor="${newValue}" esperado="${firstOptionText}"`);
+    } else {
+      log('clicar numa sugestao preenche o campo e dispara PATCH', false, 'nenhuma sugestao pra clicar');
+    }
+    await page.keyboard.press('Escape').catch(() => {});
+    await page.click('body');
+    await page.waitForTimeout(200);
+    log('painel de sugestoes fecha ao clicar fora', !(await page.$('.cls-suggest-box')));
+  } else {
+    log('focar o campo de categoria abre o painel de sugestoes', false, 'nenhum cls-input de categoria desbloqueado na 1a linha');
+    log('clicar numa sugestao preenche o campo e dispara PATCH', false, 'sem input pra testar');
+    log('painel de sugestoes fecha ao clicar fora', false, 'sem input pra testar');
+  }
+
   log('sem erros de console/pageerror', consoleErrors.length === 0, consoleErrors.join('; '));
   await ctx.close();
   return results;
