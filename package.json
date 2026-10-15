@@ -11,6 +11,8 @@
     "build": "tsc",
     "migrate": "tsx src/migrate.ts",
     "migrate:mark-notified": "tsx src/migrateMarkNotified.ts",
+    "migrate:invalidate-auto-investment": "tsx src/migrateInvalidateAutoInvestment.ts",
+    "diag:find-by-description": "tsx src/diagFindByDescription.ts",
     "refresh": "tsx src/refreshJob.ts",
     "dev:server": "tsx src/server.ts",
     "start": "node dist/server.js",

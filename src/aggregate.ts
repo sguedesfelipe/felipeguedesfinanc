@@ -206,6 +206,12 @@ export interface Report {
 
 const UNCATEGORIZED = 'Sem categoria';
 const CARD_PAYMENT_CATEGORY = 'Credit card payment';
+// Categorias do banco (Pluggy) que nunca sao gasto/receita real — dinheiro
+// so mudando de lugar entre contas/produtos do proprio usuario. Comecam
+// invalidas por padrao (o usuario pode reverter manualmente se algum caso
+// especifico for diferente, e essa reversao agora fica salva — ver
+// upsertTransactions em src/repo.ts).
+const AUTO_INVALID_BANK_CATEGORIES = new Set(['Automatic Investiment', 'Automatic Investment']);
 // Janela de dias para casar o pagamento da fatura (debito na conta corrente)
 // com o "pagamento recebido" no cartao (credito), mesmo que as datas de
 // processamento nao coincidam exatamente entre as duas contas.
@@ -336,7 +342,11 @@ export function classifyAndShapeTransactions(data: AccountTransactions[]): Categ
       const amount = Math.abs(tx.amount);
       const bankCategory = tx.category ?? UNCATEGORIZED;
       const classification = classifyTransaction(tx.description, tx.category ?? null);
-      const knownInvalidReason = checkKnownInvalid(normalizeKey(tx.description));
+      const invalidReason =
+        checkKnownInvalid(normalizeKey(tx.description)) ??
+        (AUTO_INVALID_BANK_CATEGORIES.has(bankCategory)
+          ? `Categoria do banco "${bankCategory}" — dinheiro movendo pra um investimento automatico, nao e gasto/receita real.`
+          : null);
       const extra = extractExtra(tx, date);
 
       const { pendente, motivo: motivoClassificacao } = applyReviewCutoff(
@@ -358,8 +368,8 @@ export function classifyAndShapeTransactions(data: AccountTransactions[]): Categ
         confianca: classification.confianca,
         pendente,
         motivoClassificacao,
-        valido: !knownInvalidReason,
-        motivoInvalido: knownInvalidReason ?? '',
+        valido: !invalidReason,
+        motivoInvalido: invalidReason ?? '',
         isEmprestimo: false, // recalculado por applyEmprestimoFlag logo abaixo, depois que categoria fica definitiva
         amount,
         isExpense,
