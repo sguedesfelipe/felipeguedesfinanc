@@ -14,6 +14,7 @@
     "migrate:invalidate-auto-investment": "tsx src/migrateInvalidateAutoInvestment.ts",
     "diag:find-by-description": "tsx src/diagFindByDescription.ts",
     "diag:latest-transactions": "tsx src/diagLatestTransactions.ts",
+    "diag:item-status": "tsx src/diagItemStatus.ts",
     "refresh": "tsx src/refreshJob.ts",
     "dev:server": "tsx src/server.ts",
     "start": "node dist/server.js",
