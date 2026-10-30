@@ -59,6 +59,44 @@ export async function run({ browser, baseUrl }) {
     log('clicar numa celula preenche o filtro de categoria', false, 'nenhuma periodo-cell encontrada');
   }
 
+  // --- drill-down explicito: Categorias -> Subcategorias -> Transacoes ---
+  await page.click('.g-side-item[data-tab="categorias"]');
+  await page.waitForTimeout(200);
+  const catLabel = await page.$('#categorias-saldo-periodo-table .periodo-cat-label');
+  if (catLabel) {
+    const catValue = await catLabel.evaluate((el) => el.dataset.dimValue);
+    await catLabel.click();
+    await page.waitForTimeout(200);
+    const onSubcategorias = await page.evaluate(() => document.getElementById('tab-subcategorias').classList.contains('active'));
+    const catFilterAfterDrill = await page.$eval('#filter-categoria', (el) => el.value);
+    log(
+      'clicar no rotulo de uma categoria leva pra aba Subcategorias com o filtro aplicado',
+      onSubcategorias && catFilterAfterDrill === catValue,
+      `ativo=${onSubcategorias} filtro=${catFilterAfterDrill} esperado=${catValue}`
+    );
+
+    const subcatLabel = await page.$('#subcategorias-saldo-periodo-table .periodo-cat-label');
+    if (subcatLabel) {
+      const subcatValue = await subcatLabel.evaluate((el) => el.dataset.dimValue);
+      await subcatLabel.click();
+      await page.waitForTimeout(200);
+      const onTransacoes = await page.evaluate(() => document.getElementById('tab-transacoes').classList.contains('active'));
+      const subcatFilterAfterDrill = await page.$eval('#filter-subcategoria', (el) => el.value);
+      log(
+        'clicar no rotulo de uma subcategoria leva pra aba Transacoes com o filtro aplicado',
+        onTransacoes && subcatFilterAfterDrill === subcatValue,
+        `ativo=${onTransacoes} filtro=${subcatFilterAfterDrill} esperado=${subcatValue}`
+      );
+    } else {
+      log('clicar no rotulo de uma subcategoria leva pra aba Transacoes com o filtro aplicado', false, 'nenhuma periodo-cat-label encontrada em Subcategorias apos o drill');
+    }
+    await page.click('#filter-clear');
+    await page.waitForTimeout(150);
+  } else {
+    log('clicar no rotulo de uma categoria leva pra aba Subcategorias com o filtro aplicado', false, 'nenhuma periodo-cat-label encontrada');
+    log('clicar no rotulo de uma subcategoria leva pra aba Transacoes com o filtro aplicado', false, 'pulado, categoria nao encontrada');
+  }
+
   log('sem erros de console/pageerror', consoleErrors.length === 0, consoleErrors.join('; '));
   await ctx.close();
   return results;

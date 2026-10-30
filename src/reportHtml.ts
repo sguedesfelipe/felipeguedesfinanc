@@ -1189,16 +1189,36 @@ function clientScript(): string {
       return;
     }
 
+    // Drill down explicito nas tabelas por periodo de Categorias/Subcategorias:
+    // clicar num rotulo/celula nao so filtra, leva direto pro proximo nivel
+    // de detalhe (Categorias -> Subcategorias -> Transacoes), que e o que o
+    // usuario espera de uma navegacao em drill-down. Emprestimos/Invalidos
+    // continuam so filtrando (sem trocar de aba) — nao fazem parte dessa
+    // cadeia Categoria->Subcategoria->Transacao. O tableId precisa ser lido
+    // ANTES de drillToFilters: renderResumo() (chamado por renderAll() la
+    // dentro) ja re-renderiza as tabelas de periodo de Categorias/
+    // Subcategorias como efeito colateral, o que desconecta do DOM a linha
+    // clicada — depois disso, closest('table') nela volta null.
+    function nextTabFor(tableId) {
+      if (tableId.startsWith('categorias-')) return 'subcategorias';
+      if (tableId.startsWith('subcategorias-')) return 'transacoes';
+      return null;
+    }
+
     const periodoCatLabel = ev.target.closest('.periodo-cat-label[data-dim-value]');
     if (periodoCatLabel) {
+      const nextTab = nextTabFor(periodoCatLabel.closest('table')?.id || '');
       drillToFilters({ [periodoCatLabel.dataset.dimField]: periodoCatLabel.dataset.dimValue });
+      if (nextTab) activateTab(nextTab);
       return;
     }
 
     const periodoCell = ev.target.closest('.periodo-cell[data-bucket-key]');
     if (periodoCell) {
+      const nextTab = nextTabFor(periodoCell.closest('table')?.id || '');
       const range = bucketDateRange(periodoCell.dataset.bucketKey, periodoCell.dataset.granularity);
       drillToFilters({ [periodoCell.dataset.dimField]: periodoCell.dataset.dimValue, from: range.from, to: range.to });
+      if (nextTab) activateTab(nextTab);
     }
   });
 
