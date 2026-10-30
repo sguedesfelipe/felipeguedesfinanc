@@ -132,8 +132,12 @@ export function filterBarHtml(): string {
           <div class="g-calendar-pop" id="g-calendar-pop">
             <div class="g-cal-presets" id="g-cal-presets">
               <button type="button" class="g-cal-preset" data-preset="today">Hoje</button>
+              <button type="button" class="g-cal-preset" data-preset="yesterday">Ontem</button>
               <button type="button" class="g-cal-preset" data-preset="7d">Ultimos 7 dias</button>
+              <button type="button" class="g-cal-preset" data-preset="15d">Ultimos 15 dias</button>
+              <button type="button" class="g-cal-preset" data-preset="30d">Ultimos 30 dias</button>
               <button type="button" class="g-cal-preset" data-preset="month">Este mes</button>
+              <button type="button" class="g-cal-preset" data-preset="lastMonth">Mes passado</button>
               <button type="button" class="g-cal-preset" data-preset="3m">Ultimos 3 meses</button>
               <button type="button" class="g-cal-preset" data-preset="6m">Ultimos 6 meses</button>
               <button type="button" class="g-cal-preset" data-preset="year">Este ano</button>
@@ -285,8 +289,18 @@ export const FILTER_BAR_SCRIPT = `
       const now = new Date();
       const today = clamp(toISO(now.getFullYear(), now.getMonth(), now.getDate()));
       if (preset === 'today') { pendingFrom = today; pendingTo = today; }
+      else if (preset === 'yesterday') { const y = clamp(addDaysIso(today, -1)); pendingFrom = y; pendingTo = y; }
       else if (preset === '7d') { pendingFrom = clamp(addDaysIso(today, -6)); pendingTo = today; }
+      else if (preset === '15d') { pendingFrom = clamp(addDaysIso(today, -14)); pendingTo = today; }
+      else if (preset === '30d') { pendingFrom = clamp(addDaysIso(today, -29)); pendingTo = today; }
       else if (preset === 'month') { const p = parseISO(today); pendingFrom = clamp(toISO(p.y, p.m, 1)); pendingTo = today; }
+      else if (preset === 'lastMonth') {
+        const p = parseISO(today);
+        const lm = p.m === 0 ? 11 : p.m - 1;
+        const ly = p.m === 0 ? p.y - 1 : p.y;
+        pendingFrom = clamp(toISO(ly, lm, 1));
+        pendingTo = clamp(toISO(ly, lm, daysInMonth(ly, lm)));
+      }
       else if (preset === '3m') { pendingFrom = clamp(addMonthsIso(today, -3)); pendingTo = today; }
       else if (preset === '6m') { pendingFrom = clamp(addMonthsIso(today, -6)); pendingTo = today; }
       else if (preset === 'year') { const p = parseISO(today); pendingFrom = clamp(toISO(p.y, 0, 1)); pendingTo = today; }
